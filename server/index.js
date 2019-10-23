@@ -8,51 +8,53 @@ const oauthHandler = require('./oauthHandler')
 const dev = process.env.NODE_ENV !== 'production'
 
 module.exports = function (getRoutes, config) {
-	const app = next({ dev, conf: config })
-	const handle = app.getRequestHandler()
-	const nextConfig = app.nextConfig
+	//const app = next({ dev, conf: config })
+	//const handle = app.getRequestHandler()
+	//const nextConfig = app.nextConfig
 
-	const initNext = (app) => {
-		return app
-			.prepare()
-			.then(() => {
-				const server = express()
-				server.use(cookieParser())
-				server.nextConfig = app.nextConfig
+	const initExpress = (app) => {
+		// return app
+		// 	.prepare()
+    return Promise.resolve().then(() => {
+        const server = express()
+
+        server.use(require('helmet')())
+        server.use(require('cookie-parser')())
+        server.use(require('body-parser').urlencoded({ extended: true }))
+        server.use(require('express-session')({
+          secret: 'keyboard cat',
+          resave: true,
+          saveUninitialized: true
+        }))
+
+        const GitHubStrategy = require('passport-github').Strategy
+        passport.use(new GitHubStrategy(
+          {
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: "http://127.0.0.1:3000/auth/github/callback" // get heroku hostname?
+          },
+          function(accessToken, refreshToken, profile, cb) {
+
+
+
+            // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+            //   return cb(err, user);
+            // });
+
+          }
+        ));
+        server.use(passport.initialize())
+        server.use(passport.session())
+
+				// server.nextConfig = app.nextConfig
 
 				return server
 			})
   }
 
   const attachAPIRoutes = (server) => {
-    server.use(require('helmet')())
-    server.use(require('cookie-parser')())
-    server.use(require('body-parser').urlencoded({ extended: true }))
-    server.use(require('express-session')({
-      secret: 'keyboard cat',
-      resave: true,
-      saveUninitialized: true
-    }))
-
-    const GitHubStrategy = require('passport-github').Strategy
-    passport.use(new GitHubStrategy(
-      {
-        clientID: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-      },
-      function(accessToken, refreshToken, profile, cb) {
-
-
-
-        // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-        //   return cb(err, user);
-        // });
-
-      }
-    ));
-    server.use(passport.initialize())
-    server.use(passport.session())
+    return server
   }
 
 	const attachNextRoutes = (server) => {
@@ -69,14 +71,15 @@ module.exports = function (getRoutes, config) {
 
 		server.listen(port, (err) => {
 			if (err) throw err
-			console.log(`> Ready on http://0.0.0.0:${port}`)
+			console.log(`> Ready on //0.0.0.0:${port}`)
 		})
 	}
 
-	return Promise.resolve(app)
-    .then(initNext)
+  //return Promise.resolve(app)
+  return Promise.resolve()
+    .then(initExpress)
     .then(attachAPIRoutes)
-		.then(attachNextRoutes)
+		//.then(attachNextRoutes)
 		.then(startServer)
 		.catch(errorHandler)
 }
