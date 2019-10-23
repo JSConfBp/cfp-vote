@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "properties": {
+    "errors": {
+      "type": "array",
+      "description": "This field MUST contain an array with at least one error model.",
+      "items": {
+        "$ref": "ErrorModel.json"
+      }
+    },
+    "trace": {
+      "type": "string",
+      "description": "This field SHOULD contain a lowercase UUID uniquely identifying the request."
+    }
+  },
+  "required": ["errors"]
+}

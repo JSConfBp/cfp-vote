@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "properties": {
+    "year": {
+			"description": "CFP year",
+			"type": "string"
+    },
+    "submissions": {
+	  	"type": "array",
+	  		"items": {
+					"type": "object",
+					"properties": {
+			"url": {
+				"description": "Page URL",
+				"type": "string"
+			},
+			"time": {
+				"description": "Seconds until cycling over the next page",
+				"type": "number"
+			}
+		}
+	  }
+    }
+  },
+  "required": ["name", "pages"]
+}

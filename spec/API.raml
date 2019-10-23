@@ -1,0 +1,363 @@
+#%RAML 1.0
+title: piosk
+version: v1
+protocols: [ HTTP, HTTPS ]
+baseUri: /v1
+
+types:
+  # Requests
+  CreateKiosk: !include schemas/request/CreateKiosk.json
+  UpdateKiosk: !include schemas/request/UpdateKiosk.json
+  CreateClient: !include schemas/request/CreateClient.json
+  UpdateClient: !include schemas/request/UpdateClient.json
+  # Responses
+  Kiosk: !include schemas/response/Kiosk.json
+  KioskCreated: !include schemas/response/KioskCreated.json
+  KioskUpdated: !include schemas/response/KioskUpdated.json
+  Client: !include schemas/response/Client.json
+  ClientCreated: !include schemas/response/ClientCreated.json
+  ClientUpdated: !include schemas/response/ClientUpdated.json
+  ClientKiosks: !include schemas/response/ClientKiosks.json
+  Error: !include schemas/response/Error.json
+  TokenCreated: !include schemas/response/TokenCreated.json
+
+traits:
+  auth_errors:
+    responses:
+      401:
+        description:
+          The request has not been applied because it lacks
+          valid access token for the target resource.
+        body:
+          application/json:
+            type: Error
+      403:
+        description:
+          The server understood the request but refuses to authorize it.
+        body:
+          application/json:
+            type: Error
+  resource_errors:
+    responses:
+      404:
+        description:
+          Caption not found.
+        body:
+          application/json:
+            type: Error
+      410:
+        description:
+          Caption was removed.
+        body:
+          application/json:
+            type: Error
+  write_errors:
+    responses:
+      400:
+        description:
+          Request body cannot be parsed or contains invalid data.
+        body:
+          application/json:
+            type: Error
+      415:
+        description:
+          The origin server is refusing to service the request because
+          the payload is in a format not supported by this method
+          on the target resource.
+        body:
+          application/json:
+            type: Error
+
+/kiosk:
+  post:
+    description:
+      Create a Kiosk
+    is:
+      - auth_errors
+      - write_errors
+    body:
+      application/json:
+        type: CreateKiosk
+        example: |
+          {
+            "name": "Office kiosk",
+            "pages": [
+              {
+                "url": "https://domain.com",
+                "time": 30
+              },
+              {
+                "url": "https://internal-domain-adm.in",
+                "time": 20
+              }
+            ]
+          }
+    responses:
+      201:
+        description:
+          Kiosk created successfully.
+        headers:
+          Location:
+            description:
+              Link to the newly created Kiosk resource.
+            type: string
+        body:
+          application/json:
+            type: KioskCreated
+            example: |
+              {
+                "id": "05ea5318-50e6-40b0-b56a-e76295c2aca5"
+              }
+  /{id}:
+    uriParameters:
+      id:
+        description: Kiosk's public ID
+        type: string
+        example: 637d5881-1a61-4689-9158-36dddc72559e
+    get:
+      description:
+        Retrieve Kiosk data
+      is:
+        - auth_errors
+        - resource_errors
+      responses:
+        200:
+          body:
+            application/json:
+              type: Kiosk
+              example: |
+                {
+                  "name": "Office kiosk",
+                  "pages": [
+                    {
+                      "url": "https://domain.com",
+                      "time": 30
+                    },
+                    {
+                      "url": "https://internal-domain-adm.in",
+                      "time": 20
+                    }
+                  ],
+                  "created_at": "2017-03-03T14:10:29+00:00",
+                  "updated_at": "2018-02-03T17:10:29+00:00"
+                }
+    put:
+      description:
+        Update a Kiosk.
+      is:
+        - auth_errors
+        - resource_errors
+        - write_errors
+      body:
+        application/json:
+          type: UpdateKiosk
+          example: |
+            {
+              "name": "Office kiosk",
+              "pages": [
+                {
+                  "url": "https://domain.com",
+                  "time": 30
+                },
+                {
+                  "url": "https://internal-domain-adm.in",
+                  "time": 20
+                }
+              ]
+            }
+      responses:
+        200:
+          description:
+            Kiosk updated successfully.
+          body:
+            application/json:
+              type: KioskUpdated
+              example: |
+                {
+                  "updated_at": "2018-02-03T17:10:29+00:00"
+                }
+    delete:
+      description:
+        Remove a Kiosk.
+      is:
+        - auth_errors
+        - resource_errors
+      responses:
+        204:
+          description:
+            Kiosk removed successfully.
+
+    /token:
+      get:
+        description:
+          Retrieve Kiosk read token
+        is:
+          - auth_errors
+          - resource_errors
+        responses:
+          200:
+            body:
+              application/json:
+                type: KioskToken
+                example: |
+                  {
+                    "token": "12323424.123123.346345"
+                  }
+  /view:
+    get:
+      description:
+          Read only Kiosk access by a generated JWT token, containing all the information necessary to access this data
+      is:
+        - resource_errors
+        - auth_errors
+      responses:
+        200:
+          body:
+            application/json:
+              type: Kiosk
+              example: |
+                {
+                  "name": "Office kiosk",
+                  "pages": [
+                    {
+                      "url": "https://domain.com",
+                      "time": 30
+                    },
+                    {
+                      "url": "https://internal-domain-adm.in",
+                      "time": 20
+                    }
+                  ]
+                }
+
+/client:
+  post:
+    description:
+      Create client
+    is:
+      - write_errors
+    body:
+      application/json:
+        type: CreateClient
+        example: |
+          {
+            "secret": "sfD3454as57Sf"
+          }
+    responses:
+      201:
+        description:
+          Client created successfully.
+        headers:
+          Location:
+            description:
+              Link to the newly created caption resource.
+            type: string
+        body:
+          application/json:
+            type: ClientCreated
+            example: |
+              {
+                "id": "05ea5318-50e6-40b0-b56a-e76295c2aca5",
+                "version": 1
+              }
+  /{id}:
+    put:
+      description:
+        Update a client.
+      is:
+        - auth_errors
+        - resource_errors
+        - write_errors
+      body:
+        application/json:
+          type: UpdateClient
+          example: |
+            {
+              "secret": "asdfsdfv4s24tb4"
+            }
+      responses:
+        200:
+          description:
+            Client updated successfully.
+          body:
+            application/json:
+              type: ClientUpdated
+              example: |
+                {
+                  "updated_at": "2018-02-03T17:10:29+00:00"
+                }
+    delete:
+      description:
+        Remove a client.
+      is:
+        - auth_errors
+        - resource_errors
+      responses:
+        204:
+          description:
+            Client removed successfully.
+
+    get:
+      description:
+        Retrieve client data
+      is:
+        - auth_errors
+        - resource_errors
+      responses:
+        200:
+          body:
+            application/json:
+              type: Client
+              example: |
+                {
+                  "created_at": "2017-03-03T14:10:29+00:00",
+                  "updated_at": "2018-02-03T17:10:29+00:00"
+                }
+
+    /kiosks:
+      get:
+        description:
+          Retrieve the Kiosk list of Client
+        is:
+          - auth_errors
+          - resource_errors
+        responses:
+          200:
+            body:
+              application/json:
+                type: ClientKiosks
+                example: |
+                  {
+                    "kiosks": [
+                      {
+                        "name": "Office kiosk",
+                        "id": "asdasdas2367da",
+                        "url": "/v1/kiosk/asdasdas2367da",
+                        "created_at": "2017-03-03T14:10:29+00:00",
+                        "updated_at": "2018-02-03T17:10:29+00:00"
+                      },
+                      {
+                        "name": "Home kiosk",
+                        "id": "34teb5ue5y3h5u",
+                        "url": "/v1/kiosk/34teb5ue5y3h5u",
+                        "created_at": "2017-03-03T14:10:29+00:00",
+                        "updated_at": "2018-02-03T17:10:29+00:00"
+                      },
+                    ]
+                  }
+
+/token:
+  is:
+    - auth_errors
+  patch:
+    description:
+      Refresh the JWT token in the Authorization header.
+    responses:
+      200:
+        body:
+          application/json:
+            type: TokenCreated
+            example: |
+              {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"
+              }
