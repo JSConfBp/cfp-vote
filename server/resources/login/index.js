@@ -1,5 +1,5 @@
-module.exports = (server, middlewares) => {
+module.exports = (server, middlewares = []) => {
 
-    server.post('/login', ...middlewares)
+    server.get('/login', ...middlewares, (req, res) => res.redirect('/'))
 
 }

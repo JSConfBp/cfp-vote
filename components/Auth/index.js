@@ -23,7 +23,7 @@ const authStore = (auth) => {
 }
 
 const getToken = async function (access_token) {
-	const tokenResponse = await fetch(`${api_url}/v1/token`,
+	const tokenResponse = await fetch(`${api_url}/api/token`,
 		{
 			method: 'POST',
 			headers: {
@@ -40,7 +40,7 @@ const getToken = async function (access_token) {
 		throw new Error(tokenResponse.error)
 	}
 
-	//console.log('getToken', tokenResponse);
+	console.log('getToken', tokenResponse);
 
 
 	const { jwt: token, name, login, admin } = tokenResponse
@@ -73,9 +73,9 @@ export const wrapWithAuth = (App) => {
 						initialProps.auth = auth
 						authStore(auth)
 						app.ctx.auth = auth
-						//console.log('authenticate 2 - has token!');
+						console.log('authenticate 2 - has token!');
 					} catch (e) {
-						//console.log('authenticate 2 - TOKEN ERR', e);
+						console.log('authenticate 2 - TOKEN ERR', e);
 					}
 				}
 			} else {
@@ -87,7 +87,7 @@ export const wrapWithAuth = (App) => {
 				initialProps = Object.assign(initialProps, await App.getInitialProps.call(App, app))
             }
 
-			//console.log('authenticate 3 - initialProps', !!initialProps.auth);
+			console.log('authenticate 3 - initialProps', !!initialProps.auth);
             return initialProps
 		}
 
@@ -103,7 +103,7 @@ export const wrapWithAuth = (App) => {
 				auth = authStore()
 			}
 
-			//console.log('authenticate 4 - render', !!auth);
+			console.log('authenticate 4 - render', !!auth);
 
             this.auth = auth
         }
@@ -112,7 +112,7 @@ export const wrapWithAuth = (App) => {
 
 			let { ...props } = this.props
 
-			//console.log('AuthContext.Provider value', this.auth );
+			console.log('AuthContext.Provider value', this.auth );
 
 			return (<AuthContext.Provider value={ this.auth }>
 				<App {...props}  />
@@ -140,7 +140,7 @@ export default (Comp) => {
 		render() {
 			return <AuthContext.Consumer>
 				{auth => {
-					//console.log('AuthContext.Consumer', auth);
+					console.log('AuthContext.Consumer', auth);
 					return <Comp {...this.props} auth={auth} />}
 				}
 			</AuthContext.Consumer>

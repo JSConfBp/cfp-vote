@@ -12,20 +12,29 @@ const getRegisteredUser = async (token, githubId) => {
   return id
 }
 
-module.exports = async function ({ payload }) {
+module.exports = async function (payload) {
   const id = uuid()
   const buf = await promisify(crypto.randomBytes)(256)
   const secret = buf.toString('hex')
-  const { token, github_id: githubId, name, login } = payload
+  const { token, id: githubId, displayName, username } = payload
 
   const data = {
     id,
-    login,
-    github_id: githubId,
+    login: username,
+    githubId,
     secret,
-    name,
+    name: displayName,
     updated_at: dayjs().unix(),
     created_at: dayjs().unix()
+  }
+
+
+
+
+  const user = {
+    id,
+    login: username,
+    name: displayName,
   }
 
   const alreadyRegisteredId = await getRegisteredUser(token, githubId)
@@ -42,7 +51,7 @@ module.exports = async function ({ payload }) {
       console.info('Client already registered once')
     }
 
-    return { jwt }
+    return Object.assign({}, user, { jwt })
   }
 
   store.set(token, githubId)
@@ -53,5 +62,5 @@ module.exports = async function ({ payload }) {
     sub: id
   }, secret)
 
-  return { jwt }
+  return Object.assign({}, user, { jwt })
 }
