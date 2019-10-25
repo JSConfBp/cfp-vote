@@ -1,4 +1,4 @@
-const moment = require('moment')
+const dayjs = require('dayjs')
 const store = require('../../store')
 
 module.exports = async function ({ payload, auth }) {
@@ -7,7 +7,7 @@ module.exports = async function ({ payload, auth }) {
   const data = store.get(id)
 
   data.secret = payload.secret
-  data.updated_at = moment().unix()
+  data.updated_at = dayjs().unix()
 
   store.set(id, data)
 

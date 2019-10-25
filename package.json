@@ -1,10 +1,11 @@
 {
-  "name": "cfp-vote-ui",
+  "name": "cfp-vote",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "docker-compose up",
+    "postdev": "docker-compose down",
     "clean": "rm -rf .next",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production npx next build",
@@ -33,14 +34,17 @@
     "@weco/next-plugin-transpile-modules": "0.0.2",
     "@zeit/next-sass": "^1.0.1",
     "body-parser": "^1.19.0",
+    "boom": "^7.3.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
+    "dayjs": "^1.8.16",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "helmet": "^3.21.2",
     "isomorphic-unfetch": "^3.0.0",
     "jsrsasign": "^8.0.12",
+    "jws": "^3.2.2",
     "memoize-one": "^5.0.0",
     "next": "^8.0.3",
     "next-compose-plugins": "^2.1.1",
@@ -51,6 +55,7 @@
     "react-dom": "^16.8.3",
     "react-jss": "^8.6.1",
     "recharts": "^1.5.0",
+    "redis": "^2.8.0",
     "uuid": "^3.3.2"
   }
 }

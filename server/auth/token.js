@@ -1,5 +1,5 @@
 const jws = require('jws')
-const moment = require('moment')
+const dayjs = require('dayjs')
 
 const internals = {}
 
@@ -99,7 +99,7 @@ const isExpired = function (payload) {
  * @return {number}
  */
 const currentTime = function () {
-  return moment().unix()
+  return dayjs().unix()
 }
 
 /**
@@ -124,7 +124,7 @@ const error = function (code) {
 const create = function (payload, secret, { exp } = {}) {
   const defaults = {
     iss: issuer,
-    exp: exp || moment().add(1, 'hour').unix()
+    exp: exp || dayjs().add(1, 'hour').unix()
   }
 
   return new Promise((resolve, reject) => {

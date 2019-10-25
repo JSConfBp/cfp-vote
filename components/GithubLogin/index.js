@@ -18,14 +18,8 @@ const styles = theme => ({
 class GithubLogin extends React.Component {
 	render() {
 		const {classes} = this.props
-
-		let url = `https://github.com/login/oauth/authorize?`
-		url += `client_id=${gh_client_id}&`
-		url += `redirect_uri=${gh_redirect_uri}&`
-		url += `scope=${gh_scope}&`
-		url += `state=${nonce_state}`
-
-		return <Button href={url} variant={'contained'} className={classes.ghButton}>
+		
+		return <Button href={'/login'} variant={'contained'} className={classes.ghButton}>
 			{this.props.children}
 		</Button>
 	}

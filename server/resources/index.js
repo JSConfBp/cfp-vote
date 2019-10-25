@@ -1,10 +1,10 @@
 const client = require('./client')
 const token = require('./token')
-const cfp = require('./cfp')
-const stats = require('./stats')
-const talk = require('./talk')
-const vote = require('./vote')
-const download = require('./download')
+// const cfp = require('./cfp')
+// const stats = require('./stats')
+// const talk = require('./talk')
+// const vote = require('./vote')
+// const download = require('./download')
 
 exports.register = async function (server) {
   const basePath = process.env.SERVICE_BASEPATH || ''

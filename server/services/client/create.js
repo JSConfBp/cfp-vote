@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4')
-const moment = require('moment')
+const dayjs = require('dayjs')
 const { promisify } = require('util')
 const crypto = require('crypto')
 const tokenAuth = require('../../auth/token')
@@ -24,8 +24,8 @@ module.exports = async function ({ payload }) {
     github_id: githubId,
     secret,
     name,
-    updated_at: moment().unix(),
-    created_at: moment().unix()
+    updated_at: dayjs().unix(),
+    created_at: dayjs().unix()
   }
 
   const alreadyRegisteredId = await getRegisteredUser(token, githubId)

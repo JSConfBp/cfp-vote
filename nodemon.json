@@ -1,6 +1,9 @@
 {
     "ignore": [
-      "spec/*"
+      "spec/*",
+      "components/*",
+      "pages/*",
+      "lib/*"
     ],
     "delay": "1500"
   }
