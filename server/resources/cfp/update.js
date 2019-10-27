@@ -1,17 +1,8 @@
-const { update } = require('../../../services/cfp')
+const { update } = require('../../services/cfp')
 const CfpUpdateResponse = require('../../responses/CfpUpdate')
 
-module.exports = {
-  method: 'PUT',
-  path: '/cfp',
-  options: {
-    auth: 'admin',
-    payload: {
-      allow: 'application/json'
-    }
-  },
-  handler: async (request, h) => {
-    const data = await update(request)
-    return CfpUpdateResponse(data)
-  }
+module.exports = async (request, response) => {
+  const data = await update(request)
+  response.send(CfpUpdateResponse(data))
 }
+

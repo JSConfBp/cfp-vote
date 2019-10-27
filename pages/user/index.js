@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch'
 import classNames from 'classnames'
-import getConfig from 'next/config'
+import { makeStyles } from '@material-ui/core/styles';
+
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import Link from '../../components/Link';
@@ -15,45 +15,11 @@ import AdminMenu from '../../components/AdminMenu'
 import Progress from '../../components/Progress'
 import TotalProgress from '../../components/TotalProgress'
 
+import styles from './styles'
+
 import VoteUIConfig from '../../cfp.config'
 
-const { publicRuntimeConfig: { api_url } } = getConfig()
-
-const useStyles = makeStyles(theme => ({
-	paper: {
-		background: 'none',
-	},
-	centered: theme.mixins.gutters({
-		background: 'none',
-		margin: '0 auto',
-		width: '80vw',
-	}),
-	paper_first: {
-		paddingTop: 32,
-		marginTop: 20,
-		marginBottom: 20,
-		[theme.breakpoints.up('sm')]: {
-			marginTop: 70,
-		},
-	},
-	paper_last: {
-		marginTop: 20,
-		marginBottom: 20,
-		[theme.breakpoints.down('sm')]: {
-			marginBottom: 70,
-		},
-	},
-	progressButton: {
-		margin: '0 auto',
-	},
-	title: {
-		marginBottom: theme.spacing(3),
-	},
-	linkButton: {
-		color: 'inherit',
-		textDecoration: 'none'
-	}
-}))
+const useStyles = makeStyles(styles)
 
 const getStats = async (token) => {
 	return fetch(`/api/stats`,
@@ -69,7 +35,7 @@ const getStats = async (token) => {
 		.catch(e => console.error(e))
 }
 
-const getCfps = async (token) => {
+const getCfp = async (token) => {
 	return fetch(`/api/cfp`,
 		{
 			method: 'GET',
@@ -80,22 +46,31 @@ const getCfps = async (token) => {
 			}
 		})
 		.then(response => response.json())
-		.catch(e => console.error(e))
 }
 
-const Index = ({ auth }) => {
+const Index = ({ auth: { login, isAdmin, token } }) => {
 
 	const css = useStyles();
 	const [cfp, setCfp] = useState({})
 	const [stats, setStats] = useState({})
+
+
+	useEffect(() => {
+		getCfp(token)
+			.then(data => {
+				console.log(data);
+				setCfp(data)
+			})
+			.catch(e => {
+				console.log(e);	
+			})
+	}, [token])
 
 	const updateCfp = async (cfp) => {
 		const stats = await getStats(auth.token)
 		setCfp(cfp)
 		setStats(stats)
 	}
-
-	//const { classes, auth: {login, isAdmin, token} } = this.props
 
 	let stageLabel = ''
 	if (cfp.stage) {
@@ -108,11 +83,11 @@ const Index = ({ auth }) => {
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_first)} elevation={0}>
 					<Typography className={css.title} variant="h2">
-						{/* Hello {login} */} User page
+						Hello {login}
 					</Typography>
 				</Paper>
 			</Grid>
-{/* 
+
 			{ cfp.year ? (<>
 
 				<Grid item xs={12}>
@@ -152,11 +127,11 @@ const Index = ({ auth }) => {
 
 				</Grid>
 			</>) : (<Grid item xs={12}><Typography variant="body1">
-				CFP is not configured yet, check back later
+				Current CFP is not configured yet, please check back later.
 			</Typography></Grid>) }
- */}
-			{/* <Grid item xs={12}>
-				<Paper className={classNames(classes.paper, classes.paper_last)} elevation={0}>
+ 
+			<Grid item xs={12}>
+				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
 				{(isAdmin ? (
 					<AdminMenu
 						onUpdate={(data) => this.updateCfp(data)}
@@ -166,15 +141,14 @@ const Index = ({ auth }) => {
 					/>
 				) : '')}
 				</Paper>
-			</Grid> */}
+			</Grid>
 		</Grid>
 	</div>
-	<MenuBar /></>)
+	<MenuBar />
+	</>)
 }
 
-
 Index.getInitialProps = async ({ auth }) => {
-
 	return {
 		auth,
 	}

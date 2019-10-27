@@ -17,15 +17,29 @@ module.exports = function (getRoutes, config) {
 	const handle = app.getRequestHandler()
   const { port } = config
 
-  const authMiddleware = passport.authenticate('github', { failureRedirect: '/' })
+  const authMiddleware = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+
+    res.sendStatus(401)
+  }
   const loginMiddleware = passport.authenticate('github', { successRedirect: '/user', failureRedirect: '/' })
 
   const initExpress = () => {
     const server = express()
 
-    server.use(require('express-pino-logger')({
-      logger
-    }))
+    if (!dev) {
+      server.use(require('express-pino-logger')({
+        logger
+      }))
+    } else {
+      server.use((req, res, next) => {
+        req.log = res.log = logger.child({req:req})
+        next()
+      })
+    }
+
     // server.use(require('morgan')('combined'));
     server.use(require('helmet')())
     server.use(require('cookie-parser')())
@@ -43,9 +57,10 @@ module.exports = function (getRoutes, config) {
 
   const attachAPIRoutes = (server) => {
     require('./resources/login')(server, [ loginMiddleware ])
+    require('./resources/oauth')(server, [ loginMiddleware ])
     require('./resources/logout')(server)
-    require('./resources/oauth')(server, [ authMiddleware ])
     require('./resources/client')(server, [ authMiddleware ])
+    require('./resources/cfp')(server, [ authMiddleware ])
 
     return server
   }
