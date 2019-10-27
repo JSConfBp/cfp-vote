@@ -19,6 +19,9 @@ const lrange = promisify(store.lrange).bind(store)
 const llen = promisify(store.llen).bind(store)
 const lindex = promisify(store.lindex).bind(store)
 
+const sadd = promisify(store.sadd).bind(store)
+const smembers = promisify(store.smembers).bind(store)
+
 const zcard = promisify(store.zcard).bind(store)
 const zadd = promisify(store.zadd).bind(store)
 const zrange = promisify(store.zrange).bind(store)
@@ -38,6 +41,9 @@ exports.lrem = async (list, index) => lrem(list, index)
 exports.zcard = async (set) => zcard(set)
 exports.zadd = async (set, score, item) => zadd(set, score, item)
 exports.zrange = async (set, from, to) => zrange(set, from, to)
+
+exports.sadd = async (key, ...members) => sadd(key, ...members)
+exports.smembers = async (key) => smembers(key)
 
 exports.set = async (key, value) => set(key, JSON.stringify(value))
 exports.get = async (key) => get(key).then(value => JSON.parse(value))

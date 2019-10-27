@@ -41,7 +41,7 @@ export default theme => ({
 	},
 	adminGrid: {
 		display: 'grid',
-		gridTemplateColumns: '1fr 3fr',
+		gridTemplateColumns: '14rem auto',
 		[theme.breakpoints.up('md')]: {
 			marginTop: 70,
 		},

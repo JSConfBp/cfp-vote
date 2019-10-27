@@ -23,25 +23,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function AlignItemsList() {
+export default ({ users }) => {
   const classes = useStyles();
-
-
-const users = [
-  {
-    login: 'necccc',
-    admin: true,
-    name: 'Szabolcsi-Toth Szabolcs'
-  },
-  {
-    login: 'freevo',
-    name: 'Peter Frivalszlky'
-  },
-  {
-    login: 'benedekgagyi',
-    name: 'Ben Gagyi'
-  }
-]
 
   return (
     <List className={classes.root}> 

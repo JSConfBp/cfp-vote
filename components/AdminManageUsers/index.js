@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -11,15 +11,42 @@ import UserList from '../UserList'
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ onUpdate }) => {
+export default ({ onUpdate, onError }) => {
 	const css = useStyles();
 
 	const [modalOpen, setModalOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
+	const [users, setUsers] = useState([])
 
-	const onUserModalClose = (data) => {
+	useEffect(() => {
+		setLoading(true)
+		fetch('/api/users')
+			.then(res => res.json())
+			.then(users => {
+				console.log(users);
+
+				setLoading(false)
+			})
+	}, [false])
+
+	const onUserModalClose = async (data) => {
 		console.log(data)
-		setModalOpen(false)
+		
+		if (data) {
+			try {
+				await fetch('/api/user', {
+					method: 'post',
+					headers: {
+						"Content-Type": "application/json; charset=utf-8"
+					},
+					body: JSON.stringify({ login: data.login })
+				})
+			} catch (e) {
+				onError('Could not save user', e)
+			}
+		}
 
+		setModalOpen(false)
 		// save data
 		// fetch new list
 	}
@@ -43,10 +70,13 @@ export default ({ onUpdate }) => {
 				<Typography variant="h6">
 					Current users
 				</Typography>
-				<UserList/>
+				<UserList 
+					users={ users }
+					loading={ loading } />
 			</Grid>
 			<AddUserDialog 
 				open={ modalOpen } 
+				loading={ loading } 
 				onClose={ (data) => onUserModalClose(data) }
 			/>
 		</Grid>

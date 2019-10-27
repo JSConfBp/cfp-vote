@@ -1,6 +1,7 @@
 const next = require('next')
 const express = require('express')
 const passport = require('passport')
+const bodyParser = require('body-parser')
 const router = require('./router')
 const errorHandler = require('./errorHandler')
 const logger = require('./logger')
@@ -43,7 +44,6 @@ module.exports = function (getRoutes, config) {
     // server.use(require('morgan')('combined'));
     server.use(require('helmet')())
     server.use(require('cookie-parser')())
-    server.use(require('body-parser').urlencoded({ extended: true }))
     server.use(require('express-session')({
       secret: require('uuid/v4')(),
       resave: false,
@@ -61,7 +61,8 @@ module.exports = function (getRoutes, config) {
     require('./resources/logout')(server)
     require('./resources/client')(server, [ authMiddleware ])
     require('./resources/cfp')(server, [ authMiddleware ])
-    require('./resources/stats')(server, [ authMiddleware ])
+    require('./resources/stats')(server, [ authMiddleware, bodyParser.json() ])
+    require('./resources/users')(server, [ authMiddleware, bodyParser.json() ])
 
     return server
   }
