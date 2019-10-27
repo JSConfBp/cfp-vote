@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 import { KJUR } from 'jsrsasign'
+import color from '@material-ui/core/colors/teal'
 
 const { publicRuntimeConfig: { api_url } } = getConfig()
 const isServer = typeof window === 'undefined';
@@ -61,23 +62,16 @@ export const wrapWithAuth = (App) => {
             if (!app) throw new Error('No app context')
             if (!app.ctx) throw new Error('No page context')
 
-            let initialProps = {}
+			let initialProps = {}
+			
+			if (!process.browser) {
+				const { user, route } = app.ctx.req
+				
+				console.log('authenticate getInitialProps', user);
 
-			if (app.ctx.req) {
-				const { ctx: { req }} = app
-
-				if (req.cookies && req.cookies.access_token) {
-
-					try {
-						const auth = await getToken(req.cookies.access_token)
-						initialProps.auth = auth
-						authStore(auth)
-						app.ctx.auth = auth
-						console.log('authenticate 2 - has token!');
-					} catch (e) {
-						console.log('authenticate 2 - TOKEN ERR', e);
-					}
-				}
+				initialProps.auth = user
+				authStore(user)
+				app.ctx.auth = user
 			} else {
 				const auth = authStore()
 				app.ctx.auth = auth
@@ -92,7 +86,6 @@ export const wrapWithAuth = (App) => {
 		}
 
 		constructor(props, context) {
-
             super(props, context);
 
 			let { auth } = props;
@@ -127,6 +120,12 @@ export default (Comp) => {
 	return class Authenticated extends Component {
 
 		static getInitialProps = async (app) => {
+
+
+			console.log(
+				//Object.keys(app.req)
+			);
+			
 
 			let initialProps = {}
 

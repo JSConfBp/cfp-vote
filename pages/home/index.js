@@ -1,13 +1,12 @@
 import React from 'react'
 import Authenticated from '../../components/Auth'
-
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import GithubLogin from '../../components/GithubLogin'
 import VoteUIConfig from '../../cfp.config'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
 	root: {
 		flexGrow: 1,
 	},
@@ -16,44 +15,30 @@ const styles = theme => ({
 		paddingTop: 16,
 		paddingBottom: 16,
 		margin: '0 auto',
-		marginTop: theme.spacing.unit * 5,
-		marginBottom: theme.spacing.unit * 5,
+		marginTop: theme.spacing(5),
+		marginBottom: theme.spacing(5),
 	}),
 	title: {
-		marginBottom: theme.spacing.unit * 3,
+		marginBottom: theme.spacing(3),
 	}
-});
+}))
 
+const Index = () => {
 
-//import styles from './styles.scss'
+	const css = useStyles();
 
-class Index extends React.Component {
-
-	render() {
-		const { classes } = this.props;
-		return <div className={classes.root}>
-
-
-		<div className={classes.paper}>
-			<Typography className={classes.title} variant="h2">
+	return (<div className={css.root}>
+		<div className={css.paper}>
+			<Typography className={css.title} variant="h2">
 				{ VoteUIConfig.title }
 			</Typography>
-			<Typography component="p">
+			<Typography component="div">
 				<GithubLogin>Login with GitHub</GithubLogin>
 			</Typography>
 
 		</div>
-	</div>
-	}
-
-
-	static getInitialProps({ req, store, auth }) {
-		//console.log(auth);
-
-		return {}
-	}
-
+	</div>)
 }
 
 
-export default Authenticated(withStyles(styles)(Index))
+export default Authenticated(Index)

@@ -143,7 +143,7 @@ class MenuBar extends React.Component {
 							<ListItem button key={'home'}>
 								<ListItemIcon><ExitToAppIcon /></ListItemIcon>
 								<ListItemText>
-									Logout
+									<a className={classes.menuLink} href="/logout">Logout</a>
 								</ListItemText>
 							</ListItem>
 						</List>
