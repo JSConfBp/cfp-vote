@@ -1,5 +1,5 @@
 import React from 'react'
-import App, { Container } from 'next/app'
+import App from 'next/app'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,7 +24,7 @@ class MyApp extends App {
 	render () {
 		const { Component, pageProps } = this.props
 
-	  return <Container>
+	  return <>
 			<Head>
 				<title>{CfpUIConfig.title}</title>
 			</Head>
@@ -39,7 +39,7 @@ class MyApp extends App {
 					<Component pageContext={this.pageContext} {...pageProps} />
 				</Route.Provider>
 			</ThemeProvider>
-		</Container>
+		</>
 	}
 }
 

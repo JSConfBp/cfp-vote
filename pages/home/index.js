@@ -6,22 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import GithubLogin from '../../components/GithubLogin'
 import VoteUIConfig from '../../cfp.config'
 
-const useStyles = makeStyles(theme => ({
-	root: {
-		flexGrow: 1,
-	},
-	paper: theme.mixins.gutters({
-		width: '80vw',
-		paddingTop: 16,
-		paddingBottom: 16,
-		margin: '0 auto',
-		marginTop: theme.spacing(5),
-		marginBottom: theme.spacing(5),
-	}),
-	title: {
-		marginBottom: theme.spacing(3),
-	}
-}))
+import styles from './styles'
+
+const useStyles = makeStyles(styles)
 
 const Index = () => {
 
