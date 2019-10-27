@@ -3,31 +3,38 @@ const express = require('express')
 const passport = require('passport')
 const router = require('./router')
 const errorHandler = require('./errorHandler')
-
+const logger = require('./logger')
 const dev = process.env.NODE_ENV !== 'production'
 
-passport.use(require('./auth/githubStrategy'))
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((obj, done) => done(null, obj));
+const authStrategy = require('./auth/githubStrategy')
+
+passport.use(authStrategy)
+passport.serializeUser(authStrategy.serializeUser);
+passport.deserializeUser(authStrategy.deserializeUser);
 
 module.exports = function (getRoutes, config) {
   const app = next({ dev, conf: config })
 	const handle = app.getRequestHandler()
   const { port } = config
 
+  const authMiddleware = passport.authenticate('github', { failureRedirect: '/' })
+  const loginMiddleware = passport.authenticate('github', { successRedirect: '/user', failureRedirect: '/' })
+
   const initExpress = () => {
     const server = express()
 
-    server.use(require('morgan')('combined'));
+    server.use(require('express-pino-logger')({
+      logger
+    }))
+    // server.use(require('morgan')('combined'));
     server.use(require('helmet')())
     server.use(require('cookie-parser')())
     server.use(require('body-parser').urlencoded({ extended: true }))
     server.use(require('express-session')({
       secret: require('uuid/v4')(),
-      resave: true,
-      saveUninitialized: true
+      resave: false,
+      saveUninitialized: false
     }))
-
     server.use(passport.initialize())
     server.use(passport.session())
 
@@ -35,10 +42,8 @@ module.exports = function (getRoutes, config) {
   }
 
   const attachAPIRoutes = (server) => {
-    const authMiddleware = passport.authenticate('github', { failureRedirect: '/' })
-    const loginMiddleware = passport.authenticate('github', { successRedirect: '/user', failureRedirect: '/' })
-
     require('./resources/login')(server, [ loginMiddleware ])
+    require('./resources/logout')(server)
     require('./resources/oauth')(server, [ authMiddleware ])
     require('./resources/client')(server, [ authMiddleware ])
 
@@ -46,7 +51,7 @@ module.exports = function (getRoutes, config) {
   }
 
 	const attachNextRoutes = (server) => {
-    const routes = router(app, getRoutes)
+    const routes = router(app, getRoutes, authMiddleware)
 
 		server.use('/', routes)
     server.get('*', (req, res) => handle(req, res))
@@ -56,7 +61,7 @@ module.exports = function (getRoutes, config) {
 
   const attachErrorHandlers = (server) => {
     server.use((err, req, res, next) => {
-      console.error(err.stack)
+      req.log.error(err.stack)
       next(err)
     })
 
@@ -79,7 +84,7 @@ module.exports = function (getRoutes, config) {
 	const startServer = (server) => {
 		server.listen(port, (err) => {
 			if (err) throw err
-			console.log(`App ready on //0.0.0.0:${port}`)
+			logger.info(`App ready on //0.0.0.0:${port}`)
 		})
 	}
 

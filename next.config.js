@@ -23,7 +23,6 @@ const nextConfig = {
 		asset_url: '',
 		gh_scope: 'user:read',
 		api_url: process.env.API_URL,
-		nonce_state: process.env.PIOSK_NONCE,
 		vote_fields: JSON.parse(process.env.CFP_VOTE_FIELDS || "[]")
 	},
 

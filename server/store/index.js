@@ -2,13 +2,7 @@
 const { promisify } = require('util')
 const redis = require('redis')
 
-const createStore = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return redis.createClient(process.env.REDIS_URL)
-  } else {
-    return redis.createClient({ host: process.env.REDIS_URL })
-  }
-}
+const createStore = () => redis.createClient(process.env.REDIS_URL)
 
 const store = createStore()
 

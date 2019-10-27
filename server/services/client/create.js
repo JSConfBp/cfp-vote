@@ -13,7 +13,7 @@ const getRegisteredUser = async (token, githubId) => {
 }
 
 module.exports = async function (payload) {
-  const id = uuid()
+  let id = uuid()
   const buf = await promisify(crypto.randomBytes)(256)
   const secret = buf.toString('hex')
   const { token, id: githubId, displayName, username } = payload
@@ -28,9 +28,6 @@ module.exports = async function (payload) {
     created_at: dayjs().unix()
   }
 
-
-
-
   const user = {
     id,
     login: username,
@@ -42,6 +39,8 @@ module.exports = async function (payload) {
   if (alreadyRegisteredId) {
     store.set(token, githubId)
 
+    id = alreadyRegisteredId
+
     const alreadyRegisteredData = await store.get(alreadyRegisteredId)
     const jwt = await tokenAuth.create({
       sub: alreadyRegisteredId
@@ -51,7 +50,7 @@ module.exports = async function (payload) {
       console.info('Client already registered once')
     }
 
-    return Object.assign({}, user, { jwt })
+    return Object.assign({}, user, { jwt, id })
   }
 
   store.set(token, githubId)

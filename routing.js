@@ -1,8 +1,8 @@
 const routes = {
-	'home': { path: '/', page: 'home' },
-	'user': { path: '/user', page: 'user' },
-	'vote': { path: '/vote', page: 'vote' },
-	'stats': { path: '/stats', page: 'stats' },
+	'home': { path: '/', page: 'home', needAuth: false },
+	'user': { path: '/user', page: 'user', needAuth: true },
+	'vote': { path: '/vote', page: 'vote', needAuth: true },
+	'stats': { path: '/stats', page: 'stats', needAuth: true },
 }
 
 module.exports = () => routes
