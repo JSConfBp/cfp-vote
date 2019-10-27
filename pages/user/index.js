@@ -11,10 +11,8 @@ import Button from '@material-ui/core/Button';
 import Link from '../../components/Link';
 import Authenticated from '../../components/Auth'
 import MenuBar from '../../components/MenuBar';
-import AdminMenu from '../../components/AdminMenu'
 import Progress from '../../components/Progress'
 import TotalProgress from '../../components/TotalProgress'
-
 
 import VoteUIConfig from '../../cfp.config'
 
@@ -131,13 +129,24 @@ const Index = ({ auth: { login, admin } }) => {
  
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
-				{(admin ? (
-					<AdminMenu
-						onUpdate={(data) => this.updateCfp(data)}
-						year={ cfp.year }
-						stage={ cfp.stage }
-					/>
-				) : '')}
+				{(admin ? (<>
+					<Typography variant="h5" className={ css.heading }>
+						Administration
+					</Typography>
+		
+					<Typography variant="body1" className={ css.text }>
+						You're marked as an admin, so you can access some advanced features.<br />
+						But be careful, you know <em>"with great power comes great responsibility"</em>!
+					</Typography>
+					<Typography variant="body1" className={ css.text }>
+						<Link to="admin">
+							<a >
+								Go to the Admin page
+							</a>
+						</Link>
+					</Typography>
+		
+				</>) : '')}
 				</Paper>
 			</Grid>
 		</Grid>

@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Download from './Download'
 import Delete from './Delete'
-import UploadCfp from '../UploadCfp'
+import UploadCfp from '../AdminUploadCfp'
 //import ImportCfp from '../ImportCfp'
 
 import getConfig from 'next/config'

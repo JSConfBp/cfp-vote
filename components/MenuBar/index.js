@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from '../Link'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -22,161 +22,85 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 
 import VoteUIConfig from '../../cfp.config'
 
-const styles = theme => ({
-	grow: {
-		flexGrow: 1,
-	},
-	title: {
-		flexGrow: 1,
-		paddingLeft: 30,
-		[theme.breakpoints.down('sm')]: {
-			display: 'none'
-		}
-	},
-	appBar: {
-		flexGrow: 1,
-		[theme.breakpoints.down('md')]: {
-			top: 'auto',
-			bottom: 0,
-		},
-		[theme.breakpoints.up('md')]: {
-			top: 0,
-			bottom: 'auto',
-		},
-	},
-	list: {
-		width: 250,
-	},
-	toolbar: {
-		alignItems: 'center',
-		justifyContent: 'space-between',
-	},
-	fabButton: {
-		position: 'absolute',
-		zIndex: 1,
-		top: -30,
-		left: 0,
-		right: 0,
-		margin: '0 auto',
-		display: 'none',
-		[theme.breakpoints.down('sm')]: {
-			display: 'block',
-		},
-	},
-	menuDrawer: {
-		display: 'flex',
-		height: `100%`,
-		alignItems: `flex-start`,
-		[theme.breakpoints.down('sm')]: {
-			alignItems: `flex-end`,
-		}
-	},
-	menuLink: {
-		color: 'inherit',
-		textDecoration: 'none'
-	}
-})
+import styles from './styles'
+const useStyles = makeStyles(styles)
 
-class MenuBar extends React.Component {
-	state = {
-		menuOpen: false
-	}
+export default ({ voting, subTitle = '' }) => {
+	const css = useStyles()
+	const [menuOpen, setMenuOpen] = useState(false)
 
-	constructor (props) {
-		super(props)
-	}
-
-	handleOpen(e) {
-		this.setState({
-			menuOpen: true
-		})
-	}
-
-	toggleDrawer(open) {
-		this.setState({
-			menuOpen: open
-		})
-	}
-
-	render() {
-		const { classes, voting } = this.props
-		const { menuOpen, menuElem } = this.state
-
-		return (<>
-			<Drawer open={menuOpen} onClose={e => this.toggleDrawer(false)}>
-				<div
-					className={ classes.menuDrawer }
-					tabIndex={0}
-					role="button"
-					onClick={e => this.toggleDrawer(false)}
-					onKeyDown={e => this.toggleDrawer(false)}
-				>
-					<div className={classes.list}>
-						<List>
-							<Link to="vote">
-								<ListItem button key={'vote'}>
-									<ListItemIcon><AssessmentIcon /></ListItemIcon>
-									<ListItemText>
-										<a className={classes.menuLink}>Vote!</a>
-									</ListItemText>
-								</ListItem>
-							</Link>
-							<Link to="stats">
-								<ListItem button key={'home'}>
-									<ListItemIcon><TrendingUpIcon /></ListItemIcon>
-									<ListItemText>
-										<a className={classes.menuLink}>Statistics</a>
-									</ListItemText>
-								</ListItem>
-							</Link>
-							<Link to="user">
-								<ListItem button key={'home'}>
-									<ListItemIcon><HomeIcon /></ListItemIcon>
-									<ListItemText>
-										<a className={classes.menuLink}>Home</a>
-									</ListItemText>
-								</ListItem>
-							</Link>
-						</List>
-						<Divider />
-						<List>
-							<ListItem button key={'home'}>
-								<ListItemIcon><ExitToAppIcon /></ListItemIcon>
+	return (<>
+		<Drawer open={menuOpen} onClose={() => setMenuOpen(false)}>
+			<div
+				className={ css.menuDrawer }
+				tabIndex={0}
+				role="button"
+				onClick={() => setMenuOpen(false)}
+				onKeyDown={() => setMenuOpen(false)}
+			>
+				<div className={css.list}>
+					<List>
+						<Link to="vote">
+							<ListItem button key={'vote'}>
+								<ListItemIcon><AssessmentIcon /></ListItemIcon>
 								<ListItemText>
-									<a className={classes.menuLink} href="/logout">Logout</a>
+									<a className={css.menuLink}>Vote!</a>
 								</ListItemText>
 							</ListItem>
-						</List>
-					</div>
+						</Link>
+						<Link to="stats">
+							<ListItem button key={'home'}>
+								<ListItemIcon><TrendingUpIcon /></ListItemIcon>
+								<ListItemText>
+									<a className={css.menuLink}>Statistics</a>
+								</ListItemText>
+							</ListItem>
+						</Link>
+						<Link to="user">
+							<ListItem button key={'home'}>
+								<ListItemIcon><HomeIcon /></ListItemIcon>
+								<ListItemText>
+									<a className={css.menuLink}>Home</a>
+								</ListItemText>
+							</ListItem>
+						</Link>
+					</List>
+					<Divider />
+					<List>
+						<ListItem button key={'home'}>
+							<ListItemIcon><ExitToAppIcon /></ListItemIcon>
+							<ListItemText>
+								<a className={css.menuLink} href="/logout">Logout</a>
+							</ListItemText>
+						</ListItem>
+					</List>
 				</div>
-			</Drawer>
+			</div>
+		</Drawer>
 
-			<AppBar position="fixed" color="primary" className={classes.appBar}>
-		  		<Toolbar className={classes.toolbar}>
-					<IconButton onClick={e => this.handleOpen(e)} color="inherit" aria-label="Open drawer">
-			  			<MenuIcon />
-					</IconButton>
-					{ voting ? (
-						<Fab
-							onClick={e => this.props.showVoteUI()}
-							color="secondary"
-							aria-label="Vote"
-							className={classes.fabButton}
-						>
-							<AssessmentIcon />
-						</Fab>
-					):''}
+		<AppBar position="fixed" color="primary" className={css.appBar}>
+			<Toolbar className={css.toolbar}>
+				<IconButton onClick={() => setMenuOpen(true)} color="inherit" aria-label="Open drawer">
+					<MenuIcon />
+				</IconButton>
+				{ voting ? (
+					<Fab
+						onClick={e => this.props.showVoteUI()}
+						color="secondary"
+						aria-label="Vote"
+						className={css.fabButton}
+					>
+						<AssessmentIcon />
+					</Fab>
+				):''}
 
-					<Typography
-						variant="h6"
-						color="inherit"
-						className={classes.title}>
-						{VoteUIConfig.title}
-					</Typography>
-		  		</Toolbar>
-			</AppBar>
-		</>)
-	}
-  }
-
-  export default withStyles(styles)(MenuBar)
+				<Typography
+					variant="h6"
+					color="inherit"
+					className={css.title}>
+					{VoteUIConfig.title} {subTitle && ` - ${subTitle}`}
+				</Typography>
+			</Toolbar>
+		</AppBar>
+	</>)	
+}
