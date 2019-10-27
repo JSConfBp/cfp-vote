@@ -4,13 +4,9 @@ import getConfig from 'next/config'
 import { KJUR } from 'jsrsasign'
 import color from '@material-ui/core/colors/teal'
 
-const { publicRuntimeConfig: { api_url } } = getConfig()
-const isServer = typeof window === 'undefined';
+import AuthContext from '../../context/Auth'
 
-const decodeToken = (jwt) => {
-	const { payloadObj } = KJUR.jws.JWS.parse(jwt)
-	return payloadObj
-}
+const isServer = typeof window === 'undefined';
 
 const authStore = (auth) => {
 
@@ -22,36 +18,6 @@ const authStore = (auth) => {
 
 	return window['__AUTHSTORE']
 }
-
-const getToken = async function (access_token) {
-	const tokenResponse = await fetch(`${api_url}/api/token`,
-		{
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ token: access_token })
-		})
-		.then(response => response.json())
-		.catch(e => ({ error: true, e }))
-
-	if (tokenResponse.error) {
-		console.error(tokenResponse)
-		throw new Error(tokenResponse.error)
-	}
-
-	console.log('getToken', tokenResponse);
-
-
-	const { jwt: token, name, login, admin } = tokenResponse
-	const { sub: userId } = decodeToken(token)
-
-	return { token, userId, name, login, isAdmin: admin }
-}
-
-export const AuthContext = React.createContext({});
-
 
 export const wrapWithAuth = (App) => {
 
@@ -67,7 +33,7 @@ export const wrapWithAuth = (App) => {
 			if (!process.browser) {
 				const { user, route } = app.ctx.req
 				
-				console.log('authenticate getInitialProps', user);
+				// console.log('authenticate getInitialProps', user);
 
 				initialProps.auth = user
 				authStore(user)
@@ -81,7 +47,7 @@ export const wrapWithAuth = (App) => {
 				initialProps = Object.assign(initialProps, await App.getInitialProps.call(App, app))
             }
 
-			console.log('authenticate 3 - initialProps', !!initialProps.auth);
+			// console.log('authenticate 3 - initialProps', !!initialProps.auth);
             return initialProps
 		}
 
@@ -96,7 +62,7 @@ export const wrapWithAuth = (App) => {
 				auth = authStore()
 			}
 
-			console.log('authenticate 4 - render', !!auth);
+			// console.log('authenticate 4 - render', !!auth);
 
             this.auth = auth
         }
@@ -105,7 +71,7 @@ export const wrapWithAuth = (App) => {
 
 			let { ...props } = this.props
 
-			console.log('AuthContext.Provider value', this.auth );
+			// console.log('AuthContext.Provider value', this.auth );
 
 			return (<AuthContext.Provider value={ this.auth }>
 				<App {...props}  />
@@ -120,13 +86,6 @@ export default (Comp) => {
 	return class Authenticated extends Component {
 
 		static getInitialProps = async (app) => {
-
-
-			console.log(
-				//Object.keys(app.req)
-			);
-			
-
 			let initialProps = {}
 
             if ('getInitialProps' in Comp) {
@@ -139,7 +98,7 @@ export default (Comp) => {
 		render() {
 			return <AuthContext.Consumer>
 				{auth => {
-					console.log('AuthContext.Consumer', auth);
+					// console.log('AuthContext.Consumer', auth);
 					return <Comp {...this.props} auth={auth} />}
 				}
 			</AuthContext.Consumer>

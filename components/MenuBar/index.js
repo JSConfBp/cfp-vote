@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Link from '../Link'
 import { makeStyles } from '@material-ui/core/styles';
+import AuthContext from '../../context/Auth'
+
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -18,6 +20,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import AssessmentIcon from '@material-ui/icons/Assessment'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import HomeIcon from '@material-ui/icons/Home'
+import BuildIcon from '@material-ui/icons/Build'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 
 import VoteUIConfig from '../../cfp.config'
@@ -29,6 +32,8 @@ export default ({ voting, subTitle = '' }) => {
 	const css = useStyles()
 	const [menuOpen, setMenuOpen] = useState(false)
 
+	const auth = useContext(AuthContext)
+	
 	return (<>
 		<Drawer open={menuOpen} onClose={() => setMenuOpen(false)}>
 			<div
@@ -56,6 +61,16 @@ export default ({ voting, subTitle = '' }) => {
 								</ListItemText>
 							</ListItem>
 						</Link>
+						{ auth.admin && (
+						<Link to="admin">
+							<ListItem button key={'home'}>
+								<ListItemIcon><BuildIcon /></ListItemIcon>
+								<ListItemText>
+									<a className={css.menuLink}>Admin</a>
+								</ListItemText>
+							</ListItem>
+						</Link>
+						)}
 						<Link to="user">
 							<ListItem button key={'home'}>
 								<ListItemIcon><HomeIcon /></ListItemIcon>

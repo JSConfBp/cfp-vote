@@ -2,6 +2,7 @@
     "ignore": [
       "spec/*",
       "components/*",
+      "context/*",
       "pages/*",
       "lib/*"
     ],
