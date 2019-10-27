@@ -27,8 +27,7 @@ const getStats = async (token) => {
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': token
+				'Content-Type': 'application/json'
 			}
 		})
 		.then(response => response.json())
@@ -41,44 +40,40 @@ const getCfp = async (token) => {
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': token
+				'Content-Type': 'application/json'
 			}
 		})
 		.then(response => response.json())
 }
 
-const Index = ({ auth: { login, isAdmin, token } }) => {
-
+const Index = ({ auth: { login, admin } }) => {
 	const css = useStyles();
 	const [cfp, setCfp] = useState({})
 	const [stats, setStats] = useState({})
 
-
 	useEffect(() => {
-		getCfp(token)
+		getCfp()
 			.then(data => {
-				console.log(data);
 				setCfp(data)
 			})
 			.catch(e => {
-				console.log(e);	
+				console.error(e);	
 			})
-	}, [token])
+	}, [login])
 
 	const updateCfp = async (cfp) => {
-		const stats = await getStats(auth.token)
+		const stats = await getStats()
 		setCfp(cfp)
 		setStats(stats)
 	}
 
 	let stageLabel = ''
+
 	if (cfp.stage) {
 		stageLabel = VoteUIConfig.voting_stages[cfp.stage].label
 	}
 
 	return (<><div className={css.centered}>
-
 		<Grid container spacing={24}>
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_first)} elevation={0}>
@@ -132,10 +127,9 @@ const Index = ({ auth: { login, isAdmin, token } }) => {
  
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
-				{(isAdmin ? (
+				{(admin ? (
 					<AdminMenu
 						onUpdate={(data) => this.updateCfp(data)}
-						token={ token }
 						year={ cfp.year }
 						stage={ cfp.stage }
 					/>

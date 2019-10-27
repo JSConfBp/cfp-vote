@@ -31,10 +31,24 @@ module.exports.serializeUser = async (user, done) => {
     done(null, user.id)
 }
 
-module.exports.deserializeUser = async (id, done) => {
-    const user = await getUserById(id)
+module.exports.deserializeUser = async (userId, done) => {
+    const data = await getUserById(userId)
 
-    logger.debug('deserializeUser', id, user);
-    
-    done(null, user)
+    logger.debug('deserializeUser', userId, data);
+
+    const {
+        id,
+        admin,
+        login,
+        githubId,
+        name
+    } = data
+
+    done(null, {
+        id,
+        admin,
+        login,
+        githubId,
+        name
+    })
 }

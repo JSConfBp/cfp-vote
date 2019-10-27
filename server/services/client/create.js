@@ -5,11 +5,17 @@ const crypto = require('crypto')
 const tokenAuth = require('../../auth/token')
 const store = require('../../store')
 
+const ADMINS = JSON.parse(process.env.ADMINS)
+
 const getRegisteredUser = async (token, githubId) => {
   const registeredGithubId = await store.get(token)
   const id = await store.get(registeredGithubId || githubId)
 
   return id
+}
+
+const isAdmin = (user) => {
+  return ADMINS.includes(user)
 }
 
 module.exports = async function (payload) {
@@ -20,6 +26,7 @@ module.exports = async function (payload) {
 
   const data = {
     id,
+    admin: false,
     login: username,
     githubId,
     secret,
@@ -30,8 +37,13 @@ module.exports = async function (payload) {
 
   const user = {
     id,
+    admin: false,
     login: username,
     name: displayName,
+  }
+
+  if (isAdmin(username)) {
+    data.admin = user.admin = true
   }
 
   const alreadyRegisteredId = await getRegisteredUser(token, githubId)
@@ -41,25 +53,16 @@ module.exports = async function (payload) {
 
     id = alreadyRegisteredId
 
-    const alreadyRegisteredData = await store.get(alreadyRegisteredId)
-    const jwt = await tokenAuth.create({
-      sub: alreadyRegisteredId
-    }, alreadyRegisteredData.secret)
-
     if (process.env.DEBUG) {
       console.info('Client already registered once')
     }
 
-    return Object.assign({}, user, { jwt, id })
+    return Object.assign({}, user, { id })
   }
 
   store.set(token, githubId)
   store.set(githubId, id)
   store.set(id, data)
 
-  const jwt = await tokenAuth.create({
-    sub: id
-  }, secret)
-
-  return Object.assign({}, user, { jwt })
+  return Object.assign({}, user)
 }
