@@ -1,6 +1,11 @@
+const bodyParser = require('body-parser')
+
 module.exports = (server, middlewares = []) => {
 
-  server.post('/api/cfp', ...middlewares, require('./create'))
+  server.post('/api/cfp', ...middlewares, bodyParser.text({ 
+    type: 'text/csv',
+    limit: '10mb'
+  }), require('./create'))
   server.get('/api/cfp', ...middlewares, require('./read'))
   server.put('/api/cfp', ...middlewares, require('./update'))
 

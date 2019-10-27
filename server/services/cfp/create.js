@@ -1,12 +1,15 @@
-const csv = require('csv')
+const parse = require('csv-parse')
 const store = require('../../store')
 const shortid = require('shortid')
 
 const { getStagedTalksKey } = store.keys
 
 const parseCsv = async function (data) {
+
+  console.log(data);
+  
   return new Promise((resolve, reject) => {
-    csv.parse(data, { columns: true }, (err, csvData) => {
+    parse(data, { columns: true }, (err, csvData) => {
       if (err) return reject(err)
 
       resolve(csvData)
@@ -14,7 +17,7 @@ const parseCsv = async function (data) {
   })
 }
 
-module.exports = async function ({ headers, payload }) {
+module.exports = async function (headers, payload) {
   const year = headers['x-cfp-year']
   const stage = headers['x-cfp-stage']
   const cfps = await parseCsv(payload)

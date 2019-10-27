@@ -65,7 +65,7 @@ class AdminMenu extends React.Component {
 		const { token } = this.props
 		const { votingStage } = this.state
 
-		fetch(`${api_url}/v1/cfp`, {
+		fetch(`/api/cfp`, {
 			method: 'POST',
 			headers: {
 				'x-cfp-year': year,

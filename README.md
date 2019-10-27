@@ -57,3 +57,13 @@ https://__HEROKU_APP_NAME__.herokuapp.com/
 https://__HEROKU_APP_NAME__.herokuapp.com/oauth
 
 
+## Developmenmt tools
+
+### Mock cfp data
+
+To generate 200 cfp submissions into a csv file, just run the generator script:
+
+```
+$ node scripts/mock_cfp_export.js
+Success! cfp-export_teal.csv written with 200 submitted CFPs
+```

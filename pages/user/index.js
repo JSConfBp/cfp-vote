@@ -15,10 +15,10 @@ import AdminMenu from '../../components/AdminMenu'
 import Progress from '../../components/Progress'
 import TotalProgress from '../../components/TotalProgress'
 
-import styles from './styles'
 
 import VoteUIConfig from '../../cfp.config'
 
+import styles from './styles'
 const useStyles = makeStyles(styles)
 
 const getStats = async (token) => {
@@ -31,7 +31,6 @@ const getStats = async (token) => {
 			}
 		})
 		.then(response => response.json())
-		.catch(e => console.error(e))
 }
 
 const getCfp = async (token) => {
@@ -49,12 +48,17 @@ const getCfp = async (token) => {
 const Index = ({ auth: { login, admin } }) => {
 	const css = useStyles();
 	const [cfp, setCfp] = useState({})
-	const [stats, setStats] = useState({})
+	const [stats, setStats] = useState([])
 
 	useEffect(() => {
-		getCfp()
-			.then(data => {
+		Promise.all([
+			getCfp(),
+			getStats()
+		])
+			.then(([data, stats]) => {
+				console.log(data, stats)
 				setCfp(data)
+				setStats(stats)
 			})
 			.catch(e => {
 				console.error(e);	
@@ -100,12 +104,12 @@ const Index = ({ auth: { login, admin } }) => {
 					<Typography component="div">
 						<Link to="vote">
 							<Button
-								className={classes.progressButton}
+								className={css.progressButton}
 								color="secondary"
 								variant={'contained'}
 								href=""
 							>
-								<a className={classes.linkButton}>
+								<a className={css.linkButton}>
 									Go Vote!
 								</a>
 							</Button>

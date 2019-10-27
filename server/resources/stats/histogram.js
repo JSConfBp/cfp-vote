@@ -1,13 +1,7 @@
-const { histogram } = require('../../../services/stats')
+const { histogram } = require('../../services/stats')
 
-module.exports = {
-  method: 'GET',
-  path: '/histogram',
-  options: {
-    auth: 'jwt'
-  },
-  handler: async (request, h) => {
-    const data = await histogram(request)
-    return data
-  }
+module.exports = async (request, response) => {
+  const data = await histogram(request)
+  response.send(data)
 }
+

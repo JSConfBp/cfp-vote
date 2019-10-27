@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/necccc/piosk-site#readme",
   "devDependencies": {
+    "casual": "^1.6.2",
     "pino-pretty": "^3.2.2",
     "redux-devtools-extension": "^2.13.8"
   },

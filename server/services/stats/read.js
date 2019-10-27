@@ -1,6 +1,9 @@
 const store = require('../../store')
 
-const USERS = JSON.parse(process.env.CFP_VOTE_USERS || '[]')
+const USERS = [].concat(
+  JSON.parse(process.env.CFP_VOTE_USERS || '[]'),
+  JSON.parse(process.env.ADMINS || '[]')
+)
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
 module.exports = async function () {

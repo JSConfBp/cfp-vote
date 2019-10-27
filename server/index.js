@@ -61,6 +61,7 @@ module.exports = function (getRoutes, config) {
     require('./resources/logout')(server)
     require('./resources/client')(server, [ authMiddleware ])
     require('./resources/cfp')(server, [ authMiddleware ])
+    require('./resources/stats')(server, [ authMiddleware ])
 
     return server
   }

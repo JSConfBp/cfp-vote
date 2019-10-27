@@ -1,6 +1,4 @@
-exports.register = async function (server, options) {
-  server.route(require('./read'))
-  server.route(require('./histogram'))
+module.exports = async function (server, middlewares) { 
+  server.get('/api/stats', ...middlewares, require('./read'))
+  server.get('/api/histogram', ...middlewares, require('./histogram'))
 }
-
-exports.name = 'http-resource-stats'
