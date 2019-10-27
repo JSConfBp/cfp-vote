@@ -5,19 +5,14 @@ const getStagedVotedTalks = require('../../lib/getStagedVotedTalks')
 const cfpConfig = require('../../../cfp.config')
 
 module.exports = async function (request) {
-  const { payload: { year, stage, voteLimit } } = request
+  const { payload: { stage, voteLimit } } = request
 
-  if (year) {
-    await store.set('year', year)
-    return { year }
-  }
 
   if (stage) {
-    const year = await store.get('year')
     const previousStage = await store.get('stage')
     const count = await updateStage(previousStage, stage, voteLimit)
     await store.set('stage', stage)
-    return { count, stage, year }
+    return { count, stage }
   }
 }
 

@@ -76,7 +76,7 @@ const Index = ({ auth: { login, admin } }) => {
 	}
 
 	return (<><div className={css.centered}>
-		<Grid container spacing={24}>
+		<Grid container spacing={3}>
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_first)} elevation={0}>
 					<Typography className={css.title} variant="h2">
@@ -85,7 +85,7 @@ const Index = ({ auth: { login, admin } }) => {
 				</Paper>
 			</Grid>
 
-			{ cfp.year ? (<>
+			{ cfp.count ? (<>
 
 				<Grid item xs={12}>
 					<Typography variant="body1">

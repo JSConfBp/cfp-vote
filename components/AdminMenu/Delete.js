@@ -66,7 +66,7 @@ class Delete extends React.Component {
 		  .then(r => r.json())
 		  .then(({ stage }) => {
 				this.setState({votingStage: VoteUIConfig.voting_stages['stage_1'].name})
-				this.props.onUpdate({ count, year })
+				this.props.onUpdate({ count })
 		  })
 		  .catch(e => {
 				this.setState({

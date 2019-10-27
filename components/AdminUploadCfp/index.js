@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ onUpdate }) => {
+export default ({ onUpdate, onError }) => {
 	const css = useStyles();
 
 	const onFile = (fileContent) => {
@@ -25,7 +25,7 @@ export default ({ onUpdate }) => {
 			onUpdate()
 		  })
 		  .catch(e => {
-			onerror('CFP Upload failed', e)
+			onError('CFP Upload failed', e)
 		  })
 	}
 

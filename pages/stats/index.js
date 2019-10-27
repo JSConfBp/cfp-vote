@@ -95,7 +95,7 @@ class Index extends React.Component {
 						Statistics
 					</Typography>
 
-					{ cfp.year ? (<>
+					{ cfp.count ? (<>
 						<Typography variant="body1" component="div" className={ classes.stats }>
 					{stats.map(stat => (
 						<Progress key={`${stat.user}-votes`} name={stat.user} stats={stats} />

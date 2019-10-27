@@ -13,7 +13,9 @@ import MenuBar from '../../components/MenuBar';
 import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
-
+import AdminExportCfp from '../../components/AdminExportCfp'
+import AdminDeleteCfp from '../../components/AdminDeleteCfp'
+import AdminSetStage from '../../components/AdminSetStage'
 
 import styles from './styles'
 const useStyles = makeStyles(styles)
@@ -40,46 +42,107 @@ function TabPanel(props) {
 		<Box>{children}</Box>
 	  </Typography>
 	);
-  }
-  
-  
-const Admin = ({ auth: { login, admin } }) => {
-	const css = useStyles();
-	const [value, setValue] = React.useState(0);
+}
 
-	const handleChange = (event, newValue) => {
-	  setValue(newValue);
+const getCfp = async (token) => {
+	return fetch(`/api/cfp`,
+		{
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}
+		})
+		.then(response => response.json())
+}
+  
+  
+const Admin = ({ auth: { login } }) => {
+	const css = useStyles();
+	const [activeTab, setActiveTab] = useState(0)
+	const [cfp, setCfp] = useState({})
+
+	const tabChange = (event, newValue) => {
+	  setActiveTab(newValue);
 	};
 
 	useEffect(() => {
-		
+		getCfp()
+			.then((data) => {
+				setCfp(data)
+			})
 	}, [login])
+
+	const handleError = () => {}
+	const handleUpdate = async () => {
+		const updatedCfp = await getCfp()
+		setCfp(updatedCfp)
+	}
 
 	return (<>
 	<Box className={ css.adminGrid }>
 		<Tabs
 			orientation="vertical"
 			variant="standard"
-			value={value}
-			onChange={handleChange}
+			value={ activeTab }
+			onChange={ tabChange }
 			aria-label="Vertical tabs example"
 			className={css.tabs}
 		>
-			<Tab label="Upload CFP" {...a11yProps(0)} />
-			<Tab label="Import CFP" {...a11yProps(1)} />
-			<Tab label="Manage Users" {...a11yProps(2)} />
+			<Tab label="Manage Users" {...a11yProps(0)} />
+			{ !cfp.count && (
+				<Tab label="Upload CFP" {...a11yProps(1)} />
+			)}
+			{ !cfp.count && (
+				<Tab label="Import CFP" {...a11yProps(2)} />
+			)}
+			{ cfp.count && (
+				<Tab label="Set vote stage" {...a11yProps(1)} />
+			)}
+			{ cfp.count && (
+				<Tab label="Export results" {...a11yProps(2)} />
+			)}
+			{ cfp.count && (
+				<Tab label="Delete CFP data" {...a11yProps(3)} />
+			)}
+			
 		</Tabs>
 		<Box className={ css.tabContents }>
-			<TabPanel value={value} index={0}>
-				<AdminUploadCfp />
-			</TabPanel>
-			<TabPanel value={value} index={1}>
-				<AdminImportCfp />
-			</TabPanel>
-			<TabPanel value={value} index={2}>
+
+			<TabPanel value={activeTab} index={0}>
 				<AdminManageUsers />
 			</TabPanel>
-			
+
+		{ !cfp.count && (
+			<>
+			<TabPanel value={activeTab} index={1}>
+				<AdminUploadCfp 
+					onUpdate={ handleUpdate } 
+					onError={ handleError } 
+				/>
+			</TabPanel>
+			<TabPanel value={activeTab} index={2}>
+				<AdminImportCfp />
+			</TabPanel>
+			</>
+		)}
+
+		{ cfp.count && (
+			<>
+			<TabPanel value={activeTab} index={1}>
+				<AdminSetStage
+					onUpdate={ handleUpdate } 
+					onError={ handleError } 
+				/>
+			</TabPanel>
+			<TabPanel value={activeTab} index={2}>
+				<AdminExportCfp />
+			</TabPanel>
+			<TabPanel value={activeTab} index={3}>
+				<AdminDeleteCfp />
+			</TabPanel>
+			</>
+		)}
 		</Box>
 	</Box>
 	<MenuBar subTitle="Administration"/>

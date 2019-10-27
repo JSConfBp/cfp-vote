@@ -18,7 +18,7 @@ const parseCsv = async function (data) {
 }
 
 module.exports = async function (headers, payload) {
-  const year = headers['x-cfp-year']
+  
   const stage = headers['x-cfp-stage']
   const cfps = await parseCsv(payload)
   const cfpLength = cfps.length
@@ -33,8 +33,7 @@ module.exports = async function (headers, payload) {
     await store.rpush(stagedTalkKey, id)
   }
 
-  await store.set('year', year)
   await store.set('stage', stage)
 
-  return { count: cfpLength, year }
+  return { count: cfpLength }
 }
