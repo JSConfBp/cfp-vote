@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 import Authenticated from '../../components/Auth'
 import MenuBar from '../../components/MenuBar';
 
+import Notification from '../../components/Notification'
 import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
@@ -62,6 +63,12 @@ const Admin = ({ auth: { login } }) => {
 	const [activeTab, setActiveTab] = useState(0)
 	const [cfp, setCfp] = useState({})
 
+	const [notification, setNotification] = useState({ 
+		open: false,
+		type: '',
+		message: ''
+	})
+
 	const tabChange = (event, newValue) => {
 	  setActiveTab(newValue);
 	};
@@ -73,8 +80,24 @@ const Admin = ({ auth: { login } }) => {
 			})
 	}, [login])
 
-	const handleError = () => {}
-	const handleUpdate = async () => {
+	const handleError = (message, err) => {
+		console.error(err);
+
+		setNotification({
+			open: true,
+			message,
+			type: 'error',
+			ts: +new Date()
+		})
+	}
+
+	const handleUpdate = async (message = 'Success!') => {
+		setNotification({
+			open: true,
+			message,
+			type: 'success',
+			ts: +new Date()
+		})
 		const updatedCfp = await getCfp()
 		setCfp(updatedCfp)
 	}
@@ -110,7 +133,10 @@ const Admin = ({ auth: { login } }) => {
 		<Box className={ css.tabContents }>
 
 			<TabPanel value={activeTab} index={0}>
-				<AdminManageUsers />
+				<AdminManageUsers 
+					onUpdate={ handleUpdate } 
+					onError={ handleError } 
+				/>
 			</TabPanel>
 
 		{ !cfp.count && (
@@ -131,6 +157,7 @@ const Admin = ({ auth: { login } }) => {
 			<>
 			<TabPanel value={activeTab} index={1}>
 				<AdminSetStage
+					stage={ cfp.stage }
 					onUpdate={ handleUpdate } 
 					onError={ handleError } 
 				/>
@@ -145,6 +172,12 @@ const Admin = ({ auth: { login } }) => {
 		)}
 		</Box>
 	</Box>
+
+	<Notification 
+		message={ notification.message }
+		type={ notification.type }
+		ts={ notification.ts }
+	/>
 	<MenuBar subTitle="Administration"/>
 	</>)
 }

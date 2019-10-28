@@ -36,6 +36,7 @@ export default ({ onUpdate, onError }) => {
 					body: JSON.stringify({ login: data.login })
 				})
 				await getUsers()
+				onUpdate('User added!')
 			} catch (e) {
 				onError('Could not save user', e)
 			}
@@ -44,7 +45,6 @@ export default ({ onUpdate, onError }) => {
 	}
 		
 	const removeUser = async (user) => {
-		console.log('removeUser', user);
 		try {
 			await fetch('/api/user', {
 				method: 'delete',
@@ -54,6 +54,7 @@ export default ({ onUpdate, onError }) => {
 				body: JSON.stringify({ user })
 			})
 			await getUsers()
+			onUpdate('User removed')
 		} catch (e) {
 			onError('Could not remove user', e)
 		}

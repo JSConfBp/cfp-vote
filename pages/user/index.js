@@ -72,7 +72,7 @@ const Index = ({ auth: { login, admin } }) => {
 	let stageLabel = ''
 
 	if (cfp.stage) {
-		stageLabel = VoteUIConfig.voting_stages[cfp.stage].label
+		stageLabel = VoteUIConfig.votingStages[cfp.stage].label
 	}
 
 	return (<><div className={css.centered}>
