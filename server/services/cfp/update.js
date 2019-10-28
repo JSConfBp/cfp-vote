@@ -5,8 +5,7 @@ const getStagedVotedTalks = require('../../lib/getStagedVotedTalks')
 const cfpConfig = require('../../../cfp.config')
 
 module.exports = async function (request) {
-  const { payload: { stage, voteLimit } } = request
-
+  const { body: { stage, voteLimit } } = request
 
   if (stage) {
     const previousStage = await store.get('stage')
@@ -18,6 +17,10 @@ module.exports = async function (request) {
 
 const updateStage = async (from, to, voteLimit) => {
   // console.log(`updating stage from ${from} to ${to}`)
+
+  if (from === to) {
+    return store.llen(getStagedTalksKey(from))
+  }
 
   if (to === 'stage_1') {
     return updateToStage1(from, to)

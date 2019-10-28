@@ -5,15 +5,19 @@ export default theme => ({
     heading: {
       marginBottom: theme.spacing(3),
     },
-    formControl: {
-      margin: theme.spacing(1),
-    },
+   
     button: {
       color: '',
       marginTop: theme.spacing(5),
     },
     input: {
         display: 'none'
-      }
+    },
+    formControl: {
+        width: '100%',
+        marginTop: 20,
+        display: 'block',
+        margin: theme.spacing(1),
+    },
   });
   
