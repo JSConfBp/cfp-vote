@@ -127,7 +127,7 @@ const Admin = ({ auth: { login } }) => {
 			</>
 		)}
 
-		{ cfp.count && (
+		{ !!cfp.count && (
 			<>
 			<TabPanel value={activeTab} index={1}>
 				<AdminSetStage

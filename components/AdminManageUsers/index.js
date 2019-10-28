@@ -18,20 +18,14 @@ export default ({ onUpdate, onError }) => {
 	const [loading, setLoading] = useState(false)
 	const [users, setUsers] = useState([])
 
-	useEffect(() => {
-		setLoading(true)
-		fetch('/api/users')
-			.then(res => res.json())
-			.then(users => {
-				console.log(users);
-
-				setLoading(false)
-			})
-	}, [false])
-
-	const onUserModalClose = async (data) => {
-		console.log(data)
+	const getUsers = () => fetch('/api/users')
+		.then(res => res.json())
+		.then(data => {
+			setUsers(data.users || [])
+			setLoading(false)
+		})
 		
+	const onUserModalClose = async (data) => {		
 		if (data) {
 			try {
 				await fetch('/api/user', {
@@ -41,15 +35,35 @@ export default ({ onUpdate, onError }) => {
 					},
 					body: JSON.stringify({ login: data.login })
 				})
+				await getUsers()
 			} catch (e) {
 				onError('Could not save user', e)
 			}
 		}
-
 		setModalOpen(false)
-		// save data
-		// fetch new list
 	}
+		
+	const removeUser = async (user) => {
+		console.log('removeUser', user);
+		try {
+			await fetch('/api/user', {
+				method: 'delete',
+				headers: {
+					"Content-Type": "application/json; charset=utf-8"
+				},
+				body: JSON.stringify({ user })
+			})
+			await getUsers()
+		} catch (e) {
+			onError('Could not remove user', e)
+		}
+	}
+	
+
+	useEffect(() => {
+		setLoading(true)
+		getUsers()
+	}, [false])
 
 	return (
 		<Grid container spacing={3}>
@@ -64,15 +78,25 @@ export default ({ onUpdate, onError }) => {
 				</Typography>
 			</Grid>
 			<Grid item xs={12}>
-				<Button variant={ 'contained' } color="secondary" onClick={ () => setModalOpen(true) }>Add new user</Button>
+				<Button 
+					variant={ 'contained' } 
+					color="secondary" 
+					onClick={ () => setModalOpen(true) }
+				>
+					Add new user
+				</Button>
 			</Grid>
 			<Grid item xs={12}>
 				<Typography variant="h6">
 					Current users
 				</Typography>
+			</Grid>
+			<Grid item xs={12}>		
 				<UserList 
 					users={ users }
-					loading={ loading } />
+					loading={ loading } 
+					removeUser={ user => removeUser(user) }
+				/>
 			</Grid>
 			<AddUserDialog 
 				open={ modalOpen } 

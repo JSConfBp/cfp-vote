@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default ({ users }) => {
+export default ({ loading, users, removeUser }) => {
   const classes = useStyles();
 
   return (
@@ -32,7 +32,7 @@ export default ({ users }) => {
         <React.Fragment key={user.login}>
          <ListItem alignItems="flex-start">
           <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            <Avatar alt="Remy Sharp" src={ user.avatar_url } />
           </ListItemAvatar>
           <ListItemText
             primary={ user.login }
@@ -50,7 +50,7 @@ export default ({ users }) => {
               </React.Fragment>
             }
           />
-          { !user.admin && <ListItemSecondaryAction>
+          { !user.admin && <ListItemSecondaryAction onClick={ () => removeUser(user.login) }>
             <IconButton edge="end" aria-label="delete">
               <DeleteIcon />
             </IconButton>
