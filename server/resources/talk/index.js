@@ -1,5 +1,3 @@
-exports.register = async function (server, options) {
-  server.route(require('./read'))
+module.exports = async function (server, middlewares) {
+  server.get('/api/talk', ...middlewares, require('./get'))
 }
-
-exports.name = 'http-resource-talk'

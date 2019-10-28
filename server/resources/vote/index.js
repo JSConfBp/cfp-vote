@@ -1,5 +1,3 @@
-exports.register = async function (server, options) {
-  server.route(require('./post'))
+module.exports = async function (server, middlewares) {
+  server.post('/api/vote', ...middlewares, require('./post'))
 }
-
-exports.name = 'http-resource-vote'

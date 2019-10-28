@@ -37,6 +37,8 @@ export default ({ onUpdate, onError }) => {
 		};
 	};
 
+	// todo, pick fields for "title" "abstract" and additional information of talk
+
 	return (
 		<div className={ css.container }>
 			<Typography variant="h4" className={ css.heading }>

@@ -8,10 +8,8 @@ const FIELDS = cfpConfig.cfp_fields || []
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
 module.exports = async function (request) {
-  const { token } = request.auth.credentials
-  const payload = await jwt.decode(token)
-  const { login } = payload
-
+  const { login } = request.user
+  
   const stage = await store.get('stage')
 
   const key = getUserStagedVotesKey(login, stage)
