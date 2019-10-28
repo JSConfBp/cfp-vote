@@ -57,7 +57,24 @@ https://__HEROKU_APP_NAME__.herokuapp.com/
 https://__HEROKU_APP_NAME__.herokuapp.com/oauth
 
 
-## Developmenmt tools
+## Development
+
+
+Clone the repo, install deps
+
+```
+$ npm i 
+```
+
+Create a `.env` file based on the `.env.example` in the repo. Obtain a development GH app credential set, using the setup above, but set your "Authorization callback URL" should be `http://0.0.0.0:4000/oauth` (or whatever port you wish to use locally)
+
+Add your GH user to the ADMIN section.
+
+Start the development environment:
+
+```
+$ npm run dev
+```
 
 ### Mock cfp data
 
