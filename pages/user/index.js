@@ -126,7 +126,7 @@ const Index = ({ auth: { login, admin } }) => {
 			</>) : (<Grid item xs={12}><Typography variant="body1">
 				Current CFP is not configured yet, please check back later.
 			</Typography></Grid>) }
- 
+			
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
 				{(admin ? (<>

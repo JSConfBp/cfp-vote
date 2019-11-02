@@ -149,7 +149,7 @@ class AdminMenu extends React.Component {
 
 		const adminPanels = classNames({
 			[classes.closedPanels]: !expanded,
-		});
+		});	
 
 
 		return (<Typography component="div" className={classes.adminMenu}>

@@ -4,11 +4,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
+import { useNotification } from '../../components/Notification'
+
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
 export default ({ onUpdate, onError }) => {
 	const css = useStyles();
+
+	const { showSuccess, showError } = useNotification()
 
 	const onFile = (fileContent) => {
 		fetch(`/api/cfp`, {
@@ -22,10 +26,12 @@ export default ({ onUpdate, onError }) => {
 		  })
 		  .then(r => r.json())
 		  .then(() => {
+			showSuccess('CFP uploaded!')
 			onUpdate()
 		  })
 		  .catch(e => {
-			onError('CFP Upload failed', e)
+			showError('CFP upload failed.')
+			onError(e)
 		  })
 	}
 

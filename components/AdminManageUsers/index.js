@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
+import { useNotification } from '../../components/Notification'
+
 import AddUserDialog from '../AddUserDialog'
 import UserList from '../UserList'
 
@@ -17,6 +19,7 @@ export default ({ onUpdate, onError }) => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [users, setUsers] = useState([])
+	const { showError, showSuccess } = useNotification()
 
 	const getUsers = () => fetch('/api/users')
 		.then(res => res.json())
@@ -36,9 +39,11 @@ export default ({ onUpdate, onError }) => {
 					body: JSON.stringify({ login: data.login })
 				})
 				await getUsers()
-				onUpdate('User added!')
+				showSuccess('User added!')
+				onUpdate()
 			} catch (e) {
-				onError('Could not save user', e)
+				showError('Could not add user.')
+				onError(e)
 			}
 		}
 		setModalOpen(false)
@@ -54,9 +59,11 @@ export default ({ onUpdate, onError }) => {
 				body: JSON.stringify({ user })
 			})
 			await getUsers()
-			onUpdate('User removed')
+			showSuccess('User removed')
+			onUpdate()
 		} catch (e) {
-			onError('Could not remove user', e)
+			showError('Could not remove user')
+			onError(e)
 		}
 	}
 	

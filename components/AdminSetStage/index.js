@@ -11,6 +11,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
+import { useNotification } from '../../components/Notification'
+
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
@@ -24,9 +26,9 @@ export default ({ stage, onUpdate, onError }) => {
 			key,
 			label: stage.label,
 		}))
-
 	const [votingStage, setVotingStage] = useState(stage)
 	const [voteLimit, setVoteLimit] = useState(60)
+	const { showSuccess, showError } = useNotification()
 
 	const updateStage = () => {
 		fetch(`/api/cfp`, {
@@ -45,10 +47,12 @@ export default ({ stage, onUpdate, onError }) => {
 		.then(r => r.json())
 		.then(({ count, stage }) => {
 			setVotingStage(stage)
-			onUpdate('Stage saved')
+			showSuccess('Stage saved')
+			onUpdate()
 		})
 		.catch(e => {
-			onError('Could not update stage', e)
+			showError('Could not update stage')
+			onError(e)
 		})
 	}
 

@@ -7,7 +7,6 @@ import GithubLogin from '../../components/GithubLogin'
 import VoteUIConfig from '../../cfp.config'
 
 import styles from './styles'
-
 const useStyles = makeStyles(styles)
 
 const Index = () => {
@@ -22,7 +21,6 @@ const Index = () => {
 			<Typography component="div">
 				<GithubLogin>Login with GitHub</GithubLogin>
 			</Typography>
-
 		</div>
 	</div>)
 }
