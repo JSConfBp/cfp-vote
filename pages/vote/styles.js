@@ -55,4 +55,11 @@
 		flexWrap: `wrap`,
 		justifyContent: `space-between`
 	},
+	loading: {
+		display: 'flex',
+		flexWrap: `wrap`,
+		justifyContent: `center`,
+		alignItems: `center`,
+		height: `100vh`,
+	},
 });

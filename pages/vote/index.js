@@ -51,21 +51,16 @@ const Vote = () => {
 	const [talk, setTalk] = useState(null)
 	const [cfp, setCfp] = useState(null)
 
-
 	useEffect(() => {
 		Promise.all([
 			getCfp(),
 			getNextTalk()
 		]).then(([cfp, talk]) => {
-
-			console.log(cfp, talk);
-			
 			setCfp(cfp)
 			setTalk(talk)
 			setLoading(false)
 		})
 	}, [false])
-
 
 	const onVote = async (id, value) => {
 		setLoading(true)
@@ -151,8 +146,8 @@ const Vote = () => {
 	{ (loading) && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
-				<Paper className={ css.paper } elevation={ 0 }>
-					<CircularProgress color="secondary" />
+				<Paper className={ css.paper } elevation={ 0 } className={ css.loading }>
+					<CircularProgress color="secondary" className={ css.spinner } />
 				</Paper>
 			</Grid>
 		</Grid>
