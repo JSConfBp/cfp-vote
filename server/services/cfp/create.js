@@ -5,9 +5,6 @@ const shortid = require('shortid')
 const { getStagedTalksKey } = store.keys
 
 const parseCsv = async function (data) {
-
-  console.log(data);
-  
   return new Promise((resolve, reject) => {
     parse(data, { columns: true }, (err, csvData) => {
       if (err) return reject(err)
@@ -18,8 +15,11 @@ const parseCsv = async function (data) {
 }
 
 module.exports = async function (headers, payload) {
-  
   const stage = headers['x-cfp-stage']
+  const fields = headers['x-cfp-fields']
+
+  await store.set('fields', fields)
+
   const cfps = await parseCsv(payload)
   const cfpLength = cfps.length
 
