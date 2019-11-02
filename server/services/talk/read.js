@@ -1,10 +1,4 @@
 const store = require('../../store')
-const jwt = require('../../auth/token')
-
-const cfpConfig = require('../../../cfp.config')
-
-const FIELDS = cfpConfig.cfp_fields || []
-
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
 module.exports = async function (request) {
@@ -31,9 +25,10 @@ module.exports = async function (request) {
 
   const nextId = await store.lindex(stagedTalksKey, nextIndex)
   const nextTalk = await store.hgetall(nextId)
+  const fields = JSON.parse(await store.get('fields'))
 
   data.id = nextId
-  data.fields = FIELDS.reduce((obj, field) => {
+  data.fields = fields.reduce((obj, field) => {
     obj[field] = nextTalk[field]
     return obj
   }, {})

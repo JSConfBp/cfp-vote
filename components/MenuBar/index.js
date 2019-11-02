@@ -28,7 +28,7 @@ import VoteUIConfig from '../../cfp.config'
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ voting, subTitle = '' }) => {
+export default ({ voting, subTitle = '', showVoteUI = () => {} }) => {
 	const css = useStyles()
 	const [menuOpen, setMenuOpen] = useState(false)
 
@@ -100,7 +100,7 @@ export default ({ voting, subTitle = '' }) => {
 				</IconButton>
 				{ voting ? (
 					<Fab
-						onClick={e => this.props.showVoteUI()}
+						onClick={e => showVoteUI()}
 						color="secondary"
 						aria-label="Vote"
 						className={css.fabButton}

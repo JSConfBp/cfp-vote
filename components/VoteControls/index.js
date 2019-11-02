@@ -4,8 +4,6 @@ import getConfig from 'next/config'
 
 import VoteUIConfig from '../../cfp.config'
 
-const { publicRuntimeConfig: { api_url } } = getConfig()
-
 const styles = theme => ({
 	vote_control: {
 		flexBasis: '24%',
@@ -29,7 +27,7 @@ const styles = theme => ({
 class VoteControls extends React.Component {
 	render() {
 		const { classes, stage, loading = false } = this.props
-		const votingUi = VoteUIConfig.voting_ui[stage]
+		const votingUi = VoteUIConfig.votingStages[stage].voteUI
 
 	  return (
 		<>
