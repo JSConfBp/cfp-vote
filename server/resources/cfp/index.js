@@ -8,6 +8,7 @@ module.exports = (server, middlewares = []) => {
   }), require('./post'))
   server.get('/api/cfp', ...middlewares, bodyParser.json(), require('./get'))
   server.put('/api/cfp', ...middlewares, bodyParser.json(), require('./put'))
+  server.delete('/api/cfp', ...middlewares, bodyParser.json(), require('./delete'))
 
   // server.route(require('./import/activate'))
   // server.route(require('./import/code'))

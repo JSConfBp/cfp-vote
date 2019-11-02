@@ -49,6 +49,7 @@ exports.srem = async (key, ...members) => srem(key, ...members)
 
 exports.set = async (key, value) => set(key, JSON.stringify(value))
 exports.get = async (key) => get(key).then(value => JSON.parse(value))
+
 exports.del = async (key) => {
   if (key instanceof Array) {
     return del(...key).then(value => value)

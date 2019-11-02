@@ -64,7 +64,7 @@ export default ({
     }
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={ () => onClose() } aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Add New User</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -87,10 +87,10 @@ export default ({
                             { user.loading && (
                                 <CircularProgress className={ css.progress } color="secondary" />
                             )}
-                            {user.avatar_url && (
+                            { user.avatar_url && (
                                 <Avatar alt={ user.name } src={ user.avatar_url } />
                             )}
-                            {user.message && (
+                            { user.message && (
                                 <HelpOutline />
                             )}
                         </ListItemAvatar>

@@ -64,7 +64,7 @@ const Admin = ({ auth: { login } }) => {
 	const [cfp, setCfp] = useState({})
 
 	const tabChange = (event, newValue) => {
-	  setActiveTab(newValue);
+	  	setActiveTab(newValue);
 	};
 
 	useEffect(() => {
@@ -147,7 +147,10 @@ const Admin = ({ auth: { login } }) => {
 				<AdminExportCfp />
 			</TabPanel>
 			<TabPanel value={activeTab} index={3}>
-				<AdminDeleteCfp />
+				<AdminDeleteCfp 
+					onUpdate={ handleUpdate } 
+					onError={ handleError } 
+				/>
 			</TabPanel>
 			</>
 		)}
