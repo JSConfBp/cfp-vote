@@ -1,5 +1,6 @@
 const GitHubStrategy = require('passport-github').Strategy
 const boom = require('boom')
+const auditlog = require('./auditlog')
 const clientCreate = require('../services/client/create')
 const getUserById = require('../services/client/readById')
 const getSettings = require('../services/settings/read')
@@ -21,10 +22,13 @@ module.exports = new GitHubStrategy(
                 const users = await getUsers()
 
                 if(!users.find( user => user.login === profile.username)){
+                    auditlog(profile.username, 'unauthorized')
                     throw boom.unauthorized(`Unauthorized user "${profile.username}"`)
                 }
             }
 
+            auditlog(profile.username, 'login')
+            
             const user = await clientCreate({
                 token: accessToken,
                 ...profile
