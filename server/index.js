@@ -80,22 +80,38 @@ module.exports = function (getRoutes, config) {
 	}
 
   const attachErrorHandlers = (server) => {
+
     server.use((err, req, res, next) => {
-      req.log.error(err.stack)
+      if (err.isBoom) {
+        if (err.output.statusCode === 401) {
+          res.redirect('/?error=unauthorized')
+          return
+        }
+
+        res
+          .status(err.output.statusCode)
+          .send(err.output.payload.message)
+
+        return;
+      }
+      
       next(err)
     })
 
     server.use((err, req, res, next) => {
       if (req.xhr) {
-        res.status(500).send({ error: 'Something failed!' })
+        res
+          .status(500)
+          .send({ error: 'Something failed!' })
       } else {
         next(err)
       }
     })
 
     server.use((err, req, res, next) => {
+      req.log.error(err.stack)
       res.status(500)
-      res.render('error', { error: err })
+      res.send('Error')
     })
     
     return server

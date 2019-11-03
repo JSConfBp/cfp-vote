@@ -17,5 +17,5 @@ module.exports = async function () {
     return user
   })
 
-  return { success: true, users }
+  return users
 }

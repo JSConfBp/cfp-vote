@@ -1,6 +1,9 @@
 const GitHubStrategy = require('passport-github').Strategy
+const boom = require('boom')
 const clientCreate = require('../services/client/create')
 const getUserById = require('../services/client/readById')
+const getSettings = require('../services/settings/read')
+const getUsers = require('../services/users/read')
 const logger = require('../logger')
 
 module.exports = new GitHubStrategy(
@@ -12,6 +15,16 @@ module.exports = new GitHubStrategy(
     },
     async function(accessToken, refreshToken, profile, cb) {
         try {
+            const settings = await getSettings()
+
+            if (!settings.freeLogin) {
+                const users = await getUsers()
+
+                if(!users.find( user => user.login === profile.username)){
+                    throw boom.unauthorized(`Unauthorized user "${profile.username}"`)
+                }
+            }
+
             const user = await clientCreate({
                 token: accessToken,
                 ...profile
@@ -21,7 +34,7 @@ module.exports = new GitHubStrategy(
             
             cb(null, user);
         } catch (e) {
-            cb(new Error('Unauthorized'))
+            cb(e)
         }
     }
 )

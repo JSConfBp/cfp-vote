@@ -33,7 +33,7 @@ export default ({ onUpdate, onError }) => {
 		})
 		.then(res => res.json())
 		.then(data => {
-			setUsers(data.users || [])
+			setUsers(data || [])
 			setLoading(false)
 		})
 	
