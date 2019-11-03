@@ -63,6 +63,7 @@ module.exports = function (getRoutes, config) {
     require('./resources/cfp')(server, [ authMiddleware ])
     require('./resources/stats')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/users')(server, [ authMiddleware, bodyParser.json() ])
+    require('./resources/settings')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/vote')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/talk')(server, [ authMiddleware, bodyParser.json() ])
 

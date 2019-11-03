@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch'
+import debounce from 'debounce'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { useNotification } from '../../components/Notification'
 
@@ -17,14 +20,32 @@ export default ({ onUpdate, onError }) => {
 	const css = useStyles();
 
 	const [modalOpen, setModalOpen] = useState(false)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 	const [users, setUsers] = useState([])
+	const [freeLoginMode, setFreeLoginMode] = useState(false)
 	const { showError, showSuccess } = useNotification()
 
 	const getUsers = () => fetch('/api/users')
+		.then(res => {
+			if (res.status >= 400) throw (`Api error: ${result.status}`)
+
+			return res
+		})
 		.then(res => res.json())
 		.then(data => {
 			setUsers(data.users || [])
+			setLoading(false)
+		})
+	
+	const getUserMode = () => fetch('/api/settings')
+		.then(res => {
+			if (res.status >= 400) throw (`Api error: ${result.status}`)
+
+			return res
+		})
+		.then(res => res.json())
+		.then(data => {
+			setFreeLoginMode(data.freeLogin || false)
 			setLoading(false)
 		})
 		
@@ -34,13 +55,16 @@ export default ({ onUpdate, onError }) => {
 		
 		if (data) {
 			try {
-				await fetch('/api/user', {
+				const result = await fetch('/api/user', {
 					method: 'post',
 					headers: {
 						"Content-Type": "application/json; charset=utf-8"
 					},
 					body: JSON.stringify({ login: data.login })
 				})
+
+				if (result.status >= 400) throw (`Api error: ${result.status}`)
+
 				await getUsers()
 				showSuccess('User added!')
 				onUpdate()
@@ -54,13 +78,16 @@ export default ({ onUpdate, onError }) => {
 		
 	const removeUser = async (user) => {
 		try {
-			await fetch('/api/user', {
+			const result = await fetch('/api/user', {
 				method: 'delete',
 				headers: {
 					"Content-Type": "application/json; charset=utf-8"
 				},
 				body: JSON.stringify({ user })
 			})
+			
+			if (result.status >= 400) throw (`Api error: ${result.status}`)
+
 			await getUsers()
 			showSuccess('User removed')
 			onUpdate()
@@ -69,10 +96,37 @@ export default ({ onUpdate, onError }) => {
 			onError(e)
 		}
 	}
-	
+
+	const saveUserMode = async () => {
+		try {
+			const result = await fetch('/api/settings', {
+				method: 'put',
+				headers: {
+					"Content-Type": "application/json; charset=utf-8"
+				},
+				body: JSON.stringify({ freeLogin: !freeLoginMode })
+			})
+
+			if (result.status >= 400) throw (`Api error: ${result.status}`)
+			
+			showSuccess('Login mode set')
+			onUpdate()
+		} catch (e) {
+			showError('Could not set login mode')
+			onError(e)
+		}
+	}
+
+	const debouncedSave = debounce(saveUserMode, 500)
+	const onFreeLoginChange = () => {
+		setFreeLoginMode(!freeLoginMode)
+		debouncedSave.clear()
+		debouncedSave()
+	}
 
 	useEffect(() => {
 		setLoading(true)
+		getUserMode()
 		getUsers()
 	}, [false])
 
@@ -88,11 +142,13 @@ export default ({ onUpdate, onError }) => {
 					Manage your team, who has access to the CFP voting. Add users by their GitHub usernames.
 				</Typography>
 			</Grid>
+			
 			<Grid item xs={12}>
 				<Button 
 					variant={ 'contained' } 
 					color="secondary" 
 					onClick={ () => setModalOpen(true) }
+					disabled={ loading || freeLoginMode }
 				>
 					Add new user
 				</Button>
@@ -107,6 +163,14 @@ export default ({ onUpdate, onError }) => {
 					users={ users }
 					loading={ loading } 
 					removeUser={ user => removeUser(user) }
+				/>
+			</Grid>
+			<Grid item xs={12}>
+				<FormControlLabel
+					control={
+						<Checkbox checked={ freeLoginMode } onChange={ () => onFreeLoginChange() } value="true" />
+					}
+					label={ 'Enable "Free login" mode: everyone with a valid GitHub user can log in' }
 				/>
 			</Grid>
 			<AddUserDialog 

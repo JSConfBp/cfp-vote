@@ -2,7 +2,6 @@ const uuid = require('uuid/v4')
 const dayjs = require('dayjs')
 const { promisify } = require('util')
 const crypto = require('crypto')
-const tokenAuth = require('../../auth/token')
 const store = require('../../store')
 
 const ADMINS = JSON.parse(process.env.ADMINS)
