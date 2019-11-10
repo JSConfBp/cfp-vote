@@ -3,14 +3,15 @@ import App from 'next/app'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { NotificationProvider } from 'notification-hook'
+
 import theme from '../components/theme';
 
 import { wrapWithAuth } from '../components/Auth'
 import Route from '../components/Route'
 import routing from '../routing'
 
-import { NotificationProvider } from '../components/Notification'
-
+import NotificationComponent from '../components/Notification'
 import CfpUIConfig from '../cfp.config'
 
 class MyApp extends App {
@@ -30,18 +31,18 @@ class MyApp extends App {
 			<Head>
 				<title>{CfpUIConfig.title}</title>
 			</Head>
-			<NotificationProvider>
 				<ThemeProvider theme={theme}>
-					{/* CssBaseline kickstart an elegant, consistent,
-						and simple baseline to build upon. */}
-					<CssBaseline />
-					<Route.Provider value={routing()}>
-					{/* Pass pageContext to the _document though the renderPage enhancer
-						to render collected styles on server-side. */}
-						<Component pageContext={this.pageContext} {...pageProps} />
-					</Route.Provider>
+			    <NotificationProvider component={ NotificationComponent }>
+            {/* CssBaseline kickstart an elegant, consistent,
+              and simple baseline to build upon. */}
+            <CssBaseline />
+            <Route.Provider value={routing()}>
+            {/* Pass pageContext to the _document though the renderPage enhancer
+              to render collected styles on server-side. */}
+              <Component pageContext={this.pageContext} {...pageProps} />
+            </Route.Provider>
+			    </NotificationProvider>
 				</ThemeProvider>
-			</NotificationProvider>
 		</>
 	}
 }

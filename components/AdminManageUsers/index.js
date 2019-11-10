@@ -8,8 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import { useNotification } from '../../components/Notification'
-
+import { useNotification } from 'notification-hook'
 import AddUserDialog from '../AddUserDialog'
 import UserList from '../UserList'
 
@@ -36,7 +35,7 @@ export default ({ onUpdate, onError }) => {
 			setUsers(data || [])
 			setLoading(false)
 		})
-	
+
 	const getUserMode = () => fetch('/api/settings')
 		.then(res => {
 			if (res.status >= 400) throw (`Api error: ${result.status}`)
@@ -48,11 +47,11 @@ export default ({ onUpdate, onError }) => {
 			setFreeLoginMode(data.freeLogin || false)
 			setLoading(false)
 		})
-		
+
 	const onUserModalClose = async (data) => {
-		
+
 		console.log(data);
-		
+
 		if (data) {
 			try {
 				const result = await fetch('/api/user', {
@@ -75,7 +74,7 @@ export default ({ onUpdate, onError }) => {
 		}
 		setModalOpen(false)
 	}
-		
+
 	const removeUser = async (user) => {
 		try {
 			const result = await fetch('/api/user', {
@@ -85,7 +84,7 @@ export default ({ onUpdate, onError }) => {
 				},
 				body: JSON.stringify({ user })
 			})
-			
+
 			if (result.status >= 400) throw (`Api error: ${result.status}`)
 
 			await getUsers()
@@ -108,7 +107,7 @@ export default ({ onUpdate, onError }) => {
 			})
 
 			if (result.status >= 400) throw (`Api error: ${result.status}`)
-			
+
 			showSuccess('Login mode set')
 			onUpdate()
 		} catch (e) {
@@ -142,11 +141,11 @@ export default ({ onUpdate, onError }) => {
 					Manage your team, who has access to the CFP voting. Add users by their GitHub usernames.
 				</Typography>
 			</Grid>
-			
+
 			<Grid item xs={12}>
-				<Button 
-					variant={ 'contained' } 
-					color="secondary" 
+				<Button
+					variant={ 'contained' }
+					color="secondary"
 					onClick={ () => setModalOpen(true) }
 					disabled={ loading || freeLoginMode }
 				>
@@ -158,10 +157,10 @@ export default ({ onUpdate, onError }) => {
 					Current users
 				</Typography>
 			</Grid>
-			<Grid item xs={12}>		
-				<UserList 
+			<Grid item xs={12}>
+				<UserList
 					users={ users }
-					loading={ loading } 
+					loading={ loading }
 					removeUser={ user => removeUser(user) }
 				/>
 			</Grid>
@@ -173,9 +172,9 @@ export default ({ onUpdate, onError }) => {
 					label={ 'Enable "Free login" mode: everyone with a valid GitHub user can log in' }
 				/>
 			</Grid>
-			<AddUserDialog 
-				open={ modalOpen } 
-				loading={ loading } 
+			<AddUserDialog
+				open={ modalOpen }
+				loading={ loading }
 				onClose={ (data) => onUserModalClose(data) }
 			/>
 		</Grid>

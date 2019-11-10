@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import { useNotification } from '../Notification'
+import { useNotification } from 'notification-hook'
 
 import ConfirmDialog from '../ConfirmDialog';
 
@@ -49,16 +49,16 @@ export default ({ onUpdate, onError }) => {
 				</Typography>
 			</Grid>
 			<Grid item xs={12}>
-				<Button 
+				<Button
 					className={ css.deleteButton }
-					variant={ 'contained' } 
-					color="secondary" 
+					variant={ 'contained' }
+					color="secondary"
 					onClick={ () => setModalOpen(true) }
 				>
 					Delete all CFP related data
 				</Button>
 			</Grid>
-			<ConfirmDialog 
+			<ConfirmDialog
 				title="Delete CFP data"
 				message="Are you sure you want to delete all CFP data?"
 				open={ modalOpen }

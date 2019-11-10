@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import fetch from 'isomorphic-unfetch'
+import { useNotification } from 'notification-hook'
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../Link'
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +12,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { useNotification } from '../../components/Notification'
 
 import styles from './styles'
 const useStyles = makeStyles(styles)
@@ -108,10 +108,10 @@ export default ({ stage, onUpdate, onError }) => {
 			<Grid item xs={12}>
 				<Typography variant="body1" component="div">
 					<FormControl className={css.formControl}>
-						<Button 
+						<Button
 							onClick={ () => updateStage() }
-							color="secondary" 
-							variant={'contained'} 
+							color="secondary"
+							variant={'contained'}
 						>
 							Update Stage
 						</Button>

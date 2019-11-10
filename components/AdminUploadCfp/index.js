@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import fetch from 'isomorphic-unfetch'
+import { useNotification } from 'notification-hook'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -8,7 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import FieldPicker from '../FieldPicker';
 
 import csvParse from 'csv-parse'
-import { useNotification } from '../../components/Notification'
 
 import styles from './styles'
 const useStyles = makeStyles(styles)
@@ -53,7 +53,7 @@ export default ({ onUpdate, onError }) => {
 					onError(err)
 					return
 				}
-				
+
 				const header = Object.keys(csvData[0])
 				setHeader(header)
 			})
@@ -66,7 +66,7 @@ export default ({ onUpdate, onError }) => {
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
 				<Typography variant="h4" className={ css.heading }>
-					Upload CFP 
+					Upload CFP
 				</Typography>
 			</Grid>
 
@@ -97,7 +97,7 @@ export default ({ onUpdate, onError }) => {
 			<Grid item xs={12}>
 				<FieldPicker
 					fields={ header }
-					onHasFields={ (fieldIndexes = []) => { 
+					onHasFields={ (fieldIndexes = []) => {
 
 						save(header.filter((elem, i) => fieldIndexes.includes(i)))
 					} }
