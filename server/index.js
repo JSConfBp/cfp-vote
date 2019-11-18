@@ -61,6 +61,7 @@ module.exports = function (getRoutes, config) {
     require('./resources/logout')(server)
     require('./resources/client')(server, [ authMiddleware ])
     require('./resources/cfp')(server, [ authMiddleware ])
+    require('./resources/export')(server, [ authMiddleware ])
     require('./resources/stats')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/users')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/settings')(server, [ authMiddleware, bodyParser.json() ])
@@ -75,7 +76,7 @@ module.exports = function (getRoutes, config) {
 
 		server.use('/', routes)
     server.get('*', (req, res) => handle(req, res))
-    
+
 		return server
 	}
 
@@ -94,7 +95,7 @@ module.exports = function (getRoutes, config) {
 
         return;
       }
-      
+
       next(err)
     })
 
@@ -113,7 +114,7 @@ module.exports = function (getRoutes, config) {
       res.status(500)
       res.send('Error')
     })
-    
+
     return server
   }
 
