@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import {
 	BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-import VoteUIConfig from '../../cfp.config'
+import { votingStages } from '../../cfp.config'
 
 const styles = theme => ({
 	chart: {
@@ -74,7 +74,7 @@ class StagedVotesChart extends React.Component {
 					<XAxis dataKey="index" />
 					<YAxis />
 					<Tooltip />
-					<Legend content={() => VoteUIConfig.voting_stages[stage].label } />
+					<Legend content={() => votingStages[stage].label } />
 					<Bar dataKey="votes" fill="#8884d8" />
 				</BarChart>
 			</div>

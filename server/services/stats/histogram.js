@@ -1,14 +1,13 @@
 const store = require('../../store')
-const { voting_ui: votingUi } = require('../../../cfp.config')
-
+const { votingStages } = require('../../../cfp.config')
+const { read: getUsers } = require('../users')
 const getStagedVotedTalks = require('../../lib/getStagedVotedTalks')
-
-const USERS = JSON.parse(process.env.CFP_VOTE_USERS || '[]')
 
 const { getUserStagedVotesKey } = store.keys
 
 module.exports = async function () {
-  const stages = Object.keys(votingUi).map(stage => getVoteHistogram(stage, votingUi[stage]))
+  const users = (await getUsers()).map(user => user.login);
+  const stages = Object.keys(votingStages).map(stage => getVoteHistogram(users, stage, votingStages[stage].voteUI))
 
   const data = {
     votes: {},
@@ -26,20 +25,17 @@ module.exports = async function () {
   return data
 }
 
-const getVoteHistogram = async (stageId, stageConfig) => {
-  const buckets = stageConfig.map(stage => {
-    stage.count = 0
-    return stage
-  })
+const getVoteHistogram = async (users, stageId, stageConfig) => {
+  const buckets = stageConfig.map(stage => Object.assign({}, stage, { count: 0}));
 
-  await Promise.all(USERS.map(async (user) => {
+  await Promise.all(users.map(async (user) => {
     const key = getUserStagedVotesKey(user, stageId)
     const votes = await store.lrange(key, 0, -1)
 
     votes.forEach(vote => {
       const voteValue = JSON.parse(vote).value
-      const bucket = buckets.filter(({ value }) => (value === voteValue))
-      bucket[0].count += 1
+      const bucket = buckets.find(({ value }) => (value === voteValue))
+      bucket.count += 1
     })
   }))
 

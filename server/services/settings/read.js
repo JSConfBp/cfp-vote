@@ -10,7 +10,7 @@ module.exports = async function (request) {
     if (value === "true") {
       obj[key] = true
     } else if (value === "false") {
-      obj[key] = false 
+      obj[key] = false
     } else {
       obj[key] = value
     }

@@ -1,22 +1,31 @@
 const store = require('../../store')
+const auditlog = require('../../auth/auditlog')
+const { read: getUsers } = require('../users')
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 const getStagedVotedTalks = require('../../lib/getStagedVotedTalks')
 
 const cfpConfig = require('../../../cfp.config')
 
+
 module.exports = async function (request) {
-  const { body: { stage, voteLimit } } = request
+  const {
+    body: { stage, topCount },
+    user: { login }
+  } = request
 
   if (stage) {
+    auditlog(login, `update cfp stage to ${stage} including the top ${topCount} talks`)
+
     const previousStage = await store.get('stage')
-    const count = await updateStage(previousStage, stage, voteLimit)
+
+    const count = await updateStage(previousStage, stage, topCount)
     await store.set('stage', stage)
     return { count, stage }
   }
 }
 
-const updateStage = async (from, to, voteLimit) => {
-  // console.log(`updating stage from ${from} to ${to}`)
+
+const updateStage = async (from, to, topCount) => {
 
   if (from === to) {
     return store.llen(getStagedTalksKey(from))
@@ -27,25 +36,22 @@ const updateStage = async (from, to, voteLimit) => {
   }
 
   if (to === 'stage_2') {
-    return updateToStage2(from, to, voteLimit)
+    return updateToStage2(from, to, topCount)
   }
 }
 
-const updateToStage2 = async (previousStage, newStage, voteLimit) => {
+const updateToStage2 = async (previousStage, newStage, topCount = 0) => {
   const votedTalks = await getStagedVotedTalks(previousStage)
 
-  // TODO: deprecate this coming from cfpConfig
-  const topVotes = voteLimit || cfpConfig.voting_stages[newStage].include_votes_top
-
   const shortListIds = votedTalks
-    .filter(talk => talk.votes >= topVotes)
+    .sort((a, b) => (b.votes - a.votes))
+    .slice(0, topCount)
     .map(obj => obj.talk)
 
   if (shortListIds.length < 1) {
     return
   }
 
-  // shuffle array
   const shuffledShortListIds = shortListIds.sort(() => (0.5 - Math.random()))
 
   await store.rpush(getStagedTalksKey(newStage), ...shuffledShortListIds)
@@ -58,10 +64,10 @@ const updateToStage1 = async (previousStage, newStage) => {
 
   await store.del(getStagedTalksKey(previousStage))
 
-  const USERS = JSON.parse(process.env.CFP_VOTE_USERS || '[]')
+  const users = (await getUsers()).map(user => user.login)
 
   // remove stage 2 votes as well
-  await Promise.all(USERS.map(async (user) => {
+  await Promise.all(users.map(async (user) => {
     const key = getUserStagedVotesKey(user, previousStage)
     await store.del(key)
   }))

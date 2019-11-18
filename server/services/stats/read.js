@@ -1,16 +1,16 @@
 const store = require('../../store')
-
-const USERS = [].concat(
-  JSON.parse(process.env.CFP_VOTE_USERS || '[]'),
-  JSON.parse(process.env.ADMINS || '[]')
-)
+const { read: getUsers } = require('../users')
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
 module.exports = async function () {
+  const users = (await getUsers()).map(user => user.login)
+
+  console.log(users);
+
   const stage = await store.get('stage')
   const total = await store.llen(getStagedTalksKey(stage))
 
-  const data = await Promise.all(USERS.map(async (user) => {
+  const data = await Promise.all(users.map(async (user) => {
     const key = getUserStagedVotesKey(user, stage)
     const count = await store.llen(key)
 

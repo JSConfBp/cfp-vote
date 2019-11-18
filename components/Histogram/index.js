@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import VoteUIConfig from '../../cfp.config'
+import { votingStages } from '../../cfp.config'
 
 const styles = theme => ({
 	table: {}
@@ -33,7 +33,7 @@ class Histogram extends React.Component {
 
 				<TableRow>
 					<TableCell component="th" scope="row">
-						{ VoteUIConfig.voting_stages[stage].label }
+						{ votingStages[stage].label }
 					</TableCell>
 					{ data.map((bucket, i) => {
 						let value = 0

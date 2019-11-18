@@ -16,18 +16,18 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-import VoteUIConfig from '../../cfp.config'
+import { votingStages } from '../../cfp.config'
 
 export default ({ stage, onUpdate, onError }) => {
 	const css = useStyles();
 
-	const votingStages = Object.entries(VoteUIConfig.votingStages)
+	const stages = Object.entries(votingStages)
 		.map(([key, stage]) => ({
 			key,
 			label: stage.label,
 		}))
 	const [votingStage, setVotingStage] = useState(stage)
-	const [voteLimit, setVoteLimit] = useState(60)
+	const [topCount, setTopCount] = useState(60)
 	const { showSuccess, showError } = useNotification()
 
 	const updateStage = () => {
@@ -39,7 +39,7 @@ export default ({ stage, onUpdate, onError }) => {
 			},
 			body: JSON.stringify(
 				{
-					voteLimit,
+					topCount,
 					stage: votingStage
 				}
 			)
@@ -77,7 +77,7 @@ export default ({ stage, onUpdate, onError }) => {
 							onChange={e => setVotingStage(e.target.value)}
 							input={<Input name="voting_stage" id="stage-helper" />}
 						>
-							{ votingStages.map(stage => (
+							{ stages.map(stage => (
 								<option value={stage.key} key={stage.key}>{stage.label}</option>
 							)) }
 						</NativeSelect>
@@ -89,17 +89,17 @@ export default ({ stage, onUpdate, onError }) => {
 				<Typography variant="body1" component="div">
 					<FormControl className={ css.formControl }>
 						<InputLabel htmlFor="vote-limit">
-							Vote count limit
+							Include top number of talks
 						</InputLabel>
 						<Input
 							type="number"
 							id="vote-limit"
-							value={ voteLimit }
-							onChange={ (e) => setVoteLimit(e.target.value) }
+							value={ topCount }
+							onChange={ (e) => setTopCount(e.target.value) }
 							aria-describedby="vote-limit-helper-text"
 						/>
 						<FormHelperText id="vote-limit-helper-text">
-							Include talks in second round with votes at least as much as this value.<br />
+							Include the top number of talks in the second round.<br />
 							See the vote/talk chart in <Link to="stats"><a>Statistics</a></Link> to determine this number
 						</FormHelperText>
 					</FormControl>

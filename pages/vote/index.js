@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import Modal from '@material-ui/core/Modal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-import { useNotification } from '../../components/Notification'
+import { useNotification } from 'notification-hook'
 
 import Authenticated from '../../components/Auth'
 import MenuBar from '../../components/MenuBar'
@@ -142,7 +142,7 @@ const Vote = () => {
 			</Grid>
 		</Grid>
 	)}
-	
+
 	{ (loading) && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
@@ -154,7 +154,7 @@ const Vote = () => {
 	)}
 
 	<MenuBar voting={ !completed } showVoteUI={ () => setModalOpen(true) } />
-	
+
 	{ cfp && talk && (
 		<Modal
 			aria-labelledby="simple-modal-title"
