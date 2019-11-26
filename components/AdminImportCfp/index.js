@@ -29,7 +29,7 @@ export default ({ onUpdate }) => {
         <Typography>
           This is probably the most GDPR compliant way to handle CFP submissions,
           as we won't process any other field from Google Sheets,
-          just those you select to appear in the voting.
+          just those you select to appear in the voting.  
         </Typography>
       </Grid>
     </Grid>
