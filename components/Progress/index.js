@@ -13,8 +13,6 @@ export default ({ name, stats }) => {
 		return (<div className={css.progress}></div>)
 	}
 
-	console.log(name, stats);
-	
 	const { total, count } = stats.find(stat => (stat.user === name))
 
 	const percent = Math.round(100 * ( count / total))

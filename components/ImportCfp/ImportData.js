@@ -47,8 +47,6 @@ class ImportData extends React.Component {
 		})
 		.then(r => r.json())
 		.then((resp) => {
-			console.log(resp);
-
 			this.setState({
 				loading: false
 			})

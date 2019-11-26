@@ -13,7 +13,7 @@ const dataToCSV = (data) => new Promise((resolve, reject) => {
         },
         (err, result) => {
             if (err) return reject(err)
-    
+
             resolve(result)
         }
     )
@@ -54,8 +54,8 @@ const generateCfpData = (count = 100) => {
         const csv = await dataToCSV(data)
         const filename = `cfp-export_${casual.safe_color_name}.csv`
         await writeFile(filename, csv)
-        
-        console.log(`Success! ${filename} written with ${200} submitted CFPs`);
+
+        console.info(`Success! ${filename} written with ${200} submitted CFPs`);
     } catch(e) {
         console.error(e);
     }

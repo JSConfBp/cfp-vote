@@ -49,9 +49,6 @@ export default ({ onUpdate, onError }) => {
 		})
 
 	const onUserModalClose = async (data) => {
-
-		console.log(data);
-
 		if (data) {
 			try {
 				const result = await fetch('/api/user', {

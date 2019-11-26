@@ -29,8 +29,8 @@ const findGithubUser = async (username) => {
 }
 
 
-export default ({ 
-    open = true, 
+export default ({
+    open = true,
     onClose = () => {},
 }) => {
     const css = useStyles();
@@ -47,14 +47,14 @@ export default ({
                     const data = await findGithubUser(search.current)
                     setUser(data)
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                 }
             } else {
                 setUser(null)
             }
         }, 300)
-        
-        if (!text) { 
+
+        if (!text) {
             setUser(null)
         } else {
             setUser({ loading: true })

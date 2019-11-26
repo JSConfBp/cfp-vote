@@ -1,11 +1,9 @@
 const store = require('../../store')
 const { votingStages } = require('../../../cfp.config')
-const votingUi = require('../../../cfp.config').voting_ui
 const { read: getUsers } = require('../users')
 
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
-const csv = require('csv')
 
 const getVoteDataFromAllUsers = async (stage) => {
   const users = (await getUsers()).map(user => user.login)
@@ -106,22 +104,5 @@ module.exports = async function (request) {
     })
   }))
 
-
-
-
-  const exportCsv = await new Promise((resolve, reject) => {
-    csv.stringify(
-      talkData,
-      {
-        header: true
-      },
-      (err, result) => {
-        if (err) return reject(err)
-
-        resolve(result)
-      }
-    )
-  })
-
-  return exportCsv
+  return talkData
 }

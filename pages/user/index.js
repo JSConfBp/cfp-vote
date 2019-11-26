@@ -54,12 +54,11 @@ const Index = ({ auth: { login, admin } }) => {
 			getStats()
 		])
 			.then(([data, stats]) => {
-				console.log(data, stats)
 				setCfp(data)
 				setStats(stats)
 			})
 			.catch(e => {
-				console.error(e);	
+				console.error(e);
 			})
 	}, [login])
 
@@ -126,14 +125,14 @@ const Index = ({ auth: { login, admin } }) => {
 			</>) : (<Grid item xs={12}><Typography variant="body1">
 				Current CFP is not configured yet, please check back later.
 			</Typography></Grid>) }
-			
+
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
 				{(admin ? (<>
 					<Typography variant="h5" className={ css.heading }>
 						Administration
 					</Typography>
-		
+
 					<Typography variant="body1" className={ css.text }>
 						You're marked as an admin, so you can access some advanced features.<br />
 						But be careful, you know <em>"with great power comes great responsibility"</em>!
@@ -145,7 +144,7 @@ const Index = ({ auth: { login, admin } }) => {
 							</a>
 						</Link>
 					</Typography>
-		
+
 				</>) : '')}
 				</Paper>
 			</Grid>

@@ -4,9 +4,6 @@ const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
 module.exports = async function () {
   const users = (await getUsers()).map(user => user.login)
-
-  console.log(users);
-
   const stage = await store.get('stage')
   const total = await store.llen(getStagedTalksKey(stage))
 

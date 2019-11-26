@@ -70,8 +70,6 @@ class ImportCfp extends React.Component {
 	}
 
 	onActivated ({ needAuth, authUrl }) {
-		//console.log(needAuth);
-
 		if (needAuth) {
 			this.setState({ authUrl })
 			this.handleStep(1)
@@ -82,8 +80,6 @@ class ImportCfp extends React.Component {
 	}
 
 	onAuthenticated (data) {
-		console.log('onAuthenticated', data);
-
 		if (data.success) {
 			this.handleStep(2)
 		}
