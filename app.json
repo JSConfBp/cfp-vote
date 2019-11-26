@@ -2,7 +2,7 @@
   "name": "CFP Vote application",
   "description": "A web app to help you vote on CFP submissions for your event",
   "repository": "https://github.com/JSConfBp/cfp-vote",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "logo": "https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/icon.png",
   "keywords": ["cfp", "vote", "conference"],
   "addons": [
     "heroku-redis:hobby-dev"
