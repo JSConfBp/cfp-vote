@@ -1,6 +1,6 @@
 # CFP Vote Application
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/JSConfBp/cfp-vote)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/JSConfBp/cfp-vote#release)
 
 ## Setup for your event
 
