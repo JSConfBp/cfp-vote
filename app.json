@@ -1,7 +1,38 @@
 {
-  "name": "Node.js Sample",
-  "description": "A barebones Node.js app using Express",
-  "repository": "https://github.com/heroku/node-js-getting-started",
+  "name": "CFP Vote application",
+  "description": "A web app to help you vote on CFP submissions for your event",
+  "repository": "https://github.com/JSConfBp/cfp-vote",
   "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["node", "express", "static"]
+  "keywords": ["cfp", "vote", "conference"],
+  "addons": [
+    "heroku-redis:hobby-dev"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "GITHUB_CLIENT_ID": {
+      "description": "Required to make GitHub Oauth logins work. Register a new OAuth application on GitHub for your User or Org.",
+      "required": "true"
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "description": "Required to make GitHub Oauth logins work. Register a new OAuth application on GitHub for your User or Org.",
+      "required": "true"
+    },
+    "GITHUB_REDIRECT_URI": {
+      "description": "Required to make GitHub Oauth logins work. Should point to the /oauth endpoint on your app.",
+      "required": "true",
+      "value": "https://__YOUR_APP__.herokuapp.com/oauth"
+    },
+    "ADMINS": {
+      "description": "List of GitHub user names, who will have adminisrative privileges",
+      "required": "true",
+      "value": []
+    },
+  }
+
+
+  
 }
