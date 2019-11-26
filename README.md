@@ -1,4 +1,4 @@
-# cfp-vote-ui
+# CFP Vote Application
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/JSConfBp/cfp-vote)
 
@@ -10,27 +10,23 @@ This quick guide should help you to set up this app for your event, using GitHub
 
 To set up Oauth with github, visit your the Oauth applications page of your GitHub Org, for example https://github.com/organizations/__YOUR_ORG__/settings/applications
 
-![The OAuth menu in your Org Settings](https://raw.githubusercontent.com/JSConfBp/cfp-vote-ui/master/docs/oauth-menu.png)
+![The OAuth menu in your Org Settings](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/oauth-menu.png)
 
 Create a new application. For now, enter some random URL in the "Authorization callback URL" and the "Application URL" part. You have to update these a bit later, when the setup is ready.
 
-![New OAuth Application form](https://raw.githubusercontent.com/JSConfBp/cfp-vote-ui/master/docs/oauth-new-app.png)
+![New OAuth Application form](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/oauth-new-app.png)
 
 When you've saved the new Application, it will show you your OAuth Secrets, similar to this.
 
-![OAuth Secrets](https://raw.githubusercontent.com/JSConfBp/cfp-vote-ui/master/docs/oauth-secrets.png)
+![OAuth Secrets](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/oauth-secrets.png)
 
 These will be needed by the CFP vote app to authenticate your team members.
 
-### Step 2: Set up the CFP Vote Service
-
-Follow [this link](https://github.com/JSConfBp/cfp-vote-service) for instructions, the process is similar to this.
-
-### Step 3: Set up the UI App
+### Step 2: Set up the App
 
 Fork this repo, then go to Heroku and create a new App there. Connect it to GitHub, you can turn on automatic deployments
 
-![Connect your Heroku app to GitHub](https://raw.githubusercontent.com/JSConfBp/cfp-vote-ui/master/docs/heroku-github-connect.png)
+![Connect your Heroku app to GitHub](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/heroku-github-connect.png)
 
 If your App is connected to GitHub, go to it's Settings tab, and edit the config vars:
 
@@ -45,7 +41,7 @@ https://__HEROKU_APP_NAME__.herokuapp.com/oauth
 
 If you've added these, go to the Deploy tab on Heroku, scroll to the bottom, and do a manual deploy .
 
-![Manual deploy to Heroku](https://raw.githubusercontent.com/JSConfBp/cfp-vote-ui/master/docs/heroku-manual-deploy.png)
+![Manual deploy to Heroku](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/heroku-manual-deploy.png)
 
 ### Do not forget to update your GitHub OAuth app URLs!
 

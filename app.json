@@ -30,9 +30,6 @@
       "description": "List of GitHub user names, who will have adminisrative privileges",
       "required": "true",
       "value": []
-    },
-  }
-
-
-  
+    }
+  } 
 }
