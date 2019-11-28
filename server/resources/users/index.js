@@ -1,5 +1,7 @@
-module.exports = async function (server, middlewares) { 
-  server.get('/api/users', ...middlewares, require('./get'))
-  server.post('/api/user', ...middlewares, require('./post'))
-  server.delete('/api/user', ...middlewares, require('./delete'))
+const adminMiddleware = require('../../middleware/admin')
+
+module.exports = async function (server, middlewares) {
+  server.get('/api/users', ...middlewares, adminMiddleware, require('./get'))
+  server.post('/api/user', ...middlewares, adminMiddleware, require('./post'))
+  server.delete('/api/user', ...middlewares, adminMiddleware, require('./delete'))
 }

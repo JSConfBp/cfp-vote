@@ -8,8 +8,6 @@ module.exports = async function (login) {
   if (exists) {
     return { success: true }
   }
-
-  auditlog(login, `add user ${login}`)
   await store.sadd('users', login)
 
   return { success: true }

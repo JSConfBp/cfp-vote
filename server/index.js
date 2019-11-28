@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const router = require('./router')
 const errorHandler = require('./errorHandler')
 const logger = require('./logger')
+
+const authMiddleware = require('./middleware/auth')
 const dev = process.env.NODE_ENV !== 'production'
 
 const authStrategy = require('./auth/githubStrategy')
@@ -18,13 +20,6 @@ module.exports = function (getRoutes, config) {
 	const handle = app.getRequestHandler()
   const { port } = config
 
-  const authMiddleware = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      return next()
-    }
-
-    res.sendStatus(401)
-  }
   const loginMiddleware = passport.authenticate('github', { successRedirect: '/user', failureRedirect: '/' })
 
   const initExpress = () => {
