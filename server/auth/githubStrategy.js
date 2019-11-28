@@ -27,7 +27,6 @@ module.exports = new GitHubStrategy(
                     throw boom.unauthorized(`Unauthorized user "${profile.username}"`)
                 }
             } else {
-                // create a user entry?
                 await addUser(profile.username)
             }
 

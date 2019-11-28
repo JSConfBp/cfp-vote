@@ -87,7 +87,7 @@ const Index = ({ auth: { login, admin } }) => {
       {
         loadingState !== 'notloaded'
         && loadingState !== 'loading'
-        && cfp.count
+        && !!cfp.count
         && (
           <>
             <Grid item xs={12}>
