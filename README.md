@@ -19,6 +19,14 @@ To help you evaluate rounds, the app has a Statistical view, showing the talk/vo
 
 This quick guide should help you to set up this app for your event, using GitHub and Heroku.
 
+You will have to set a few variables for your app:
+* ADMINS - a list of GitHub usernames, who will have administrative roles (["user1","user2"])
+
+These are necessary for you app to log in using GitHub
+* GITHUB_CLIENT_ID
+* GITHUB_CLIENT_SECRET
+* GITHUB_REDIRECT_URI
+
 ### Step 1: GitHub OAuth Setup
 
 [Check out our guide on how to create an OAuth App](https://github.com/JSConfBp/cfp-vote/wiki/GitHub-OAuth-Setup)
@@ -39,7 +47,6 @@ https://__HEROKU_APP_NAME__.herokuapp.com/oauth
 
 
 ## Development
-
 
 Clone the repo, install deps
 
