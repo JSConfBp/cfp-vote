@@ -16,7 +16,7 @@ Some example on what can you expect:
 
 The goal here to vote bias-free, distraction-free, to do anonymized voting, reading the relevant part of submissions one-by-one. You won't see who sumitted the talk, only the title, and abstracts. You won't see what your peers voted either.
 
-This app setup aligns to the JS/CSSConf EU/BP CFP [voting way](https://blog.cssconf.eu/2015/08/15/a-talk-selection-process-explained/):
+This app setup aligns to the JS/CSSConf EU CFP [voting way](https://blog.cssconf.eu/2015/08/15/a-talk-selection-process-explained/):
 * First round: go through every submission, and vote on them on a scale from 1-5
 * Evaluate first round: pick the top ~80 or pick the top talks with at least N points
 * Shortlist round: go through the shortlisted submissions, and vote on them on a scale from 0-2
