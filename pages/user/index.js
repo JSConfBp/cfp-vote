@@ -44,29 +44,29 @@ const getCfp = async (token) => {
 }
 
 const Index = ({ auth: { login, admin } }) => {
-	const css = useStyles();
+  const css = useStyles();
+
+  const [loadingState, setLoadingState] = useState('notloaded')
+
 	const [cfp, setCfp] = useState({})
 	const [stats, setStats] = useState([])
 
 	useEffect(() => {
+    setLoadingState('loading')
 		Promise.all([
 			getCfp(),
 			getStats()
 		])
 			.then(([data, stats]) => {
 				setCfp(data)
-				setStats(stats)
+        setStats(stats)
+        setLoadingState('finished')
 			})
 			.catch(e => {
-				console.error(e);
+        console.error(e);
+        setLoadingState('finished')
 			})
 	}, [login])
-
-	const updateCfp = async (cfp) => {
-		const stats = await getStats()
-		setCfp(cfp)
-		setStats(stats)
-	}
 
 	let stageLabel = ''
 
@@ -84,47 +84,60 @@ const Index = ({ auth: { login, admin } }) => {
 				</Paper>
 			</Grid>
 
-			{ cfp.count ? (<>
+      {
+        loadingState !== 'notloaded'
+        && loadingState !== 'loading'
+        && cfp.count
+        && (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                Voting Progress for {stageLabel}
+              </Typography>
+            </Grid>
 
-				<Grid item xs={12}>
-					<Typography variant="body1">
-						Voting Progress for {stageLabel}
-					</Typography>
-				</Grid>
+            <Grid item xs={12} sm={3}>
 
-				<Grid item xs={12} sm={3}>
+              <Typography variant="body1" component="div">
+                <Progress name={login} stats={stats} />
+              </Typography>
 
-					<Typography variant="body1" component="div">
-						<Progress name={login} stats={stats} />
-					</Typography>
+              <Typography component="div">
+                <Link to="vote">
+                  <Button
+                    className={css.progressButton}
+                    color="secondary"
+                    variant={'contained'}
+                    href=""
+                  >
+                    <a className={css.linkButton}>
+                      Go Vote!
+                    </a>
+                  </Button>
+                </Link>
+              </Typography>
 
-					<Typography component="div">
-						<Link to="vote">
-							<Button
-								className={css.progressButton}
-								color="secondary"
-								variant={'contained'}
-								href=""
-							>
-								<a className={css.linkButton}>
-									Go Vote!
-								</a>
-							</Button>
-						</Link>
-					</Typography>
+            </Grid>
 
-				</Grid>
+            <Grid item xs={12} sm={3}>
+              <Typography variant="body1" component="div">
+                <TotalProgress stats={stats} />
+              </Typography>
+            </Grid>
+          </>
+      )}
 
-				<Grid item xs={12} sm={3}>
-
-					<Typography variant="body1" component="div">
-						<TotalProgress stats={stats} />
-					</Typography>
-
-				</Grid>
-			</>) : (<Grid item xs={12}><Typography variant="body1">
-				Current CFP is not configured yet, please check back later.
-			</Typography></Grid>) }
+      {
+        loadingState !== 'notloaded'
+        && loadingState !== 'loading'
+        && !cfp.count
+        && (
+        <Grid item xs={12}>
+          <Typography variant="body1">
+  				  Current CFP is not configured yet, please check back later.
+          </Typography>
+        </Grid>
+      ) }
 
 			<Grid item xs={12}>
 				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
