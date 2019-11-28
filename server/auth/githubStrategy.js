@@ -5,6 +5,7 @@ const clientCreate = require('../services/client/create')
 const getUserById = require('../services/client/readById')
 const getSettings = require('../services/settings/read')
 const getUsers = require('../services/users/read')
+const addUser = require('../services/users/create')
 const logger = require('../logger')
 
 module.exports = new GitHubStrategy(
@@ -25,17 +26,20 @@ module.exports = new GitHubStrategy(
                     auditlog(profile.username, 'unauthorized')
                     throw boom.unauthorized(`Unauthorized user "${profile.username}"`)
                 }
+            } else {
+                // create a user entry?
+                await addUser(profile.username)
             }
 
             auditlog(profile.username, 'login')
-            
+
             const user = await clientCreate({
                 token: accessToken,
                 ...profile
             })
 
             logger.debug('clientCreate', user);
-            
+
             cb(null, user);
         } catch (e) {
             cb(e)
