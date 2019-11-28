@@ -4,8 +4,9 @@
 
 A mobile-first web app to help your (distributed) curator team to vote on hundreds of CFP's. At JSConf Budapest we used this app to vote on more than 600 CFP submissions.
 
-
 ![Screenshots of the mobile view of the app](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/app-example.jpg)
+
+---
 
 The goal here to vote bias-free, distraction-free, to do anonymized voting, reading the relevant part of submissions one-by-one. You won't see who sumitted the talk, only the title, and abstracts. You won't see what your peers voted either.
 
