@@ -10,13 +10,13 @@ import Box from '@material-ui/core/Box';
 import Authenticated from '../../components/Auth'
 import MenuBar from '../../components/MenuBar';
 
-
 import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
 import AdminExportCfp from '../../components/AdminExportCfp'
 import AdminDeleteCfp from '../../components/AdminDeleteCfp'
 import AdminSetStage from '../../components/AdminSetStage'
+import AdminAuditLog from '../../components/AdminAuditLog'
 
 import styles from './styles'
 const useStyles = makeStyles(styles)
@@ -30,7 +30,7 @@ function a11yProps(index) {
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
-  
+
 	return (
 	  <Typography
 		component="div"
@@ -56,8 +56,8 @@ const getCfp = async (token) => {
 		})
 		.then(response => response.json())
 }
-  
-  
+
+
 const Admin = ({ auth: { login } }) => {
 	const css = useStyles();
 	const [activeTab, setActiveTab] = useState(0)
@@ -109,23 +109,23 @@ const Admin = ({ auth: { login } }) => {
 			{ cfp.count && (
 				<Tab label="Delete CFP data" {...a11yProps(3)} />
 			)}
-			
+			<Tab label="Audit log" {...a11yProps(3)} />
 		</Tabs>
 		<Box className={ css.tabContents }>
 
 			<TabPanel value={activeTab} index={0}>
-				<AdminManageUsers 
-					onUpdate={ handleUpdate } 
-					onError={ handleError } 
+				<AdminManageUsers
+					onUpdate={ handleUpdate }
+					onError={ handleError }
 				/>
 			</TabPanel>
 
 		{ !cfp.count && (
 			<>
 			<TabPanel value={activeTab} index={1}>
-				<AdminUploadCfp 
-					onUpdate={ handleUpdate } 
-					onError={ handleError } 
+				<AdminUploadCfp
+					onUpdate={ handleUpdate }
+					onError={ handleError }
 				/>
 			</TabPanel>
 			<TabPanel value={activeTab} index={2}>
@@ -139,21 +139,24 @@ const Admin = ({ auth: { login } }) => {
 			<TabPanel value={activeTab} index={1}>
 				<AdminSetStage
 					stage={ cfp.stage }
-					onUpdate={ handleUpdate } 
-					onError={ handleError } 
+					onUpdate={ handleUpdate }
+					onError={ handleError }
 				/>
 			</TabPanel>
 			<TabPanel value={activeTab} index={2}>
 				<AdminExportCfp />
 			</TabPanel>
 			<TabPanel value={activeTab} index={3}>
-				<AdminDeleteCfp 
-					onUpdate={ handleUpdate } 
-					onError={ handleError } 
+				<AdminDeleteCfp
+					onUpdate={ handleUpdate }
+					onError={ handleError }
 				/>
 			</TabPanel>
 			</>
 		)}
+    	<TabPanel value={activeTab} index={!cfp.count ? 3 : 4}>
+				<AdminAuditLog />
+			</TabPanel>
 		</Box>
 	</Box>
 	<MenuBar subTitle="Administration"/>

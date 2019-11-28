@@ -60,6 +60,7 @@ module.exports = function (getRoutes, config) {
     require('./resources/oauth')(server, [ loginMiddleware ])
     require('./resources/logout')(server)
     require('./resources/client')(server, [ authMiddleware ])
+    require('./resources/auditlog')(server, [ authMiddleware ])
     require('./resources/cfp')(server, [ authMiddleware ])
     require('./resources/export')(server, [ authMiddleware ])
     require('./resources/stats')(server, [ authMiddleware, bodyParser.json() ])
