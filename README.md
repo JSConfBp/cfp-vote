@@ -4,20 +4,29 @@
 
 A mobile-first web app to help your (distributed) curator team to vote on hundreds of CFP's. At JSConf Budapest we used this app to vote on more than 600 CFP submissions.
 
+Some example on what can you expect: 
+* login to the app, using GitHub
+* see your progress
+* the proposals are displayed clean, you can only read the title and the abstracts
+* voting labels and values can be customized if necessary
+
 ![Screenshots of the mobile view of the app](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/app-example.jpg)
 
 ---
 
 The goal here to vote bias-free, distraction-free, to do anonymized voting, reading the relevant part of submissions one-by-one. You won't see who sumitted the talk, only the title, and abstracts. You won't see what your peers voted either.
 
-This app setup aligns to the JS/CSSConf EU/BP CFP [voting way](https://blog.cssconf.eu/2015/08/15/a-talk-selection-process-explained/):
+This app setup aligns to the JS/CSSConf EU CFP [voting way](https://blog.cssconf.eu/2015/08/15/a-talk-selection-process-explained/):
 * First round: go through every submission, and vote on them on a scale from 1-5
 * Evaluate first round: pick the top ~80 or pick the top talks with at least N points
 * Shortlist round: go through the shortlisted submissions, and vote on them on a scale from 0-2
 
 At this point you can export the submissions to CSV/XLSX and see each vote, and their summarized votes in rounds, and move on to the next steps, de-anonymizing and curating the talks for your event.
 
-To help you evaluate rounds, the app has a Statistical view, showing the talk/vote distribution (without any details) and progress of teammembers.
+To help you evaluate rounds, the app has a Statistical view, showing the talk/vote distribution (without any details) and progress of team members.
+
+![Screenshot of the statistics page](https://raw.githubusercontent.com/JSConfBp/cfp-vote/master/docs/stats-example.png)
+
 
 ## Setup for your event
 
