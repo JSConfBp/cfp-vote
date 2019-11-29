@@ -4,6 +4,8 @@
 
 A mobile-first web app to help your (distributed) curator team to vote on hundreds of CFP's. At JSConf Budapest we used this app to vote on more than 600 CFP submissions.
 
+[Try it out on 200 random generated CFPs](https://cfp-vote.herokuapp.com/)
+
 Some example on what can you expect: 
 * login to the app, using GitHub
 * see your progress
