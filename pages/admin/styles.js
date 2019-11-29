@@ -35,7 +35,13 @@ export default theme => ({
 	tabs: {
 		borderRight: `1px solid ${theme.palette.divider}`,
 		height: 'calc(100vh - 70px)'
-	},
+  },
+  tab: {
+    alignItems: 'flex-end'
+  },
+  wrapper: {
+    alignItems: 'flex-end'
+  },
 	tabContents: {
 		padding: theme.spacing(4),
 	},

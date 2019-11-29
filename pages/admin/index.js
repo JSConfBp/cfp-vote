@@ -87,29 +87,30 @@ const Admin = ({ auth: { login } }) => {
 	<Box className={ css.adminGrid }>
 		<Tabs
 			orientation="vertical"
-			variant="standard"
+      variant="standard"
+      centered={false}
 			value={ activeTab }
 			onChange={ tabChange }
 			aria-label="Vertical tabs example"
 			className={css.tabs}
 		>
-			<Tab label="Manage Users" {...a11yProps(0)} />
+			<Tab label="Manage Users" {...a11yProps(0)} className={ classNames(css.tab, css.wrapper) } />
 			{ !cfp.count && (
-				<Tab label="Upload CFP" {...a11yProps(1)} />
+				<Tab label="Upload CFP" {...a11yProps(1)} className={ classNames(css.tab, css.wrapper)} />
 			)}
 			{ !cfp.count && (
-				<Tab label="Import CFP" {...a11yProps(2)} />
+				<Tab label="Import CFP" {...a11yProps(2)} className={ classNames(css.tab, css.wrapper)} />
 			)}
 			{ cfp.count && (
-				<Tab label="Set vote stage" {...a11yProps(1)} />
+				<Tab label="Set vote stage" {...a11yProps(1)} className={ classNames(css.tab, css.wrapper)} />
 			)}
 			{ cfp.count && (
-				<Tab label="Export results" {...a11yProps(2)} />
+				<Tab label="Export results" {...a11yProps(2)} className={ classNames(css.tab, css.wrapper)} />
 			)}
 			{ cfp.count && (
-				<Tab label="Delete CFP data" {...a11yProps(3)} />
+				<Tab label="Delete CFP data" {...a11yProps(3)} className={ classNames(css.tab, css.wrapper)} />
 			)}
-			<Tab label="Audit log" {...a11yProps(3)} />
+			<Tab label="Audit log" {...a11yProps(3)} className={ classNames(css.tab, css.wrapper)} />
 		</Tabs>
 		<Box className={ css.tabContents }>
 

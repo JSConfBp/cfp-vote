@@ -1,4 +1,4 @@
-const { read } = require('../../services/cfp')
+const { read } = require('../../services/auditlog')
 
 module.exports = async (request, response) => {
   const data = await read(request)

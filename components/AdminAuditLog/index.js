@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import fetch from 'isomorphic-unfetch'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -18,20 +18,28 @@ const useStyles = makeStyles(styles)
 export default ({ onUpdate, onError }) => {
 	const css = useStyles();
 
-	const [ modalOpen, setModalOpen ] = useState(false)
+	const [ log, setLog ] = useState([])
 	const { showError, showSuccess } = useNotification()
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+  const getLog = async () => {
+    try {
+      const result = await fetch('/api/auditlog', {
+        method: 'get',
+      })
+
+      if (result.status >= 400) throw (`Api error: ${result.status}`)
+
+      const data = await result.json()
+      setLog(data)
+    } catch (e) {
+      showError('Could not read audit log.')
+    }
   }
 
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
+  useEffect(() => {
+		getLog()
+	}, [false])
+
 
 	return (
 		<Grid container spacing={3}>
@@ -46,18 +54,18 @@ export default ({ onUpdate, onError }) => {
             <TableHead>
               <TableRow>
                 <TableCell>Timestamp</TableCell>
-                <TableCell align="right">User</TableCell>
-                <TableCell align="right">Action</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(row => (
-                <TableRow key={row.name}>
+              {log.map(row => (
+                <TableRow key={row.timestamp}>
                   <TableCell component="th" scope="row">
-                    {row.name}
+                    {row.timestamp}
                   </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
+                  <TableCell>{row.user}</TableCell>
+                  <TableCell>{row.action}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
