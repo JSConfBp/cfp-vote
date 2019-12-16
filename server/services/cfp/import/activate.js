@@ -3,14 +3,14 @@ const { google } = require('googleapis')
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-module.exports = async function ({ headers, payload }) {
-  const credentials = payload
-
+module.exports = async function ({ headers, body: credentials }) {
   const {
     client_secret: clientSecret,
     client_id: clientId,
     redirect_uris: redirectUris
   } = credentials.installed
+
+  await store.set('google_credentials', credentials)
 
   const oAuth2Client = new google.auth.OAuth2(
     clientId,

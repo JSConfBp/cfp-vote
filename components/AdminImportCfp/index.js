@@ -1,37 +1,105 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepButton from '@material-ui/core/StepButton';
+
+import StepActivate from './Activate'
+import StepAuthenticate from './Authenticate'
+import StepChooseSheet from './ChooseSheet'
+import StepChooseFields from './ChooseFields'
+import StepImportData from './ImportData'
 
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ onUpdate }) => {
-	const css = useStyles();
+
+const steps = [
+  'Enable Google Sheets API',
+  'Authenticate',
+  'Choose Sheet',
+  'Pick Fields',
+  'Import data'
+];
+
+export default () => {
+  const css = useStyles();
+  const [ activeStep, setActiveStep ] = useState(0)
+  const [ authUrl, setAuthUrl ] = useState('')
+  const [ fields, setFields ] = useState([])
+  const [ selectedFields, setSelectedFields ] = useState([])
 
 
-	return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Typography variant="h4" className={ css.heading }>
-          Import CFPs from Google Sheets
-        </Typography>
-      </Grid>
+	const onActivated = ({ needAuth, authUrl }) => {
+		if (needAuth) {
+			setAuthUrl(authUrl)
+			setActiveStep(1)
+			return
+		}
 
-      <Grid item xs={12}>
-        <Typography>
-          Import CFP submissions directly from Google Sheets.
-        </Typography>
-        </Grid>
-        <Grid item xs={12}>
-        <Typography>
-          This is probably the most GDPR compliant way to handle CFP submissions,
-          as we won't process any other field from Google Sheets,
-          just those you select to appear in the voting.  
-        </Typography>
-      </Grid>
-    </Grid>
-	)
+		setActiveStep(2)
+	}
+
+	const onAuthenticated = () => {
+			setActiveStep(2)
+	}
+
+	const onHasSheet = (fields) => {
+		setFields(fields)
+		setActiveStep(3)
+	}
+
+	const onHasFields = (selectedFields) => {
+		setSelectedFields(selectedFields)
+		setActiveStep(4)
+	}
+
+	const getStepContent = (step) => {
+		switch (step) {
+			case 0:
+				return <StepActivate
+					onActivated={data => onActivated(data)}
+				/>;
+			case 1:
+				return <StepAuthenticate
+					onAuthenticated={() => onAuthenticated()}
+					authUrl={ authUrl}
+				/>;
+			case 2:
+				return <StepChooseSheet
+					onHasSheet={data => onHasSheet(data)}
+				/>;
+			case 3:
+				return <StepChooseFields
+					onHasFields={(selectedFields) => onHasFields(selectedFields) }
+					fields={ fields }
+				/>;
+			case 4:
+				return <StepImportData
+					selectedFields={ selectedFields }
+				/>;
+			default:
+				return 'Unknown step';
+		}
+	}
+
+  return (
+		<div className={css.container}>
+			<Stepper activeStep={activeStep} className={css.importStepper}>
+			{steps.map((label, index) => (
+				<Step key={label}>
+					<StepButton>
+						{label}
+					</StepButton>
+				</Step>
+			))}
+			</Stepper>
+
+      <Paper className={css.stepContent}>
+				{ getStepContent(activeStep) }
+      </Paper>
+		</div>
+  );
 }

@@ -6,7 +6,9 @@ const getToken = async (code) => {
   const {
     client_secret: clientSecret,
     client_id: clientId,
-    redirect_uris: redirectUris } = googleCredentials.installed
+    redirect_uris: redirectUris
+  } = googleCredentials.installed
+
   const oAuth2Client = new google.auth.OAuth2(
     clientId,
     clientSecret,
@@ -22,9 +24,7 @@ const getToken = async (code) => {
   })
 }
 
-module.exports = async function ({ headers, payload }) {
-  const code = payload
-
+module.exports = async function ({ headers, body: code }) {
   try {
     const token = await getToken(code)
     await store.set('google_token', token)

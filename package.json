@@ -49,6 +49,7 @@
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "express-session": "^1.17.0",
+    "googleapis": "^46.0.0",
     "helmet": "^3.21.2",
     "isomorphic-unfetch": "^3.0.0",
     "jsrsasign": "^8.0.12",
