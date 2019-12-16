@@ -18,7 +18,7 @@ module.exports = async function (headers, payload) {
   const stage = headers['x-cfp-stage']
   const fields = headers['x-cfp-fields']
 
-  await store.set('fields', fields)
+  await store.set('fields', JSON.parse(fields))
 
   const cfps = await parseCsv(payload)
   const cfpLength = cfps.length

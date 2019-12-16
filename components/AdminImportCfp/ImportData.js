@@ -1,90 +1,86 @@
-import React from 'react'
+import React, { useState } from 'react'
 import fetch from 'isomorphic-unfetch'
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import getConfig from 'next/config'
-const { publicRuntimeConfig: { api_url } } = getConfig()
+import { useNotification } from 'notification-hook'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
 	container: {
 		display: 'block',
 		width: '100%'
 	},
-});
+}))
 
 
+//sheetData, selectedFields
+export default ({sheetData, selectedFields}) => {
+  const css = useStyles();
+  const [ loading, setLoading ] = useState(false)
+  const { showError, showSuccess } = useNotification()
 
-class ImportData extends React.Component {
 
-	constructor (props) {
-		super(props)
+	const importData = () => {
+    setLoading(true)
 
-		this.state = {
-			loading: false
-		}
-	}
-
-	importData () {
-		const { checked } = this.state
-		const { token, selectedFields } = this.props
-
-		this.setState({
-			loading: true
-		})
-
-		fetch(`${api_url}/v1/cfp/import/fields`, {
+		fetch(`/api/cfp/import/fields`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
-				'Authorization': token
 			},
 			body: JSON.stringify(selectedFields)
 		})
 		.then(r => r.json())
-		.then((resp) => {
-			this.setState({
-				loading: false
-			})
-		})
 		.catch(e => {
-			this.props.onError(e);
-		})
+      showError("Could not import, please check the logs.");
+      console.error(e);
+    })
+    .finally(() => setLoading(false))
 	}
 
-	render () {
-		const { classes } = this.props
-		const { loading, error } = this.state
+  return <>
+    {!loading && <>
+      <Typography variant="body1" component="div">
+        <p>
+          SpreadSheet title: <a href={sheetData.spreadSheetUrl}>
+            { sheetData.spreadSheetTitle }
+          </a>
+          <br />
+          Sheet name: { sheetData.sheetTitle }
+          <br />
+          Fields to import
+        </p>
+        <ul>
+          {selectedFields.map((field, id) => <li key={`${id}`}>
+            { sheetData.fields[field] }
+          </li>)}
+        </ul>
+      </Typography>
 
-		return <>
-			{!loading ? <>
-				<Typography variant="body1" component="div">
-					Click the button below, to start the import
-				</Typography>
+      <Typography variant="body1" component="div">
+        Click the button below, to start the import
+      </Typography>
 
-				<Button
-					variant="contained"
-					color="primary"
-					className={ classes.button }
-					target="_blank"
-					rel="noopener"
-					onClick={ e => this.importData() }
-				>
-					Start importing
-				</Button>
-			</> : ''}
+      <Button
+        variant="contained"
+        color="primary"
+        className={ css.button }
+        target="_blank"
+        rel="noopener"
+        onClick={ importData }
+      >
+        Start importing
+      </Button>
+    </>}
 
-			{loading ? <>
-				<CircularProgress className={classes.progress} />
-			</> : ''}
+    {loading && <>
+      <CircularProgress className={ css.progress } />
+    </>}
+  </>
 
-		</>
-	}
-  }
-
-
-  export default withStyles(styles)(ImportData);
+}

@@ -1,61 +1,26 @@
-const store = require('../../../store')
 const shortid = require('shortid')
 const { google } = require('googleapis')
+const store = require('../../../store')
+const createGoogleOauthClient = require('../../../auth/google-oauth')
 
 const cfpConfig = require('../../../../cfp.config')
 
 const { getStagedTalksKey } = store.keys
 
-module.exports = async function ({ payload }) {
-  const fields = payload
-  const googleCredentials = await store.get('google_credentials')
-  const {
-    client_secret: clientSecret,
-    client_id: clientId,
-    redirect_uris: redirectUris } = googleCredentials.installed
+module.exports = async function ({ body: fields }) {
+  const oAuth2Client = await createGoogleOauthClient()
 
-  const auth = new google.auth.OAuth2(
-    clientId,
-    clientSecret,
-    redirectUris[0]
-  )
+  const { spreadSheetId, sheetTitle, sheetId } = await store.get('google_spreadsheet')
 
-  const token = await store.get('google_token')
-  auth.setCredentials(token)
+  console.log({ spreadSheetId, sheetTitle, sheetId });
 
-  const { spreadsheetId, sheetTitle, sheetId } = await store.get('google_spreadsheet')
+  await setFields(fields, store, oAuth2Client)
+  await setStage(cfpConfig, store)
+  await insertIdColumn(spreadSheetId, sheetId, oAuth2Client)
 
-  let selectedFields = await getFields(spreadsheetId, sheetTitle, auth)
-  selectedFields = selectedFields.filter((field, i) => fields.includes(i))
+  const cfpData = await getCFPData(fields, store, oAuth2Client)
 
-  await store.set('vote_fields', selectedFields)
-  await insertIdColumn(spreadsheetId, sheetId, auth)
-
-  const ranges = fields
-    .map(fieldIndex => {
-      // increment the indexes by 1, because COLUMNS A1 notation is 1-based
-      // since we prepended an extra column for the IDs,
-      // increment index by another 1
-      const index = fieldIndex + 2
-      const a1 = indexToA1(index)
-
-      return `${a1}2:${a1}`
-    })
-    .map(field => (`${sheetTitle}!${field}`))
-
-  const columnData = await getColumnData(ranges, spreadsheetId, auth)
-
-  const cfpData = columnData[0].map((value, valueIndex) => {
-    return selectedFields.reduce((talk, field, fieldIndex) => {
-      talk[field] = columnData[fieldIndex][valueIndex][0]
-      return talk
-    }, {})
-  })
-
-  const stage = Object.keys(cfpConfig.voting_stages)[0]
-
-  await store.set('stage', stage)
-
+  const stage = await store.get('stage')
   const idColumnValues = []
 
   const stagedTalkKey = getStagedTalksKey(stage)
@@ -72,7 +37,7 @@ module.exports = async function ({ payload }) {
     await store.rpush(stagedTalkKey, id)
   }
 
-  await insertIds(idColumnValues, spreadsheetId, sheetTitle, auth)
+  await insertIds(idColumnValues, spreadSheetId, sheetTitle, oAuth2Client)
 
   // put cfpData into redis
   // prepare a batch job during that for IDs
@@ -211,4 +176,44 @@ const indexToA1 = (index) => {
   const secondLetter = String.fromCharCode((index % 26) + 64)
 
   return `${firstLetter}${secondLetter}`
+}
+
+const setStage = async (cfpConfig, store) => {
+  const stage = Object.keys(cfpConfig.votingStages)[0]
+  return store.set('stage', stage)
+}
+
+const getCFPData = async (fields, store, auth) => {
+  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+  const selectedFields = await store.get('fields')
+
+  const ranges = fields
+    .map(fieldIndex => {
+      // increment the indexes by 1, because COLUMNS A1 notation is 1-based
+      // since we prepended an extra column for the IDs,
+      // increment index by another 1
+      const index = fieldIndex + 2
+      const a1 = indexToA1(index)
+
+      return `${a1}2:${a1}`
+    })
+    .map(field => (`${sheetTitle}!${field}`))
+
+  const columnData = await getColumnData(ranges, spreadSheetId, auth)
+
+  return columnData[0].map((value, valueIndex) => {
+    return selectedFields.reduce((talk, field, fieldIndex) => {
+      talk[field] = columnData[fieldIndex][valueIndex][0]
+      return talk
+    }, {})
+  })
+}
+
+const setFields = async (fields, store, auth) => {
+  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+
+  const sheetFields = await getFields(spreadSheetId, sheetTitle, auth)
+  const selectedFields = sheetFields.filter((field, i) => fields.includes(i))
+
+  return store.set('fields', selectedFields)
 }

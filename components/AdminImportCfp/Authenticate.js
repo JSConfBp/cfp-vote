@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-export default ({ authUrl, onAuthenticated }) => {
+export default ({ authUrl, next }) => {
   const css = useStyles()
   const { showError } = useNotification()
   const [ showCodeField, setShowCodeField ] = useState(false)
@@ -42,7 +42,7 @@ export default ({ authUrl, onAuthenticated }) => {
 
       return resp
     })
-		.then((resp) => onAuthenticated(resp))
+		.then((resp) => next(resp))
 		.catch(e => {
       console.error(e)
       showError("Authentication failed, try again later");
@@ -92,7 +92,7 @@ export default ({ authUrl, onAuthenticated }) => {
 				variant="contained"
 				color="primary"
 				className={ css.button }
-				onClick={ upload }
+				onClick={ () => upload() }
 			>
 				Next
 			</Button>

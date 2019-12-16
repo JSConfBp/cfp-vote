@@ -30,6 +30,7 @@ export default () => {
   const [ authUrl, setAuthUrl ] = useState('')
   const [ fields, setFields ] = useState([])
   const [ selectedFields, setSelectedFields ] = useState([])
+  const [ sheetMetadata, setSheetMetadata ] = useState({})
 
 
 	const onActivated = ({ needAuth, authUrl }) => {
@@ -43,11 +44,21 @@ export default () => {
 	}
 
 	const onAuthenticated = () => {
-			setActiveStep(2)
-	}
+    setActiveStep(2)
+}
 
-	const onHasSheet = (fields) => {
-		setFields(fields)
+	const onHasSheet = ({
+    fields,
+    spreadSheetTitle,
+    spreadSheetUrl,
+    sheetTitle,
+  }) => {
+    setFields(fields)
+    setSheetMetadata({
+      spreadSheetTitle,
+      spreadSheetUrl,
+      sheetTitle,
+    })
 		setActiveStep(3)
 	}
 
@@ -60,24 +71,25 @@ export default () => {
 		switch (step) {
 			case 0:
 				return <StepActivate
-					onActivated={data => onActivated(data)}
+					next={data => onActivated(data)}
 				/>;
 			case 1:
 				return <StepAuthenticate
-					onAuthenticated={() => onAuthenticated()}
-					authUrl={ authUrl}
+					next={() => onAuthenticated()}
+					authUrl={ authUrl }
 				/>;
 			case 2:
 				return <StepChooseSheet
-					onHasSheet={data => onHasSheet(data)}
+					next={ data => onHasSheet(data) }
 				/>;
 			case 3:
 				return <StepChooseFields
-					onHasFields={(selectedFields) => onHasFields(selectedFields) }
+					next={(selectedFields) => onHasFields(selectedFields) }
 					fields={ fields }
 				/>;
 			case 4:
 				return <StepImportData
+          sheetData={ Object.assign({}, sheetMetadata, { fields } )}
 					selectedFields={ selectedFields }
 				/>;
 			default:

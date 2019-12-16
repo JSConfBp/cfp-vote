@@ -1,26 +1,16 @@
-const store = require('../../../store')
 const { google } = require('googleapis')
+const store = require('../../../store')
+const createGoogleOauthClient = require('../../../auth/google-oauth')
 
-module.exports = async function ({ headers, payload }) {
-  const { spreadsheetId, sheetId } = payload
+module.exports = async function ({ headers, body }) {
+  const { spreadSheetId, sheetId: selectedSheetId } = body
 
-  const googleCredentials = await store.get('google_credentials')
-  const {
-    client_secret: clientSecret,
-    client_id: clientId,
-    redirect_uris: redirectUris } = googleCredentials.installed
+  const oAuth2Client = await createGoogleOauthClient()
+  const spreadsheet = await getSpreadsheet(spreadSheetId, oAuth2Client)
+  const spreadSheetTitle = spreadsheet.properties.title
+  const spreadSheetUrl = spreadsheet.spreadsheetUrl
 
-  const oAuth2Client = new google.auth.OAuth2(
-    clientId,
-    clientSecret,
-    redirectUris[0]
-  )
-  const token = await store.get('google_token')
-  oAuth2Client.setCredentials(token)
-
-  const spreadsheet = await getSpreadsheet(spreadsheetId, oAuth2Client)
-
-  if (spreadsheet.sheets.length > 1 && !sheetId) {
+  if (spreadsheet.sheets.length > 1 && !selectedSheetId) {
     return {
       needSheet: true,
       sheets: spreadsheet.sheets.map(sheet => {
@@ -31,18 +21,22 @@ module.exports = async function ({ headers, payload }) {
       })
     }
   }
-
   let sheetTitle = spreadsheet.sheets[0].properties.title
 
-  if (spreadsheet.sheets.length > 1 && sheetId) {
-    sheetTitle = (spreadsheet.sheets.filter(sheet => (sheet.properties.sheetId === sheetId)))[0].properties.title
+  if (spreadsheet.sheets.length > 1 && selectedSheetId) {
+    sheetTitle = (spreadsheet.sheets.filter(sheet => (sheet.properties.sheetId === selectedSheetId)))[0].properties.title
   }
 
-  const fields = await getFields(spreadsheetId, sheetTitle, oAuth2Client)
+  const fields = await getFields(spreadSheetId, sheetTitle, oAuth2Client)
 
-  await store.set('google_spreadsheet', { spreadsheetId, sheetTitle, sheetId })
+  const sheetId = selectedSheetId || spreadsheet.sheets[0].properties.sheetId
+
+  await store.set('google_spreadsheet', { spreadSheetId, sheetTitle, sheetId })
 
   return {
+    spreadSheetTitle,
+    spreadSheetUrl,
+    sheetTitle,
     needSheet: false,
     fields
   }

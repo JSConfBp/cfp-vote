@@ -6,9 +6,9 @@ module.exports = async function () {
   const fields = await store.get('fields')
   const count = await store.llen(getStagedTalksKey(stage))
 
-  return { 
-    count, 
-    stage, 
-    fields: JSON.parse(fields) 
+  return {
+    count,
+    stage,
+    fields
   }
 }

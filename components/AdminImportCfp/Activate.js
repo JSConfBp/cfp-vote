@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
-export default ({ onActivated }) => {
+export default ({ next }) => {
   const css = useStyles();
   const [ data, setData ] = useState('')
   const { showError } = useNotification()
@@ -42,7 +42,7 @@ export default ({ onActivated }) => {
       return resp.json()
     })
     .then((resp) => {
-      onActivated(resp)
+      next(resp)
     })
     .catch(e => {
       showError("Could not upload JSON, please check the contents and try again.");
