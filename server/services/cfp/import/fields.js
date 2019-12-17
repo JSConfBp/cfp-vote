@@ -10,7 +10,7 @@ const { getStagedTalksKey } = store.keys
 module.exports = async function ({ body: fields }) {
   const oAuth2Client = await createGoogleOauthClient()
 
-  const { spreadSheetId, sheetTitle, sheetId } = await store.get('google_spreadsheet')
+  const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
 
   console.log({ spreadSheetId, sheetTitle, sheetId });
 
@@ -38,6 +38,8 @@ module.exports = async function ({ body: fields }) {
   }
 
   await insertIds(idColumnValues, spreadSheetId, sheetTitle, oAuth2Client)
+
+  await store.hset('gsheet', 'imported', true)
 
   // put cfpData into redis
   // prepare a batch job during that for IDs
@@ -184,7 +186,7 @@ const setStage = async (cfpConfig, store) => {
 }
 
 const getCFPData = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
   const selectedFields = await store.get('fields')
 
   const ranges = fields
@@ -210,7 +212,7 @@ const getCFPData = async (fields, store, auth) => {
 }
 
 const setFields = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
 
   const sheetFields = await getFields(spreadSheetId, sheetTitle, auth)
   const selectedFields = sheetFields.filter((field, i) => fields.includes(i))

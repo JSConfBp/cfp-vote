@@ -31,7 +31,7 @@ module.exports = async function ({ headers, body }) {
 
   const sheetId = selectedSheetId || spreadsheet.sheets[0].properties.sheetId
 
-  await store.set('google_spreadsheet', { spreadSheetId, sheetTitle, sheetId })
+  await store.hset('gsheet', 'spreadsheet', { spreadSheetId, sheetTitle, sheetId })
 
   return {
     spreadSheetTitle,

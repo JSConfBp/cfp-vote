@@ -2,7 +2,7 @@ const store = require('../../../store')
 const { google } = require('googleapis')
 
 const getToken = async (code) => {
-  const googleCredentials = await store.get('google_credentials')
+  const googleCredentials = await store.hget('gsheet', 'credentials')
   const {
     client_secret: clientSecret,
     client_id: clientId,
@@ -27,7 +27,7 @@ const getToken = async (code) => {
 module.exports = async function ({ headers, body: code }) {
   try {
     const token = await getToken(code)
-    await store.set('google_token', token)
+    await store.hset('gsheet', 'token', token)
 
     return {
       succcess: true
