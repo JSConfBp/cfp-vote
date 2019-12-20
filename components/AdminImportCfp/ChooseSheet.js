@@ -118,7 +118,7 @@ export default ({ next }) => {
     <Button
       variant="contained"
       color="primary"
-      className={ css.button }
+      className={ css.nextButton }
       onClick={ upload }
     >
       Next

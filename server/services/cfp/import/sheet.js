@@ -1,6 +1,11 @@
 const { google } = require('googleapis')
 const store = require('../../../store')
 const createGoogleOauthClient = require('../../../auth/google-oauth')
+const {
+  getFields,
+  getSpreadsheet,
+} = require('../../../lib/gsheet')
+
 
 module.exports = async function ({ headers, body }) {
   const { spreadSheetId, sheetId: selectedSheetId } = body
@@ -41,28 +46,3 @@ module.exports = async function ({ headers, body }) {
     fields
   }
 }
-
-const getFields = async (spreadsheetId, sheetTitle, auth) => new Promise((resolve, reject) => {
-  const sheets = google.sheets('v4')
-  sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${sheetTitle}!A1:1`,
-    auth
-  }, (err, response) => {
-    if (err) reject(err)
-
-    resolve(response.data.values[0])
-  })
-})
-
-const getSpreadsheet = async (spreadsheetId, auth) => new Promise((resolve, reject) => {
-  const sheets = google.sheets('v4')
-  sheets.spreadsheets.get({
-    spreadsheetId,
-    auth
-  }, (err, response) => {
-    if (err) reject(err)
-
-    resolve(response.data)
-  })
-})

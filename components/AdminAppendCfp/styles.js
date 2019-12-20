@@ -1,4 +1,8 @@
 export default theme => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
   container: {
 		display: 'block',
 		width: '100%'
@@ -7,22 +11,6 @@ export default theme => ({
 		paddingLeft: 0,
     paddingRight: 0,
     backgroundColor: 'transparent'
-  },
-  textField: {
-		marginLeft: theme.spacing.unit,
-		marginRight: theme.spacing.unit,
-		marginBottom: 4 * theme.spacing.unit,
-		width: 400,
-  },
-  sheetsText: {
-		marginBottom: 4 * theme.spacing.unit,
-		width: 400,
-	},
-	field: {
-		marginLeft: theme.spacing.unit,
-		marginRight: theme.spacing.unit,
-		marginBottom: 4 * theme.spacing.unit,
-		width: 400,
 	},
 	stepContent: {
 		display: 'flex',
@@ -33,7 +21,7 @@ export default theme => ({
     margin: '0 auto',
     marginTop: theme.spacing(4),
     padding: theme.spacing(4)
-  },
+	},
   nextButton: {
     marginTop: theme.spacing(4)
   }

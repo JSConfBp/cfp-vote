@@ -14,6 +14,8 @@ import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
 import AdminExportCfp from '../../components/AdminExportCfp'
+import AdminExportGSheet from '../../components/AdminExportGSheet'
+import AdminAppendCfp from '../../components/AdminAppendCfp'
 import AdminDeleteCfp from '../../components/AdminDeleteCfp'
 import AdminSetStage from '../../components/AdminSetStage'
 import AdminAuditLog from '../../components/AdminAuditLog'
@@ -60,7 +62,7 @@ const getCfp = async (token) => {
 
 const Admin = ({ auth: { login } }) => {
 	const css = useStyles();
-	const [activeTab, setActiveTab] = useState(0)
+	const [activeTab, setActiveTab] = useState('users')
 	const [cfp, setCfp] = useState({})
 
 	const tabChange = (event, newValue) => {
@@ -70,7 +72,8 @@ const Admin = ({ auth: { login } }) => {
 	useEffect(() => {
 		getCfp()
 			.then((data) => {
-				setCfp(data)
+        setCfp(data)
+        setActiveTab('users')
 			})
 	}, [login])
 
@@ -80,7 +83,8 @@ const Admin = ({ auth: { login } }) => {
 
 	const handleUpdate = async () => {
 		const updatedCfp = await getCfp()
-		setCfp(updatedCfp)
+    setCfp(updatedCfp)
+    setActiveTab('users')
 	}
 
 	return (<>
@@ -94,27 +98,71 @@ const Admin = ({ auth: { login } }) => {
 			aria-label="Vertical tabs example"
 			className={css.tabs}
 		>
-			<Tab label="Manage Users" {...a11yProps(0)} className={ classNames(css.tab, css.wrapper) } />
+      <Tab
+        label="Manage Users"
+        value="users"
+        className={ classNames(css.tab, css.wrapper) }
+        {...a11yProps(0)}
+      />
 			{ !cfp.count && (
-				<Tab label="Upload CFP" {...a11yProps(1)} className={ classNames(css.tab, css.wrapper)} />
+        <Tab
+          label="Upload CFP"
+          value="upload"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(1)}
+        />
 			)}
 			{ !cfp.count && (
-				<Tab label="Import CFP" {...a11yProps(2)} className={ classNames(css.tab, css.wrapper)} />
+        <Tab
+          label="Import CFP"
+          value="import"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(2)}
+        />
 			)}
 			{ cfp.count && (
-				<Tab label="Set vote stage" {...a11yProps(1)} className={ classNames(css.tab, css.wrapper)} />
+        <Tab
+          label="Set vote stage"
+          value="stage"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(1)}
+        />
+			)}
+      { cfp.count && cfp.gsheet &&  (
+        <Tab
+          label="Append results"
+          value="append"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(2)}
+        />
 			)}
 			{ cfp.count && (
-				<Tab label="Export results" {...a11yProps(2)} className={ classNames(css.tab, css.wrapper)} />
+        <Tab
+          label="Export results"
+          value="export"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(2)}
+        />
 			)}
 			{ cfp.count && (
-				<Tab label="Delete CFP data" {...a11yProps(3)} className={ classNames(css.tab, css.wrapper)} />
+        <Tab
+          label="Delete CFP data"
+          value="delete"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(3)}
+        />
 			)}
-			<Tab label="Audit log" {...a11yProps(3)} className={ classNames(css.tab, css.wrapper)} />
+      <Tab
+        label="Audit log"
+        value="log"
+        className={ classNames(css.tab, css.wrapper)}
+        {...a11yProps(3)}
+      />
 		</Tabs>
+
 		<Box className={ css.tabContents }>
 
-			<TabPanel value={activeTab} index={0}>
+			<TabPanel value={activeTab} index={'users'}>
 				<AdminManageUsers
 					onUpdate={ handleUpdate }
 					onError={ handleError }
@@ -123,31 +171,49 @@ const Admin = ({ auth: { login } }) => {
 
 		{ !cfp.count && (
 			<>
-			<TabPanel value={activeTab} index={1}>
+			<TabPanel value={activeTab} index={'upload'}>
 				<AdminUploadCfp
-					onUpdate={ handleUpdate }
+					onComplete={ handleUpdate }
 					onError={ handleError }
 				/>
 			</TabPanel>
-			<TabPanel value={activeTab} index={2}>
-				<AdminImportCfp />
+			<TabPanel value={activeTab} index={'import'}>
+				<AdminImportCfp
+          onComplete={ handleUpdate }
+        />
 			</TabPanel>
 			</>
 		)}
 
 		{ !!cfp.count && (
 			<>
-			<TabPanel value={activeTab} index={1}>
+			<TabPanel value={activeTab} index={'stage'}>
 				<AdminSetStage
 					stage={ cfp.stage }
 					onUpdate={ handleUpdate }
 					onError={ handleError }
 				/>
 			</TabPanel>
-			<TabPanel value={activeTab} index={2}>
-				<AdminExportCfp />
-			</TabPanel>
-			<TabPanel value={activeTab} index={3}>
+
+      { cfp.gsheet && (
+        <TabPanel value={activeTab} index={'append'}>
+          <AdminAppendCfp
+            onComplete={ handleUpdate }
+          />
+        </TabPanel>
+      )}
+      { !cfp.gsheet && (
+        <TabPanel value={activeTab} index={'export'}>
+          <AdminExportCfp />
+        </TabPanel>
+      )}
+      { cfp.gsheet && (
+        <TabPanel value={activeTab} index={'export'}>
+          <AdminExportGSheet />
+        </TabPanel>
+      )}
+
+			<TabPanel value={activeTab} index={'delete'}>
 				<AdminDeleteCfp
 					onUpdate={ handleUpdate }
 					onError={ handleError }
@@ -155,7 +221,7 @@ const Admin = ({ auth: { login } }) => {
 			</TabPanel>
 			</>
 		)}
-    	<TabPanel value={activeTab} index={!cfp.count ? 3 : 4}>
+    	<TabPanel value={activeTab} index={'log'}>
 				<AdminAuditLog />
 			</TabPanel>
 		</Box>
