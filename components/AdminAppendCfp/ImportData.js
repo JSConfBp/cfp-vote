@@ -9,8 +9,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useNotification } from 'notification-hook'
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
+const useStyles = makeStyles(theme => ({
+	container: {
+		display: 'block',
+		width: '100%'
+	},
+}))
 
 export default ({sheetData, selectedFields, next}) => {
   const css = useStyles();
@@ -69,7 +73,7 @@ export default ({sheetData, selectedFields, next}) => {
       <Button
         variant="contained"
         color="primary"
-        className={ css.nextButton }
+        className={ css.button }
         target="_blank"
         rel="noopener"
         onClick={ importData }

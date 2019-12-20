@@ -13,7 +13,7 @@ import csvParse from 'csv-parse'
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ onUpdate, onError }) => {
+export default ({ onComplete, onError }) => {
 	const css = useStyles();
 	const [data, setData] = useState('')
 	const [header, setHeader] = useState(null)
@@ -34,7 +34,7 @@ export default ({ onUpdate, onError }) => {
 		.then(() => {
 			showSuccess('CFP uploaded!')
 			setData('')
-			onUpdate()
+			onComplete()
 		})
 		.catch(e => {
 			showError('CFP upload failed.')

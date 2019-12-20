@@ -31,8 +31,8 @@ const zrange = promisify(store.zrange).bind(store)
 
 const lrem = promisify(store.lrem).bind(store)
 
-exports.hset = async (hash, key, value) => hset(hash, key, value)
-exports.hget = async (hash, key) => hget(hash, key)
+exports.hset = async (hash, key, value) => hset(hash, key, JSON.stringify(value))
+exports.hget = async (hash, key) => hget(hash, key).then(value => JSON.parse(value))
 exports.hgetall = async (hash) => hgetall(hash)
 
 exports.rpush = async (list, ...values) => rpush(list, ...values)

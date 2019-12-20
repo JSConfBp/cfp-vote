@@ -8,18 +8,8 @@ import Button from '@material-ui/core/Button';
 
 import { useNotification } from 'notification-hook'
 
-const useStyles = makeStyles(theme => ({
-	container: {
-		display: 'block',
-		width: '100%'
-	},
-	textField: {
-		marginLeft: theme.spacing.unit,
-		marginRight: theme.spacing.unit,
-		marginBottom: 4 * theme.spacing.unit,
-		width: 400,
-	},
-}))
+import styles from './styles'
+const useStyles = makeStyles(styles)
 
 export default ({ next }) => {
   const css = useStyles();
@@ -85,7 +75,7 @@ export default ({ next }) => {
     <Button
       variant={'contained'}
       color="primary"
-      className={css.button}
+      className={ css.nextButton }
       onClick={e => upload()}
     >
       Next

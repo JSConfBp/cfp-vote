@@ -24,7 +24,7 @@ const steps = [
   'Import data'
 ];
 
-export default () => {
+export default ({ onComplete }) => {
   const css = useStyles();
   const [ activeStep, setActiveStep ] = useState(0)
   const [ authUrl, setAuthUrl ] = useState('')
@@ -90,7 +90,8 @@ export default () => {
 			case 4:
 				return <StepImportData
           sheetData={ Object.assign({}, sheetMetadata, { fields } )}
-					selectedFields={ selectedFields }
+          selectedFields={ selectedFields }
+          next={ onComplete }
 				/>;
 			default:
 				return 'Unknown step';

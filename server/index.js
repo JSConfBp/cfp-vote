@@ -58,6 +58,7 @@ module.exports = function (getRoutes, config) {
     require('./resources/auditlog')(server, [ authMiddleware ])
     require('./resources/cfp')(server, [ authMiddleware ])
     require('./resources/cfp/import')(server, [ authMiddleware, bodyParser.json()])
+    require('./resources/cfp/append')(server, [ authMiddleware, bodyParser.json()])
     require('./resources/export')(server, [ authMiddleware ])
     require('./resources/stats')(server, [ authMiddleware, bodyParser.json() ])
     require('./resources/users')(server, [ authMiddleware, bodyParser.json() ])

@@ -2,6 +2,12 @@ const shortid = require('shortid')
 const { google } = require('googleapis')
 const store = require('../../../store')
 const createGoogleOauthClient = require('../../../auth/google-oauth')
+const {
+  getFields,
+  indexToA1,
+  getColumnData,
+  insertIDs,
+} = require('../../../lib/gsheet')
 
 const cfpConfig = require('../../../../cfp.config')
 
@@ -10,13 +16,10 @@ const { getStagedTalksKey } = store.keys
 module.exports = async function ({ body: fields }) {
   const oAuth2Client = await createGoogleOauthClient()
 
-  const { spreadSheetId, sheetTitle, sheetId } = await store.get('google_spreadsheet')
-
-  console.log({ spreadSheetId, sheetTitle, sheetId });
+  const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
 
   await setFields(fields, store, oAuth2Client)
   await setStage(cfpConfig, store)
-  await insertIdColumn(spreadSheetId, sheetId, oAuth2Client)
 
   const cfpData = await getCFPData(fields, store, oAuth2Client)
 
@@ -37,7 +40,10 @@ module.exports = async function ({ body: fields }) {
     await store.rpush(stagedTalkKey, id)
   }
 
-  await insertIds(idColumnValues, spreadSheetId, sheetTitle, oAuth2Client)
+  await insertIdColumn(spreadSheetId, sheetId, oAuth2Client)
+  await insertIDs(idColumnValues, 2, spreadSheetId, sheetTitle, oAuth2Client)
+
+  await store.hset('gsheet', 'imported', true)
 
   // put cfpData into redis
   // prepare a batch job during that for IDs
@@ -48,40 +54,6 @@ module.exports = async function ({ body: fields }) {
     success: true
   }
 }
-
-const getFields = async (spreadsheetId, sheetTitle, auth) => new Promise((resolve, reject) => {
-  const sheets = google.sheets('v4')
-  sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${sheetTitle}!A1:1`,
-    auth
-  }, (err, response) => {
-    if (err) {
-      console.error(err)
-      reject(err)
-      return
-    }
-
-    resolve(response.data.values[0])
-  })
-})
-
-const getColumnData = async (ranges, spreadsheetId, auth) => new Promise((resolve, reject) => {
-  const sheets = google.sheets('v4')
-  sheets.spreadsheets.values.batchGet({
-    spreadsheetId,
-    ranges,
-    auth
-  }, (err, response) => {
-    if (err) {
-      console.error(err)
-      reject(err)
-      return
-    }
-
-    resolve(response.data.valueRanges.map(valueRange => valueRange.values))
-  })
-})
 
 const insertIdColumn = async (spreadsheetId, sheetId, auth) => new Promise((resolve, reject) => {
   const sheets = google.sheets('v4')
@@ -135,64 +107,19 @@ const insertIdColumn = async (spreadsheetId, sheetId, auth) => new Promise((reso
   })
 })
 
-const insertIds = async (values, spreadsheetId, sheetTitle, auth) => new Promise((resolve, reject) => {
-  const sheets = google.sheets('v4')
-
-  sheets.spreadsheets.values.batchUpdate({
-    spreadsheetId,
-    auth,
-    resource: {
-      valueInputOption: 'USER_ENTERED',
-      data: [
-        {
-          'range': `${sheetTitle}!A2:A`,
-          'majorDimension': 'COLUMNS',
-          'values': [
-            values
-          ]
-        }
-      ],
-      includeValuesInResponse: false
-    }
-  }, (err, response) => {
-    if (err) {
-      console.error(err)
-      reject(err)
-      return
-    }
-
-    resolve()
-  })
-})
-
-const indexToA1 = (index) => {
-  const charcodedIndex = index + 64
-
-  if ((charcodedIndex) <= 90) {
-    return String.fromCharCode(charcodedIndex)
-  }
-
-  const firstLetter = String.fromCharCode(Math.floor(index / 26) + 64)
-  const secondLetter = String.fromCharCode((index % 26) + 64)
-
-  return `${firstLetter}${secondLetter}`
-}
-
 const setStage = async (cfpConfig, store) => {
   const stage = Object.keys(cfpConfig.votingStages)[0]
   return store.set('stage', stage)
 }
 
 const getCFPData = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
   const selectedFields = await store.get('fields')
 
   const ranges = fields
     .map(fieldIndex => {
       // increment the indexes by 1, because COLUMNS A1 notation is 1-based
-      // since we prepended an extra column for the IDs,
-      // increment index by another 1
-      const index = fieldIndex + 2
+      const index = fieldIndex + 1
       const a1 = indexToA1(index)
 
       return `${a1}2:${a1}`
@@ -210,7 +137,7 @@ const getCFPData = async (fields, store, auth) => {
 }
 
 const setFields = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.get('google_spreadsheet')
+  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
 
   const sheetFields = await getFields(spreadSheetId, sheetTitle, auth)
   const selectedFields = sheetFields.filter((field, i) => fields.includes(i))

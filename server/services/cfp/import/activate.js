@@ -10,7 +10,7 @@ module.exports = async function ({ headers, body: credentials }) {
     redirect_uris: redirectUris
   } = credentials.installed
 
-  await store.set('google_credentials', credentials)
+  await store.hset('gsheet', 'credentials', credentials)
 
   const oAuth2Client = new google.auth.OAuth2(
     clientId,
@@ -18,7 +18,7 @@ module.exports = async function ({ headers, body: credentials }) {
     redirectUris[0]
   )
 
-  const googleToken = await store.get('google_token')
+  const googleToken = await store.hget('gsheet', 'token')
 
   if (!googleToken) {
     const authUrl = oAuth2Client.generateAuthUrl({
