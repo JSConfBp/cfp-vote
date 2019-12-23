@@ -1,6 +1,25 @@
 const store = require('../../store')
 const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
 
+
+const cleanup = (data) => {
+  try {
+    return data
+        .replace(/^"/gm, '')
+        .replace(/"$/gm, '')
+        //.replace(/\\n\\n/gm, "\n\n")
+        .replace(/\\n ?\\n/gm, "\n\n")
+        .replace(/\\n/gm, "\n\n")
+        .replace(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gm, 'REDACTED_URL')
+  } catch(e) {
+    return data
+      .replace(/^"/gm, '')
+      .replace(/"$/gm, '')
+      .replace(/\\n\\n/gm, "\n\n")
+  }
+}
+
+
 module.exports = async function (request) {
   const { login } = request.user
 
@@ -29,7 +48,7 @@ module.exports = async function (request) {
 
   data.id = nextId
   data.fields = fields.reduce((obj, field) => {
-    obj[field] = nextTalk[field]
+    obj[field] = cleanup(nextTalk[field])
     return obj
   }, {})
 

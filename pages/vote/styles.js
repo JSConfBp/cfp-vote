@@ -46,7 +46,11 @@
 	p: {
 		lineHeight: 1.5,
 		marginBottom: theme.spacing.unit * 4,
-	},
+  },
+  last_p: {
+    borderTop: '1px solid #dedede',
+    paddingTop: theme.spacing.unit * 2,
+  },
 	desktop_vote: {
 		[theme.breakpoints.down('sm')]: {
 			display: 'none'
