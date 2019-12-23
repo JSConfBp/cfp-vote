@@ -119,11 +119,12 @@ const Vote = () => {
 								</Typography>)
 							} else {
 								return (<Typography
-									variant="body1"
-									className={ css.p }
+                  variant="body1"
+                  component="div"
+									className={ classnames(css.p, i === 2 && css.last_p) }
 									key={ `field-${i}` }
 								>
-									{ talk.fields[field] }
+                  { talk.fields[field].split(/\n\n/).map((p, key) => (<p key={`p-${key}`}>{ p }</p>)) }
 								</Typography>)
 							}
 						})
