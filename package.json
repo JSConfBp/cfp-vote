@@ -52,7 +52,7 @@
     "googleapis": "^46.0.0",
     "helmet": "^3.21.2",
     "isomorphic-unfetch": "^3.0.0",
-    "jsrsasign": "^8.0.12",
+    "jsrsasign": "^8.0.19",
     "jws": "^3.2.2",
     "lodash.throttle": "^4.1.1",
     "memoize-one": "^5.1.1",
