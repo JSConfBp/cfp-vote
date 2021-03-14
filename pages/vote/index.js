@@ -50,6 +50,7 @@ const Vote = () => {
 	const { showError, showSuccess } = useNotification()
 	const [talk, setTalk] = useState(null)
 	const [cfp, setCfp] = useState(null)
+  const [fieldType, setFieldType] = useState('')
 
 	useEffect(() => {
 		Promise.all([
@@ -58,6 +59,7 @@ const Vote = () => {
 		]).then(([cfp, talk]) => {
 			setCfp(cfp)
 			setTalk(talk)
+      setFieldType(talk.id.split('_')[0])
 			setLoading(false)
 		})
 	}, [false])
@@ -94,6 +96,8 @@ const Vote = () => {
 
 	const { completed } = talk || {}
 
+
+
 	return (<div className={css.root}>
 	{ !loading && (
 		<Grid container spacing={ 24 }>
@@ -108,7 +112,7 @@ const Vote = () => {
 						Nice job, you're completed voting in this stage.
 					</Typography>) }
 
-					{ !completed && (cfp.fields.map((field, i) => {
+					{ talk && !completed && (cfp.fields[fieldType].map(({field}, i) => {
 							if (i === 0) {
 								return (<Typography
 									variant="h3"

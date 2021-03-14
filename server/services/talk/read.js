@@ -44,10 +44,16 @@ module.exports = async function (request) {
 
   const nextId = await store.lindex(stagedTalksKey, nextIndex)
   const nextTalk = await store.hgetall(nextId)
-  const fields = await store.get('fields')
+  const fields = {
+    gsheet: await store.hget('gsheet', 'fields'),
+    sessionize: await store.hget('sessionize', 'fields')
+  }
 
   data.id = nextId
-  data.fields = fields.reduce((obj, field) => {
+
+  let fieldType = nextId.split('_')[0]
+
+  data.fields = fields[fieldType].reduce((obj, {field}) => {
     obj[field] = cleanup(nextTalk[field])
     return obj
   }, {})
