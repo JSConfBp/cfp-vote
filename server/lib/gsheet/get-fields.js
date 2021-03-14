@@ -9,6 +9,7 @@ module.exports = async (spreadsheetId, sheetTitle, auth) => new Promise((resolve
   }, (err, response) => {
     if (err) reject(err)
 
-    resolve(response.data.values[0])
+    const data = response.data.values[0].map((item, i) => ({ field: item, id: i }))
+    resolve(data)
   })
 })

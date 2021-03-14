@@ -140,7 +140,9 @@ const setFields = async (fields, store, auth) => {
   const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
 
   const sheetFields = await getFields(spreadSheetId, sheetTitle, auth)
-  const selectedFields = sheetFields.filter((field, i) => fields.includes(i))
+  const selectedFields = sheetFields
+    .filter(field => fields.some(el => el === field.id))
+    .map(item => item.field)
 
   return store.set('fields', selectedFields)
 }

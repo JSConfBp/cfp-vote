@@ -13,6 +13,7 @@ import MenuBar from '../../components/MenuBar';
 import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
+import AdminImportSessionize from '../../components/AdminImportSessionize'
 import AdminExportCfp from '../../components/AdminExportCfp'
 import AdminExportGSheet from '../../components/AdminExportGSheet'
 import AdminAppendCfp from '../../components/AdminAppendCfp'
@@ -115,7 +116,15 @@ const Admin = ({ auth: { login } }) => {
 			{ !cfp.count && (
         <Tab
           label="Import CFP"
-          value="import"
+          value="import-gsheet"
+          className={ classNames(css.tab, css.wrapper)}
+          {...a11yProps(2)}
+        />
+			)}
+      	{ !cfp.count && (
+        <Tab
+          label="Import Sessionize"
+          value="import-sessionize"
           className={ classNames(css.tab, css.wrapper)}
           {...a11yProps(2)}
         />
@@ -177,8 +186,13 @@ const Admin = ({ auth: { login } }) => {
 					onError={ handleError }
 				/>
 			</TabPanel>
-			<TabPanel value={activeTab} index={'import'}>
+			<TabPanel value={activeTab} index={'import-gsheet'}>
 				<AdminImportCfp
+          onComplete={ handleUpdate }
+        />
+			</TabPanel>
+      <TabPanel value={activeTab} index={'import-sessionize'}>
+				<AdminImportSessionize
           onComplete={ handleUpdate }
         />
 			</TabPanel>
@@ -195,7 +209,7 @@ const Admin = ({ auth: { login } }) => {
 				/>
 			</TabPanel>
 
-      { cfp.gsheet && (
+      { (cfp.gsheet || cfp.sessionize) && (
         <TabPanel value={activeTab} index={'append'}>
           <AdminAppendCfp
             onComplete={ handleUpdate }

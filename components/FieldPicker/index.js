@@ -16,14 +16,14 @@ export default ({ fields, onHasFields }) => {
 	const [checked, setChecked] = useState([])
 	const [disabledList, setDisabledList] = useState(false)
 
-	const handleToggle = (index) => {
-		
+	const handleToggle = (id) => {
+
 		let newData = checked.slice(0)
 
-		if (checked.includes(index)) {
-			newData = newData.filter(item => (item !== index))
+		if (checked.includes(id)) {
+			newData = newData.filter(item => (item !== id))
 		} else {
-			newData.push(index)
+			newData.push(id)
 		}
 
 		setDisabledList(newData.length >= 3)
@@ -31,13 +31,17 @@ export default ({ fields, onHasFields }) => {
 	}
 
 	const upload = () => {
-		onHasFields(checked)
+    const data = checked.map(id => {
+      return fields.find(element => element.id === id)
+    })
+		onHasFields(data)
 	}
 
 	return (<>
 		<Typography variant="body1" component="p" className={ css.text }>
-			Pick 3 fields you wish to show during the voting process. <br />
-			To help bias-free voting, avoid fields that might reveal the submitter's identity.
+			Pick maximum 3 fields you wish to show during the voting process. <br />
+			To help bias-free voting, avoid fields that might reveal the submitter's identity.<br />
+      No need to pick all 3, if you wish you can pick two or a single one.
 		</Typography>
 
 		<Typography variant="body1" component="p" className={ css.text }>
@@ -45,21 +49,21 @@ export default ({ fields, onHasFields }) => {
 		</Typography>
 
 		<List className={css.list}>
-		{fields.map((field, i) => (
+		{fields.map((item) => (
 			<ListItem
-				key={`field_${i}`}
+				key={`field_${item.id}`}
 				role={undefined}
 				dense
 				button
-				disabled={ !checked.includes(i) && disabledList }
-				onClick={e => handleToggle(i)}
+				disabled={ !checked.includes(item.id) && disabledList }
+				onClick={e => handleToggle(item.id)}
 			>
 				<Checkbox
-					checked={ checked.includes(i) }
+					checked={ checked.includes(item.id) }
 					tabIndex={-1}
 					disableRipple
 				/>
-				<ListItemText primary={field} />
+				<ListItemText primary={item.field} />
 			</ListItem>
 		))}
 		</List>
@@ -78,4 +82,3 @@ export default ({ fields, onHasFields }) => {
 }
 
 
-  

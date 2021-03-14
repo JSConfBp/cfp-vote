@@ -3,8 +3,7 @@
       "spec/*",
       "components/*",
       "context/*",
-      "pages/*",
-      "lib/*"
+      "pages/*"
     ],
     "delay": "1500"
   }
