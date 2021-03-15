@@ -16,7 +16,7 @@ module.exports = async ({ body }) => {
 
   const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
   const sheetFields = await getFields(spreadSheetId, sheetTitle, oauthClient)
-  const fields = await store.get('fields')
+  const fields = await store.get('ghseet', 'fields')
   const stage = await store.get('stage')
   const fieldIndexes = fields.map(field => sheetFields.indexOf(field))
 
@@ -27,7 +27,7 @@ module.exports = async ({ body }) => {
   const idColumnValues = []
 
   for (let i = indexOffset; i < data.length; i++) {
-    const id = `talk_${shortid.generate()}`
+    const id = `gsheet_talk_${shortid.generate()}`
     idColumnValues.push(id)
 
     Object.entries(data[i]).forEach(async ([key, value]) => {

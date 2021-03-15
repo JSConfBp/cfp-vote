@@ -56,8 +56,8 @@ export default ({sheetData, selectedFields, next}) => {
           Fields to import
         </p>
         <ul>
-          {selectedFields.map((field, id) => <li key={`${id}`}>
-            { sheetData.fields[field] }
+          {selectedFields.map((item) => <li key={`${item.id}`}>
+            { item.field }
           </li>)}
         </ul>
       </Typography>

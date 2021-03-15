@@ -20,8 +20,10 @@ module.exports = async ({ body }) => {
 
   const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
   const sheetFields = await getFields(spreadSheetId, sheetTitle, oauthClient)
-  const fields = await store.get('fields')
-  const fieldIndexes = fields.map(field => sheetFields.indexOf(field))
+  const fields = await store.hget('gsheet', 'fields')
+  const fieldIndexes = fields.map(({field, id}) => id)
+
+  console.log(fieldIndexes)
 
   const data = await getCFPData([0, ...fieldIndexes], store, oauthClient)
   const indexOffset = data.findIndex(elem => !elem.CFP_ID)

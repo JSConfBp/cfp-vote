@@ -31,7 +31,7 @@ module.exports = async function () {
   )
 
   await store.del('stage')
-  await store.del('fields')
+  await store.del('sessionize')
   await store.del('gsheet')
 
   const users = await getUsers()

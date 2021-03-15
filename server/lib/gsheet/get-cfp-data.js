@@ -5,9 +5,9 @@ const indexToA1 = require('./index-to-a1')
 
 module.exports = async (fields, store, auth) => {
   const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
-  const selectedFields = await store.get('fields')
+  const selectedFields = await store.hget('gsheet', 'fields')
 
-  selectedFields.unshift('CFP_ID')
+  selectedFields.unshift({ field: 'CFP_ID', id: '0'})
 
   const ranges = fields
     .map(fieldIndex => {
