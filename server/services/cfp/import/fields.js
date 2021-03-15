@@ -18,7 +18,8 @@ module.exports = async function ({ body: fields }) {
 
   const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
 
-  await setFields(fields, store, oAuth2Client)
+  await store.hset('gsheet', 'fields', fields)
+  // await setFields(fields, store, oAuth2Client)
   await setStage(cfpConfig, store)
 
   const cfpData = await getCFPData(fields, store, oAuth2Client)
@@ -30,7 +31,7 @@ module.exports = async function ({ body: fields }) {
   const cfpLength = cfpData.length
 
   for (let i = 0; i < cfpLength; i++) {
-    const id = `talk_${shortid.generate()}`
+    const id = `gsheet_talk_${shortid.generate()}`
     idColumnValues.push(id)
 
     Object.entries(cfpData[i]).forEach(async ([key, value]) => {
@@ -114,10 +115,10 @@ const setStage = async (cfpConfig, store) => {
 
 const getCFPData = async (fields, store, auth) => {
   const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
-  const selectedFields = await store.get('fields')
+  const selectedFields = await store.hget('gsheet', 'fields')
 
   const ranges = fields
-    .map(fieldIndex => {
+    .map(({ field, id: fieldIndex }) => {
       // increment the indexes by 1, because COLUMNS A1 notation is 1-based
       const index = fieldIndex + 1
       const a1 = indexToA1(index)
@@ -129,7 +130,14 @@ const getCFPData = async (fields, store, auth) => {
   const columnData = await getColumnData(ranges, spreadSheetId, auth)
 
   return columnData[0].map((value, valueIndex) => {
-    return selectedFields.reduce((talk, field, fieldIndex) => {
+    return selectedFields.reduce((talk, {field, id}, fieldIndex) => {
+
+      console.log(fieldIndex, valueIndex, field)
+      console.log(columnData.length)
+      console.log(columnData[0].length)
+      //console.log(columnData)
+      console.log(columnData[fieldIndex][valueIndex][0])
+
       talk[field] = columnData[fieldIndex][valueIndex][0]
       return talk
     }, {})
@@ -144,5 +152,5 @@ const setFields = async (fields, store, auth) => {
     .filter(field => fields.some(el => el === field.id))
     .map(item => item.field)
 
-  return store.set('fields', selectedFields)
+  return store.hset('gsheet', 'fields', selectedFields)
 }

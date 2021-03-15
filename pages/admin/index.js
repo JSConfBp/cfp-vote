@@ -113,17 +113,17 @@ const Admin = ({ auth: { login } }) => {
           {...a11yProps(1)}
         />
 			)}
-			{ !cfp.count && (
+			{ !cfp.gsheet && (
         <Tab
-          label="Import CFP"
+          label="Import from Google Sheet"
           value="import-gsheet"
           className={ classNames(css.tab, css.wrapper)}
           {...a11yProps(2)}
         />
 			)}
-      	{ !cfp.count && (
+      { !cfp.sessionize && (
         <Tab
-          label="Import Sessionize"
+          label="Import from Sessionize"
           value="import-sessionize"
           className={ classNames(css.tab, css.wrapper)}
           {...a11yProps(2)}
@@ -137,7 +137,7 @@ const Admin = ({ auth: { login } }) => {
           {...a11yProps(1)}
         />
 			)}
-      { cfp.count && cfp.gsheet &&  (
+      { (cfp.gsheet || cfp.sessionize) &&  (
         <Tab
           label="Append results"
           value="append"
@@ -179,25 +179,28 @@ const Admin = ({ auth: { login } }) => {
 			</TabPanel>
 
 		{ !cfp.count && (
-			<>
+
 			<TabPanel value={activeTab} index={'upload'}>
 				<AdminUploadCfp
 					onComplete={ handleUpdate }
 					onError={ handleError }
 				/>
 			</TabPanel>
+    )}
+    { !cfp.gsheet && (
 			<TabPanel value={activeTab} index={'import-gsheet'}>
 				<AdminImportCfp
           onComplete={ handleUpdate }
         />
 			</TabPanel>
+    )}
+    { !cfp.sessionize && (
       <TabPanel value={activeTab} index={'import-sessionize'}>
 				<AdminImportSessionize
           onComplete={ handleUpdate }
         />
 			</TabPanel>
-			</>
-		)}
+    )}
 
 		{ !!cfp.count && (
 			<>
