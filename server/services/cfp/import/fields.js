@@ -131,13 +131,6 @@ const getCFPData = async (fields, store, auth) => {
 
   return columnData[0].map((value, valueIndex) => {
     return selectedFields.reduce((talk, {field, id}, fieldIndex) => {
-
-      console.log(fieldIndex, valueIndex, field)
-      console.log(columnData.length)
-      console.log(columnData[0].length)
-      //console.log(columnData)
-      console.log(columnData[fieldIndex][valueIndex][0])
-
       talk[field] = columnData[fieldIndex][valueIndex][0]
       return talk
     }, {})

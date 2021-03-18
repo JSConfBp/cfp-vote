@@ -18,18 +18,15 @@ module.exports = async ({ body }) => {
     }
   }
 
-  const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
-  const sheetFields = await getFields(spreadSheetId, sheetTitle, oauthClient)
   const fields = await store.hget('gsheet', 'fields')
-  const fieldIndexes = fields.map(({field, id}) => id)
 
-  console.log(fieldIndexes)
-
-  const data = await getCFPData([0, ...fieldIndexes], store, oauthClient)
+  fields.unshift({ field: 'CFP_ID', id: 0})
+  const data = await getCFPData(fields, store, oauthClient)
   const indexOffset = data.findIndex(elem => !elem.CFP_ID)
+  const count = indexOffset > -1 ? data.length - indexOffset : 0
 
   return {
     success: true,
-    count: data.length - indexOffset
+    count
   }
 }

@@ -7,10 +7,12 @@ module.exports = async (fields, store, auth) => {
   const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
   const selectedFields = await store.hget('gsheet', 'fields')
 
-  selectedFields.unshift({ field: 'CFP_ID', id: '0'})
+  selectedFields.unshift({ field: 'CFP_ID', id: 0})
 
+  console.log(fields)
   const ranges = fields
-    .map(fieldIndex => {
+    .map(({field, id: fieldIndex}) => {
+
       // increment the indexes by 1, because COLUMNS A1 notation is 1-based
       const index = fieldIndex + 1
       const a1 = indexToA1(index)
@@ -22,7 +24,7 @@ module.exports = async (fields, store, auth) => {
   const columnData = await getColumnData(ranges, spreadSheetId, auth)
 
   return columnData[1].map((value, valueIndex) => {
-    return selectedFields.reduce((talk, field, fieldIndex) => {
+    return selectedFields.reduce((talk, {field, id}, fieldIndex) => {
       if (fieldIndex === 0 && !columnData[fieldIndex][valueIndex]) {
         talk[field] = null
       } else {
