@@ -15,12 +15,12 @@ module.exports = async ({ body }) => {
   const oauthClient = await createGoogleOauthClient()
 
   const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
-  const sheetFields = await getFields(spreadSheetId, sheetTitle, oauthClient)
-  const fields = await store.get('ghseet', 'fields')
-  const stage = await store.get('stage')
-  const fieldIndexes = fields.map(field => sheetFields.indexOf(field))
 
-  const data = await getCFPData([0, ...fieldIndexes], store, oauthClient)
+  const fields = await store.hget('gsheet', 'fields')
+  const stage = await store.get('stage')
+
+  fields.unshift({ field: 'CFP_ID', id: 0})
+  const data = await getCFPData(fields, store, oauthClient)
   const indexOffset = data.findIndex(elem => !elem.CFP_ID)
 
   const stagedTalkKey = getStagedTalksKey(stage)
