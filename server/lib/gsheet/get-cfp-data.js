@@ -8,8 +8,6 @@ module.exports = async (fields, store, auth) => {
   const selectedFields = await store.hget('gsheet', 'fields')
 
   selectedFields.unshift({ field: 'CFP_ID', id: 0})
-
-  console.log(fields)
   const ranges = fields
     .map(({field, id: fieldIndex}) => {
 
