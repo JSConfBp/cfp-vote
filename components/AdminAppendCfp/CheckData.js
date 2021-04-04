@@ -6,9 +6,10 @@ import Button from '@material-ui/core/Button';
 import styles from './styles'
 const useStyles = makeStyles(styles)
 
-export default ({ count, next }) => {
+export default ({ count: { gsheet = 0, sessionize = 0}, next }) => {
   const css = useStyles();
 
+  const count = gsheet + sessionize
   return (<>
 
   {count === 0 &&
@@ -17,16 +18,15 @@ export default ({ count, next }) => {
     </Typography>
   }
 
-  {count > 0 &&
+  {count > 0 && <>
     <Typography variant="body1" component="p">
       There {count > 1 ? 'are' : 'is' } {count} new CFP submission{count > 1 ? 's' : '' } available for import.
     </Typography>
-  }
 
-  {count > 0 &&
     <Typography variant="body1" component="p">
       Click the button below, to start
     </Typography>
+    </>
   }
 
   <Button

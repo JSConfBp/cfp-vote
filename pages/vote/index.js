@@ -87,6 +87,7 @@ const Vote = () => {
 			setModalOpen(false)
 			const talk = await getNextTalk()
 
+      setFieldType(talk.id.split('_')[0])
 			setTalk(talk)
 			setLoading(false)
 

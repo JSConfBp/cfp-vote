@@ -1,9 +1,13 @@
 const fetch = require('isomorphic-unfetch')
 const cache = require('./cache')
 
-module.exports = async (url) => {
+module.exports = async (url, noCache = '') => {
 
   try {
+    if (noCache === 'no-cache') {
+      throw "Requesting fresh data"
+    }
+
     const cachedData = await cache.read(url)
     const data = JSON.parse(cachedData)
     return data
