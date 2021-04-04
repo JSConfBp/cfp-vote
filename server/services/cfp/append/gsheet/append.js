@@ -1,14 +1,14 @@
 const shortid = require('shortid')
 
-const store = require('../../../store')
-const createGoogleOauthClient = require('../../../auth/google-oauth')
+const store = require('../../../../store')
+const createGoogleOauthClient = require('../../../../auth/google-oauth')
 const { getStagedTalksKey } = store.keys
 
 const {
   getFields,
   getCFPData,
   insertIDs,
-} = require('../../../lib/gsheet')
+} = require('../../../../lib/gsheet')
 
 module.exports = async ({ body }) => {
 

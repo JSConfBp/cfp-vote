@@ -8,7 +8,7 @@ module.exports = async function ({ body: fields }) {
   await store.hset('sessionize', 'fields', fields)
   await setStage(cfpConfig, store)
 
-  const cfpData = await getCFPData(fields, store)
+  const cfpData = await getCFPData(store)
   const stage = await store.get('stage')
   const stagedTalkKey = getStagedTalksKey(stage)
 
@@ -36,7 +36,7 @@ const setStage = async (cfpConfig, store) => {
   return store.set('stage', stage)
 }
 
-const getCFPData = async (fields, store) => {
+const getCFPData = async (store) => {
   const url = await store.hget('sessionize', 'api-url')
   const selectedFields = await store.hget('sessionize', 'fields')
 

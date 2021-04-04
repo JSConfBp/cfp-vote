@@ -10,6 +10,7 @@ const store = createStore()
 
 const get = promisify(store.get).bind(store)
 const set = promisify(store.set).bind(store)
+const keys = promisify(store.keys).bind(store)
 const hset = promisify(store.hset).bind(store)
 const hget = promisify(store.hget).bind(store)
 const hgetall = promisify(store.hgetall).bind(store)
@@ -34,6 +35,8 @@ const lrem = promisify(store.lrem).bind(store)
 exports.hset = async (hash, key, value) => hset(hash, key, JSON.stringify(value))
 exports.hget = async (hash, key) => hget(hash, key).then(value => JSON.parse(value))
 exports.hgetall = async (hash) => hgetall(hash)
+
+exports.getkeys = async (str) => keys(str)
 
 exports.rpush = async (list, ...values) => rpush(list, ...values)
 exports.lpush = async (list, ...values) => lpush(list, ...values)

@@ -11,17 +11,20 @@ const getFile = (str) => {
   return `/tmp/${key}`
 }
 
+const clear = async (name) => {
+  const file = getFile(name)
+  await remove(file, {
+    force: true
+  })
+}
+
 module.exports.read = async (name) => {
   const file = getFile(name)
   const cacheStat = await stat(file)
   const ageMinutes = (new Date() - new Date(cacheStat.mtimeMs)) / 1000 / 60
-  console.log(ageMinutes)
 
   if (ageMinutes >= 60) {
-    await remove(file, {
-      force: true
-    })
-
+    await clear(name)
     throw Error('Not found in cache')
   }
 
@@ -32,3 +35,5 @@ module.exports.write = async (name, data) => {
   const file = getFile(name)
   await write(file, data)
 }
+
+module.exports.clear = clear
