@@ -56,8 +56,6 @@ export default ({ onComplete }) => {
     })
     .then(r => r.json())
     .then(data => {
-      console.log(data);
-
       if (data.gsheet && !data.sessionize) {
         setSource('gsheet')
         setSourceGsheets()
@@ -82,8 +80,6 @@ export default ({ onComplete }) => {
     })
     .then(r => r.json())
     .then(data => {
-      console.log(data);
-
       if (data.success) {
         setNewDataCount(data.count)
         setActiveStep(3)
@@ -102,8 +98,6 @@ export default ({ onComplete }) => {
     })
     .then(r => r.json())
     .then(data => {
-      console.log(data);
-
       if (data.success) {
         setNewDataCount(data.count)
         setActiveStep(1)
@@ -136,8 +130,6 @@ export default ({ onComplete }) => {
     })
     .then(r => r.json())
     .then(data => {
-      console.log(data);
-
       if (data.success) {
         onComplete()
         showSuccess('Import complete')
@@ -238,7 +230,6 @@ export default ({ onComplete }) => {
   return (
     <div className={css.container}>
       { source && <Stepper activeStep={activeStep} className={css.importStepper}>
-        { console.log(source,steps[source] )}
         {steps[source].map((label, index) => (
           <Step key={label}>
             <StepButton>
