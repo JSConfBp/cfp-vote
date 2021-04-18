@@ -39,6 +39,7 @@ module.exports = function (getRoutes, config) {
     // server.use(require('morgan')('combined'));
     server.use(require('helmet')())
     server.use(require('cookie-parser')())
+    server.use(require('method-override')())
     server.use(require('express-session')({
       secret: require('uuid/v4')(),
       resave: false,
