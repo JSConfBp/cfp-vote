@@ -1,4 +1,4 @@
-const GitHubStrategy = require('passport-github').Strategy
+const GitHubStrategy = require('passport-github2').Strategy
 const boom = require('boom')
 const auditlog = require('./auditlog')
 const clientCreate = require('../services/client/create')
