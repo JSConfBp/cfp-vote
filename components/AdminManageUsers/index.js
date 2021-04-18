@@ -24,7 +24,7 @@ export default ({ onUpdate, onError }) => {
 	const [freeLoginMode, setFreeLoginMode] = useState(false)
 	const { showError, showSuccess } = useNotification()
 
-	const getUsers = () => fetch('/api/users')
+	const getUsers = () => fetch('/api/users_full')
 		.then(res => {
 			if (res.status >= 400) throw (`Api error: ${result.status}`)
 
