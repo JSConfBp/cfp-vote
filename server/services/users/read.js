@@ -2,12 +2,16 @@ const fetch =  require('isomorphic-unfetch')
 const store = require('../../store')
 const ADMINS = JSON.parse(process.env.ADMINS)
 
-const getUser = (user) => fetch(`https://api.github.com/users/${user}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`)
-  .then(res => res.json())
-  .then(data => {
-    console.log(data)
-    return data
-  })
+const getUser = (user) => {
+
+  console.log("fetch user data ", user)
+  return fetch(`https://api.github.com/users/${user}?client_id=${process.env.GITHUB_CLIENT_ID}&client_secret=${process.env.GITHUB_CLIENT_SECRET}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      return data
+    })
+}
 
 module.exports = async function () {
   const storedUsers = await store.smembers('users')
