@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-import { useNotification } from 'notification-hook'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { useNotification } from '../NotificationHook'
 
 export default ({ authUrl, next }) => {
-  const css = useStyles()
+
   const { showError } = useNotification()
   const [ showCodeField, setShowCodeField ] = useState(false)
   const [ code, setCode ] = useState('')
@@ -27,7 +22,6 @@ export default ({ authUrl, next }) => {
 		})
     .then(r => r.json())
     .then((resp) => {
-      console.log(resp)
 
       return resp
     })
@@ -57,7 +51,6 @@ export default ({ authUrl, next }) => {
 			<Button
 				variant="contained"
 				color="primary"
-				className={ css.nextButton }
 				onClick={ () => openAuth() }
 			>
 				Authenticate
@@ -71,7 +64,12 @@ export default ({ authUrl, next }) => {
 			<TextField
         id="standard-multiline-static"
         label="Verification Code"
-        className={ css.textField }
+        sx={{
+          marginLeft: theme.spacing.unit,
+          marginRight: theme.spacing.unit,
+          marginBottom: 4 * theme.spacing.unit,
+          width: 400,
+        }}
 				margin="normal"
 				fullWidth={ true }
 				onChange={ e => setCode(e.target.value) }
@@ -80,7 +78,9 @@ export default ({ authUrl, next }) => {
 			<Button
 				variant="contained"
 				color="primary"
-				className={ css.nextButton }
+				sx={{
+          marginTop: theme.spacing(4)
+        }}
 				onClick={ () => upload() }
 			>
 				Next

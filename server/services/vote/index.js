@@ -1,3 +1,3 @@
 module.exports = {
-  post: require('./post')
+  post: require('../../../services/vote/post')
 }

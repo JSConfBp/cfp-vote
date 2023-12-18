@@ -1,16 +1,22 @@
 
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import { deepPurple } from '@mui/material/colors';
 
 export default ({ stats }) => {
-	const css = useStyles()
 
 	if (stats.length < 1) {
-		return (<div className={css.progress}></div>)
+		return (<div sx={{
+      width: 128,
+      height: 160,
+      margin: '0 auto',
+      marginBottom: 32,
+      marginTop: 16,
+      position: 'relative'
+    }}></div>)
 	}
 
 	const userCount = stats.length
@@ -18,19 +24,50 @@ export default ({ stats }) => {
 	const sum = stats.reduce((sum, stat) => (sum + stat.count), 0)
 	const percent = Math.round(100 * (sum / (userCount * total)))
 
-	return (<div className={css.progress}>
+	return (<Box sx={{
+		width: 128,
+		height: 160,
+		margin: '0 auto',
+		marginBottom: 2,
+		marginTop: 1,
+		position: 'relative'
+	}}>
 		<CircularProgress
 			size="128"
-			className={css.circle} variant="static" value={percent} />
+			sx={{
+        top: 0,
+        width: 128,
+        height: 128,
+        color: deepPurple[500],
+        zIndex: 2,
+        position: 'absolute'
+      }} variant="determinate" value={percent} />
 		<CircularProgress
 			size="128"
-			className={css.shadow} variant="static" value={100} />
+			sx={{
+        top: 0,
+        width: 128,
+        height: 128,
+        color: deepPurple[100],
+        zIndex: 1,
+      }} variant="determinate" value={100} />
 
-		<span className={css.percent}>
+		<Typography sx={{
+		zIndex: 3,
+		position: 'absolute',
+		left: 0,
+		width: 128,
+		textAlign: 'center',
+		top: 54,
+	}}>
 			{percent}%
-		</span>
-		<strong className={css.name}>
+		</Typography>
+		<Typography sx={ {
+		display: 'block',
+		textAlign: 'center',
+    fontWeight: 'bold'
+	}}>
 			Total progress
-		</strong>
-	</div>)
+		</Typography>
+	</Box>)
 }

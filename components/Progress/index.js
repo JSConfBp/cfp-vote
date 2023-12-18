@@ -1,33 +1,71 @@
 
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import { deepPurple } from '@mui/material/colors';
+import { useTheme } from '@emotion/react';
 
 export default ({ name, stats }) => {
-	const css = useStyles()
+	const theme = useTheme()
 
 	if (stats.length < 1) {
-		return (<div className={css.progress}></div>)
+		return (<div sx={{
+      width: 128,
+      height: 160,
+      margin: '0 auto',
+      marginBottom: 32,
+      marginTop: 16,
+      position: 'relative'
+    }}></div>)
 	}
 
 	const { total, count } = stats.find(stat => (stat.user === name))
 
 	const percent = Math.round(100 * ( count / total))
 
-	return (<div className={css.progress}>
+	return (<Box sx={{
+		width: 128,
+		height: 160,
+		margin: '0 auto',
+		marginBottom: 2,
+		marginTop: 1,
+		position: 'relative'
+	}}>
 		<CircularProgress
 			size="128"
-			className={css.circle} variant="static" value={percent} />
+			sx={{
+        top: 0,
+        width: 128,
+        height: 128,
+        color: deepPurple[500],
+        zIndex: 2,
+        position: 'absolute'
+      }} variant="determinate" value={percent} />
 		<CircularProgress
 			size="128"
-			className={css.shadow} variant="static" value={100} />
-		<span className={css.percent}>
+			sx={{
+        top: 0,
+        width: 128,
+        height: 128,
+        color: deepPurple[100],
+        zIndex: 1,
+      }} variant="determinate" value={100} />
+		<Typography sx={{
+      zIndex: 3,
+      position: 'absolute',
+      left: 0,
+      width: 128,
+      textAlign: 'center',
+      top: 44,
+    }}>
 			{percent}% <br />
 			{count} / {total}
-		</span>
-		<strong className={css.name}>{name}</strong>
-	</div>)
+		</Typography>
+		<Typography sx={{
+      display: 'block',
+      textAlign: 'center',
+      fontWeight: 'bold'
+	  }}>{name}</Typography>
+	</Box>)
 }

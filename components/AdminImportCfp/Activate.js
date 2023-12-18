@@ -1,18 +1,14 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
 
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-import { useNotification } from 'notification-hook'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
 export default ({ next }) => {
-  const css = useStyles();
+  const theme = useTheme()
   const [ data, setData ] = useState('')
   const { showError } = useNotification()
 
@@ -66,7 +62,12 @@ export default ({ next }) => {
       label="credentials.json"
       multiline
       rows="6"
-      className={ css.textField }
+      sx={{
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        marginBottom: 4 * theme.spacing.unit,
+        width: 400,
+      }}
       margin="normal"
       fullWidth={ true }
       onChange={ e => setData(e.target.value) }
@@ -75,7 +76,9 @@ export default ({ next }) => {
     <Button
       variant={'contained'}
       color="primary"
-      className={ css.nextButton }
+      sx={{
+        marginTop: theme.spacing(4)
+      }}
       onClick={e => upload()}
     >
       Next

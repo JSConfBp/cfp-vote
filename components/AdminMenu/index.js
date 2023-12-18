@@ -1,18 +1,18 @@
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Link from '../Link'
-import Typography from '@material-ui/core/Typography';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import Link from 'next/link'
+import Typography from '@mui/material/Typography';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
+import Button from '@mui/material/Button';
+import ExpansionPanel from '@mui/material/ExpansionPanel';
+import ExpansionPanelDetails from '@mui/material/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@mui/material/ExpansionPanelSummary';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import Download from './Download'
 import Delete from './Delete'
@@ -25,28 +25,6 @@ const { publicRuntimeConfig: { api_url } } = getConfig()
 import VoteUIConfig from '../../cfp.config'
 
 
-const styles = theme => ({
-	adminMenu: {
-		marginTop: theme.spacing.unit * 5,
-	},
-  	formControl: {
-		width: '100%',
-		marginTop: 20,
-		display: 'block'
-  	},
-  	button: {
-		marginTop: theme.spacing.unit * 5,
-  	},
-  	input: {
-	  	display: 'none'
-	},
-	h5: {
-		marginBottom: 32,
-	},
-	closedPanels: {
-		marginBottom: 16,
-	}
-});
 
 class AdminMenu extends React.Component {
 
@@ -149,7 +127,7 @@ class AdminMenu extends React.Component {
 
 		const adminPanels = classNames({
 			[classes.closedPanels]: !expanded,
-		});	
+		});
 
 
 		return (<Typography component="div" className={classes.adminMenu}>
@@ -294,4 +272,4 @@ class AdminMenu extends React.Component {
 	}
   }
 
-  export default withStyles(styles)(AdminMenu);
+  export default AdminMenu;

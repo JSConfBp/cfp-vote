@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
 
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
-import { useNotification } from 'notification-hook'
+import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
 export default ({sheetData, selectedFields, next}) => {
-  const css = useStyles();
+  const theme = useTheme()
   const [ loading, setLoading ] = useState(false)
   const { showError, showSuccess } = useNotification()
 
@@ -69,7 +65,9 @@ export default ({sheetData, selectedFields, next}) => {
       <Button
         variant="contained"
         color="primary"
-        className={ css.nextButton }
+        sx={{
+          marginTop: theme.spacing(4)
+        }}
         target="_blank"
         rel="noopener"
         onClick={ importData }
@@ -79,7 +77,7 @@ export default ({sheetData, selectedFields, next}) => {
     </>}
 
     {loading && <>
-      <CircularProgress className={ css.progress } />
+      <CircularProgress />
     </>}
   </>
 

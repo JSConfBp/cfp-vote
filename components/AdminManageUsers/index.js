@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import fetch from 'isomorphic-unfetch'
 import debounce from 'debounce'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
-import { useNotification } from 'notification-hook'
+import { useNotification } from '../NotificationHook'
 import AddUserDialog from '../AddUserDialog'
 import UserList from '../UserList'
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
 export default ({ onUpdate, onError }) => {
-	const css = useStyles();
 
 	const [modalOpen, setModalOpen] = useState(false)
 	const [loading, setLoading] = useState(true)
@@ -24,7 +19,7 @@ export default ({ onUpdate, onError }) => {
 	const [freeLoginMode, setFreeLoginMode] = useState(false)
 	const { showError, showSuccess } = useNotification()
 
-	const getUsers = () => fetch('/api/users_full')
+	const getUsers = () => fetch('/api/users/full')
 		.then(res => {
 			if (res.status >= 400) throw (`Api error: ${result.status}`)
 
@@ -51,7 +46,7 @@ export default ({ onUpdate, onError }) => {
 	const onUserModalClose = async (data) => {
 		if (data) {
 			try {
-				const result = await fetch('/api/user', {
+				const result = await fetch('/api/users', {
 					method: 'post',
 					headers: {
 						"Content-Type": "application/json; charset=utf-8"
@@ -74,12 +69,8 @@ export default ({ onUpdate, onError }) => {
 
 	const removeUser = async (user) => {
 		try {
-			const result = await fetch('/api/user', {
+			const result = await fetch(`/api/users/${user}`, {
 				method: 'delete',
-				headers: {
-					"Content-Type": "application/json; charset=utf-8"
-				},
-				body: JSON.stringify({ user })
 			})
 
 			if (result.status >= 400) throw (`Api error: ${result.status}`)
@@ -129,7 +120,7 @@ export default ({ onUpdate, onError }) => {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
-				<Typography variant="h4" className={ css.heading }>
+				<Typography variant="h4">
 					Manage users
 				</Typography>
 			</Grid>

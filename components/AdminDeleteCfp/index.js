@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
-import { useNotification } from 'notification-hook'
+import { useNotification } from '../NotificationHook'
 
 import ConfirmDialog from '../ConfirmDialog';
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { useTheme } from '@emotion/react';
 
 export default ({ onUpdate, onError }) => {
-	const css = useStyles();
+	const theme = useTheme()
 
 	const [ modalOpen, setModalOpen ] = useState(false)
 	const { showError, showSuccess } = useNotification()
@@ -39,7 +35,9 @@ export default ({ onUpdate, onError }) => {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
-				<Typography variant="h4" className={ css.heading }>
+				<Typography variant="h4" sx={{
+          marginBottom: theme.spacing(3),
+        }}>
 					Delete CFP data
 				</Typography>
 			</Grid>
@@ -50,7 +48,6 @@ export default ({ onUpdate, onError }) => {
 			</Grid>
 			<Grid item xs={12}>
 				<Button
-					className={ css.deleteButton }
 					variant={ 'contained' }
 					color="secondary"
 					onClick={ () => setModalOpen(true) }

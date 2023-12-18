@@ -1,32 +1,12 @@
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import getConfig from 'next/config'
+
+import Button from '@mui/material/Button';
 
 import VoteUIConfig from '../../cfp.config'
+import { useTheme } from '@emotion/react';
 
-const styles = theme => ({
-	vote_control: {
-		flexBasis: '24%',
-		marginBottom: 0,
-		background: 'white',
-		padding: '15px 0',
-		fontSize: theme.spacing.unit * 2.2,
-		[theme.breakpoints.down('sm')]: {
-			fontSize: theme.spacing.unit * 3,
-			flexBasis: `49%`,
-			padding: '15px 0',
-			marginBottom: 3
-		},
-		[theme.breakpoints.down('xs')]: {
-			fontSize: theme.spacing.unit * 2,
-
-		},
-	}
-});
-
-class VoteControls extends React.Component {
-	render() {
-		const { classes, stage, loading = false } = this.props
+const VoteControls = (props) => {
+  const theme = useTheme()
+		const { classes, stage, loading = false } = props
 		const votingUi = VoteUIConfig.votingStages[stage].voteUI
 
 	  return (
@@ -34,9 +14,25 @@ class VoteControls extends React.Component {
 			{votingUi.map((vote, i) => (
 				<Button
 					disabled={ loading }
-					className={classes.vote_control}
+					sx={{
+            flexBasis: '24%',
+            marginBottom: 0,
+            background: 'white',
+            padding: '15px 0',
+            fontSize: theme.spacing.unit * 2.2,
+            [theme.breakpoints.down('sm')]: {
+              fontSize: theme.spacing.unit * 3,
+              flexBasis: `49%`,
+              padding: '15px 0',
+              marginBottom: 0.5
+            },
+            [theme.breakpoints.down('xs')]: {
+              fontSize: theme.spacing.unit * 2,
+
+            },
+          }}
 					key={`vote_${vote.value}`}
-					onClick={e => this.props.onVote(vote.value)}
+					onClick={e => props.onVote(vote.value)}
 					variant={'outlined'}
 					color="primary">
 						{ vote.label }
@@ -46,6 +42,5 @@ class VoteControls extends React.Component {
 		</>
 		);
 	}
-  }
 
-  export default withStyles(styles)(VoteControls);
+  export default VoteControls;

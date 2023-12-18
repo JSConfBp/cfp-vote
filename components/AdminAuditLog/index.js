@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
-import { useNotification } from 'notification-hook'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
 export default ({ onUpdate, onError }) => {
-	const css = useStyles();
+	const theme = useTheme()
 
 	const [ log, setLog ] = useState([])
 	const { showError, showSuccess } = useNotification()
@@ -44,13 +40,18 @@ export default ({ onUpdate, onError }) => {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
-				<Typography variant="h4" className={ css.heading }>
+				<Typography variant="h4" sx={{
+          marginBottom: theme.spacing(3),
+        }}>
 					Audit Log
 				</Typography>
 			</Grid>
       <Grid item xs={12}>
-        <Paper className={css.container}>
-          <Table className={css.table} size="small" aria-label="a dense table">
+        <Paper sx={{
+      display: 'block',
+      padding: theme.spacing(1),
+    }}>
+          <Table size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell>Timestamp</TableCell>

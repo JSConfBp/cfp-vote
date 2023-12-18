@@ -1,5 +1,5 @@
 
-import { amber, green } from '@material-ui/core/colors';
+import { amber, green } from '@mui/material/colors';
 
 export const notification = theme => ({
     success: {

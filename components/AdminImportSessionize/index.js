@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepButton from '@material-ui/core/StepButton';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
 
 import StepAddSessionizeAPI from './AddSessionizeAPI'
 import StepChooseFields from './ChooseFields'
 import StepImportData from './ImportData'
+import { useTheme } from '@emotion/react';
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
 
 const steps = [
@@ -21,7 +19,7 @@ const steps = [
 ];
 
 export default ({ onComplete }) => {
-  const css = useStyles();
+  const theme = useTheme()
   const [ activeStep, setActiveStep ] = useState(0)
   const [ authUrl, setAuthUrl ] = useState('')
   const [ fields, setFields ] = useState([])
@@ -65,8 +63,15 @@ export default ({ onComplete }) => {
 	}
 
   return (
-		<div className={css.container}>
-			<Stepper activeStep={activeStep} className={css.importStepper}>
+		<div sx={{
+      display: 'block',
+      width: '100%'
+    }}>
+			<Stepper activeStep={activeStep} sx={{
+		paddingLeft: 0,
+    paddingRight: 0,
+    backgroundColor: 'transparent'
+  }}>
 			{steps.map((label, index) => (
 				<Step key={label}>
 					<StepButton>
@@ -76,7 +81,16 @@ export default ({ onComplete }) => {
 			))}
 			</Stepper>
 
-      <Paper className={css.stepContent}>
+      <Paper sx={ {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+    flexDirection: 'column',
+    maxWidth: '60vw',
+    margin: '0 auto',
+    marginTop: theme.spacing(4),
+    padding: theme.spacing(4)
+  }}>
 				{ getStepContent(activeStep) }
       </Paper>
 		</div>

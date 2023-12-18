@@ -1,29 +1,25 @@
 import React from 'react'
 import getConfig from 'next/config'
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
+import { useTheme } from '@emotion/react';
 
 const { publicRuntimeConfig: { gh_client_id, gh_redirect_uri, nonce_state, gh_scope} } = getConfig()
 
-const styles = theme => ({
-	ghButton: {
-		color: theme.palette.getContrastText('#24292e'),
-		backgroundColor: '#24292e',
-		'&:hover': {
-		  backgroundColor: '#24292e',
-		},
-	}
-  });
+const GithubLogin = (props) => {
 
-class GithubLogin extends React.Component {
-	render() {
-		const {classes} = this.props
-		
-		return <form action="/login">
-			<Button variant={'contained'} className={classes.ghButton} type="submit">
-				{this.props.children}
-			</Button>
-		</form>
-	}
+  const theme = useTheme()
+
+  return <form action="/login">
+    <Button variant={'contained'} sx={{
+      color: theme.palette.getContrastText('#24292e'),
+      backgroundColor: '#24292e',
+      '&:hover': {
+        backgroundColor: '#24292e',
+      },
+    }} type="submit">
+      {props.children}
+    </Button>
+  </form>
 }
-export default withStyles(styles)(GithubLogin)
+
+export default GithubLogin

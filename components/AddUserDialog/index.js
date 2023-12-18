@@ -1,27 +1,22 @@
 import React, { useState, useRef } from 'react';
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'
+import Typography from '@mui/material/Typography'
+import HelpOutline from '@mui/icons-material/HelpOutline';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Typography from '@material-ui/core/Typography'
-import HelpOutline from '@material-ui/icons/HelpOutline';
-import Box from '@material-ui/core/Box';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
-
+import { useTheme } from '@emotion/react';
 
 const findGithubUser = async (username) => {
     return fetch(`https://api.github.com/users/${username}`)
@@ -29,11 +24,11 @@ const findGithubUser = async (username) => {
 }
 
 
-export default ({
+const AddUserDialog = ({
     open = true,
     onClose = () => {},
 }) => {
-    const css = useStyles();
+    const theme = useTheme()
     const inputTimer = useRef(0)
     const search = useRef('')
 
@@ -79,13 +74,15 @@ export default ({
               fullWidth
               onChange={ e => onSearch(e.target.value) }
             />
-            <Box className={ css.searchResult }>
-                { user && (
+            <Box sx={{
+                height: theme.spacing(12)
+            }}>
+              { user && (
                 <List>
                     <ListItem alignItems="flex-start">
                         <ListItemAvatar>
                             { user.loading && (
-                                <CircularProgress className={ css.progress } color="secondary" />
+                                <CircularProgress color="secondary" />
                             )}
                             { user.avatar_url && (
                                 <Avatar alt={ user.name } src={ user.avatar_url } />
@@ -101,7 +98,10 @@ export default ({
                                 <Typography
                                     component="span"
                                     variant="body2"
-                                    className={css.inline}
+                                    sx={{
+                                      display: 'inline',
+                                      fontStyle: 'italic'
+                                    }}
                                     color="textPrimary"
                                 >
                                 { user.name || user.message }
@@ -125,3 +125,4 @@ export default ({
         </Dialog>
     )
   }
+  export default AddUserDialog
