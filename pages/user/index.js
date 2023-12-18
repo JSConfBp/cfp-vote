@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import fetch from 'isomorphic-unfetch'
-import classNames from 'classnames'
-import { makeStyles } from '@material-ui/core/styles';
+import { authOptions } from '../api/auth/[...nextauth]';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-
-import Link from '../../components/Link';
-import Authenticated from '../../components/Auth'
-import MenuBar from '../../components/MenuBar';
+import Link from 'next/link'
+import Box from '@mui/material/Box'
+import Page from '../../components/Page'
 import Progress from '../../components/Progress'
 import TotalProgress from '../../components/TotalProgress'
 
 import VoteUIConfig from '../../cfp.config'
+import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import { useTheme } from '@emotion/react';
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
 const getStats = async (token) => {
 	return fetch(`/api/stats`,
@@ -43,8 +41,13 @@ const getCfp = async (token) => {
 		.then(response => response.json())
 }
 
-const Index = ({ auth: { login, admin } }) => {
-  const css = useStyles();
+export default function Index () {
+
+  const { data: session } = useSession()
+  const theme = useTheme()
+
+
+  const admin = false
 
   const [loadingState, setLoadingState] = useState('notloaded')
 
@@ -66,7 +69,7 @@ const Index = ({ auth: { login, admin } }) => {
         console.error(e);
         setLoadingState('finished')
 			})
-	}, [login])
+	}, [false])
 
 	let stageLabel = ''
 
@@ -74,16 +77,17 @@ const Index = ({ auth: { login, admin } }) => {
 		stageLabel = VoteUIConfig.votingStages[cfp.stage].label
 	}
 
-	return (<><div className={css.centered}>
+  if (!session || !session.user) {
+    return <></>
+  }
+
+	return (<Page>
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
-				<Paper className={classNames(css.paper, css.paper_first)} elevation={0}>
-					<Typography className={css.title} variant="h2">
-						Hello {login}
-					</Typography>
-				</Paper>
+        <Typography variant="h4">
+          Hello {session?.user.name}
+        </Typography>
 			</Grid>
-
       {
         loadingState !== 'notloaded'
         && loadingState !== 'loading'
@@ -99,23 +103,24 @@ const Index = ({ auth: { login, admin } }) => {
             <Grid item xs={12} sm={3}>
 
               <Typography variant="body1" component="div">
-                <Progress name={login} stats={stats} />
+                <Progress name={session.login} stats={stats} />
               </Typography>
 
-              <Typography component="div">
-                <Link to="vote">
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <Link href="/vote">
                   <Button
-                    className={css.progressButton}
                     color="secondary"
                     variant={'contained'}
-                    href=""
                   >
-                    <a className={css.linkButton}>
+                    <a>
                       Go Vote!
                     </a>
                   </Button>
                 </Link>
-              </Typography>
+              </Box>
 
             </Grid>
 
@@ -140,18 +145,18 @@ const Index = ({ auth: { login, admin } }) => {
       ) }
 
 			<Grid item xs={12}>
-				<Paper className={classNames(css.paper, css.paper_last)} elevation={0}>
+				<Paper elevation={0}>
 				{(admin ? (<>
-					<Typography variant="h5" className={ css.heading }>
+					<Typography variant="h5" >
 						Administration
 					</Typography>
 
-					<Typography variant="body1" className={ css.text }>
+					<Typography variant="body1" >
 						You're marked as an admin, so you can access some advanced features.<br />
 						But be careful, you know <em>"with great power comes great responsibility"</em>!
 					</Typography>
-					<Typography variant="body1" className={ css.text }>
-						<Link to="admin">
+					<Typography variant="body1" >
+						<Link href="/admin">
 							<a >
 								Go to the Admin page
 							</a>
@@ -162,15 +167,23 @@ const Index = ({ auth: { login, admin } }) => {
 				</Paper>
 			</Grid>
 		</Grid>
-	</div>
-	<MenuBar />
-	</>)
+
+	</Page>)
 }
 
-Index.getInitialProps = async ({ auth }) => {
-	return {
-		auth,
-	}
-}
 
-export default Authenticated(Index)
+export const getServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {}
+  }
+}

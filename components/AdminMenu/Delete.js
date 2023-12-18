@@ -1,38 +1,16 @@
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Modal from '@material-ui/core/Modal';
-import Typography from '@material-ui/core/Typography';
+
+
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
 import getConfig from 'next/config'
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
 
 
 import VoteUIConfig from '../../cfp.config'
 
 const { publicRuntimeConfig: { api_url } } = getConfig()
-
-const styles = theme => ({
-	formControl: {
-		marginTop: 20,
-		display: 'block'
-  	},
-	modal: {
-		top: '50%',
-		minHeight: '10vh',
-		minWidth: '20vw',
-		position: 'fixed',
-		left: '50%',
-		transform: 'translate(-50%, -50%)',
-    	backgroundColor: theme.palette.background.paper,
-    	boxShadow: theme.shadows[5],
-    	outline: 'none',
-		padding: 20,
-	},
-	modalButton: {
-		marginRight: 10
-	}
-});
 
 class Delete extends React.Component {
 
@@ -101,17 +79,17 @@ class Delete extends React.Component {
 				open={deleteConfirmationOpen}
 				onClose={e => this.confirmDeleteClose()}
 			>
-				<div className={classes.modal}>
+				<div>
 					<Typography variant="body1">
 						This will reset the app, removing every submission and every vote!
 					</Typography>
 					<Typography variant="body1">
 						Are you sure?
 					</Typography>
-					<FormControl className={classes.formControl}>
+					<FormControl>
 						<Button
 							color="secondary"
-							className={classes.modalButton}
+
 							variant={'contained'}
 							onClick={e => this.confirmDeleteSubmit()}
 						>
@@ -119,7 +97,7 @@ class Delete extends React.Component {
 						</Button>
 						<Button
 							color="primary"
-							className={classes.modalButton}
+
 							variant={'text'}
 							onClick={e => this.confirmDeleteClose()}
 						>
@@ -132,4 +110,4 @@ class Delete extends React.Component {
 	}
   }
 
-  export default withStyles(styles)(Delete);
+  export default Delete;

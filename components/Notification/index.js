@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
 
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
-import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import WarningIcon from '@material-ui/icons/Warning';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import InfoIcon from '@mui/icons-material/Info';
+import CloseIcon from '@mui/icons-material/Close';
+import WarningIcon from '@mui/icons-material/Warning';
 
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-
-import {
-  notification, wrapper
-} from './styles'
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -24,26 +18,23 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const useNotificationStyles = makeStyles(notification);
-
 function MySnackbarContentWrapper(props) {
-  const css = useNotificationStyles();
   const { className, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
 
   return (
     <SnackbarContent
-      className={clsx(css[variant], className)}
+
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={css.message}>
-          <Icon className={clsx(css.icon, css.iconVariant)} />
+        <span id="client-snackbar">
+          <Icon />
           {message}
         </span>
       }
       action={[
         <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-          <CloseIcon className={css.icon} />
+          <CloseIcon />
         </IconButton>,
       ]}
       {...other}
@@ -58,11 +49,9 @@ MySnackbarContentWrapper.propTypes = {
   variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired,
 };
 
-const useWrapperStyles = makeStyles(wrapper);
-
-export default ({ 
-  type, 
-  message, 
+export default ({
+  type,
+  message,
   open,
   onClose
 }) => {
@@ -76,11 +65,13 @@ export default ({
         autoHideDuration={ 5000 }
         onClose={ onClose }
     >
+      <div>
         <MySnackbarContentWrapper
             onClose={ onClose }
             variant={ type }
             message={ message }
         />
+        </div>
     </Snackbar>
     );
 }

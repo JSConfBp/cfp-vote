@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import fetch from 'isomorphic-unfetch'
-import classNames from 'classnames'
-import { makeStyles } from '@material-ui/core/styles';
 
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Authenticated from '../../components/Auth'
-import MenuBar from '../../components/MenuBar';
-
+import Typography from '@mui/material/Typography';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Page from '../../components/Page'
 import AdminUploadCfp from '../../components/AdminUploadCfp'
 import AdminManageUsers from '../../components/AdminManageUsers'
 import AdminImportCfp from '../../components/AdminImportCfp'
@@ -20,9 +15,9 @@ import AdminAppendCfp from '../../components/AdminAppendCfp'
 import AdminDeleteCfp from '../../components/AdminDeleteCfp'
 import AdminSetStage from '../../components/AdminSetStage'
 import AdminAuditLog from '../../components/AdminAuditLog'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { useSession } from 'next-auth/react';
 
 function a11yProps(index) {
 	return {
@@ -61,8 +56,10 @@ const getCfp = async (token) => {
 }
 
 
-const Admin = ({ auth: { login } }) => {
-	const css = useStyles();
+const Admin = () => {
+
+  const { data: session } = useSession()
+
 	const [activeTab, setActiveTab] = useState('users')
 	const [cfp, setCfp] = useState({})
 
@@ -76,7 +73,7 @@ const Admin = ({ auth: { login } }) => {
         setCfp(data)
         setActiveTab('users')
 			})
-	}, [login])
+	}, [session?.login])
 
 	const handleError = (err) => {
 		console.error(err);
@@ -85,31 +82,34 @@ const Admin = ({ auth: { login } }) => {
 	const handleUpdate = async () => {
 		const updatedCfp = await getCfp()
     setCfp(updatedCfp)
-    setActiveTab('users')
+    // setActiveTab('users')
 	}
 
-	return (<>
-	<Box className={ css.adminGrid }>
+  if (!session || !session.user) {
+    return <></>
+  }
+
+	return (<Page>
+	<Box >
 		<Tabs
 			orientation="vertical"
       variant="standard"
       centered={false}
 			value={ activeTab }
 			onChange={ tabChange }
-			aria-label="Vertical tabs example"
-			className={css.tabs}
+			aria-label="Admin menu"
 		>
       <Tab
         label="Manage Users"
         value="users"
-        className={ classNames(css.tab, css.wrapper) }
+
         {...a11yProps(0)}
       />
 			{ !cfp.count && (
         <Tab
           label="Upload CFP"
           value="upload"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(1)}
         />
 			)}
@@ -117,7 +117,7 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Import from Google Sheet"
           value="import-gsheet"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(2)}
         />
 			)}
@@ -125,7 +125,7 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Import from Sessionize"
           value="import-sessionize"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(2)}
         />
 			)}
@@ -133,7 +133,7 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Set vote stage"
           value="stage"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(1)}
         />
 			)}
@@ -141,7 +141,7 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Append results"
           value="append"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(2)}
         />
 			)}
@@ -149,7 +149,7 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Export results"
           value="export"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(2)}
         />
 			)}
@@ -157,19 +157,19 @@ const Admin = ({ auth: { login } }) => {
         <Tab
           label="Delete CFP data"
           value="delete"
-          className={ classNames(css.tab, css.wrapper)}
+
           {...a11yProps(3)}
         />
 			)}
       <Tab
         label="Audit log"
         value="log"
-        className={ classNames(css.tab, css.wrapper)}
+
         {...a11yProps(3)}
       />
 		</Tabs>
 
-		<Box className={ css.tabContents }>
+		<Box>
 
 			<TabPanel value={activeTab} index={'users'}>
 				<AdminManageUsers
@@ -243,14 +243,25 @@ const Admin = ({ auth: { login } }) => {
 			</TabPanel>
 		</Box>
 	</Box>
-	<MenuBar subTitle="Administration"/>
-	</>)
+
+	</Page>)
 }
 
-Admin.getInitialProps = async ({ auth }) => {
-	return {
-		auth,
-	}
+
+export const getServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {}
+  }
 }
 
-export default Authenticated(Admin)
+export default Admin

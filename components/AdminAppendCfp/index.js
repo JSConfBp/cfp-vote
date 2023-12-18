@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepButton from '@material-ui/core/StepButton';
-import Button from '@material-ui/core/Button';
-import Backdrop from '@material-ui/core/Backdrop';
-import Typography from '@material-ui/core/Typography';
-
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import Button from '@mui/material/Button';
+import Backdrop from '@mui/material/Backdrop';
+import Typography from '@mui/material/Typography';
 import StepActivate from '../AdminImportCfp/Activate'
 import StepAuthenticate from '../AdminImportCfp/Authenticate'
 import StepCheckData from './CheckData'
 
-import { useNotification } from 'notification-hook'
+import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
+
 
 
 const steps = {
@@ -35,7 +34,7 @@ const steps = {
 };
 
 export default ({ onComplete }) => {
-  const css = useStyles();
+  const theme = useTheme()
   const [ loading, setLoading ] = useState(true)
   const [ source, setSource ] = useState()
 
@@ -228,8 +227,15 @@ export default ({ onComplete }) => {
   }
 
   return (
-    <div className={css.container}>
-      { source && <Stepper activeStep={activeStep} className={css.importStepper}>
+    <Box sx={{
+      display: 'block',
+      width: '100%'
+    }}>
+      { source && <Stepper activeStep={activeStep} sx={{
+        paddingLeft: 0,
+        paddingRight: 0,
+        backgroundColor: 'transparent'
+      }}>
         {steps[source].map((label, index) => (
           <Step key={label}>
             <StepButton>
@@ -239,13 +245,24 @@ export default ({ onComplete }) => {
         ))}
 			</Stepper>}
 
-      <Paper className={css.stepContent}>
+      <Paper sx={ {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        maxWidth: '60vw',
+        margin: '0 auto',
+        marginTop: theme.spacing(4),
+        padding: theme.spacing(4)
+      }}>
 
         { source ? getStepContent(activeStep, source, newDataCount) : getSource() }
 
         { source && <Typography variant="body1" component="p">
           <Button
-            className={ css.nextButton }
+            sx={{
+              marginTop: theme.spacing(4)
+            }}
             color="secondary"
             target="_blank"
             rel="noopener"
@@ -258,9 +275,12 @@ export default ({ onComplete }) => {
         </Typography> }
 
       </Paper>
-      <Backdrop open={loading} className={css.backdrop}>
+      <Backdrop open={loading} sx={{
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      }}>
         <CircularProgress color="inherit" />
       </Backdrop>
-		</div>
+		</Box>
   );
 }

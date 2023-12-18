@@ -1,29 +1,11 @@
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import getConfig from 'next/config'
 
 import VoteUIConfig from '../../cfp.config'
 
 const { publicRuntimeConfig: { api_url } } = getConfig()
 
-const styles = theme => ({
-	wrapper: {
-		position: 'relative',
-	},
-
-	buttonProgress: {
-		position: 'absolute',
-		top: '50%',
-		right: 12,
-		marginTop: -12,
-	},
-
-	buttonLoading: {
-		paddingRight: 48
-	}
-});
 
 class Download extends React.Component {
 
@@ -96,24 +78,19 @@ class Download extends React.Component {
 		const { classes } = this.props
 		const { loading, success } = this.state
 
-		const buttonClassname = classNames({
-			[classes.buttonSuccess]: success,
-			[classes.buttonLoading]: loading,
-		});
-
-		return (<div className={classes.wrapper}>
+		return (<div>
 			<Button
-				className={buttonClassname}
+
 				onClick={e => this.downloadClick()}
 				color="primary"
 				variant={'outlined'}
 				disabled={loading}
 			>
 				Download data
-				{loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+				{loading && <CircularProgress size={24} />}
 			</Button>
 			</div>);
 	}
   }
 
-  export default withStyles(styles)(Download);
+  export default Download;

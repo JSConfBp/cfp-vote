@@ -1,14 +1,10 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Grid from '@material-ui/core/Grid';
-import { useNotification } from 'notification-hook'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Grid from '@mui/material/Grid';
+import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
 const mime = {
   csv: 'text/csv;charset=utf-8;',
@@ -47,7 +43,7 @@ const saveFile = (data, ext, mimeType) => {
 }
 
 export default ({ onUpdate }) => {
-  const css = useStyles();
+  const theme = useTheme()
   const { showError } = useNotification()
   const [loading, setLoading] = useState(false)
 
@@ -84,7 +80,9 @@ export default ({ onUpdate }) => {
 
 	return (<Grid container spacing={3}>
     <Grid item xs={12}>
-      <Typography variant="h4" className={ css.heading }>
+      <Typography variant="h4" sx={{
+        marginBottom: theme.spacing(3),
+      }}>
       Export Results
       </Typography>
     </Grid>

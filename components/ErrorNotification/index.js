@@ -1,29 +1,11 @@
-import memoize from "memoize-one";
-import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
-import classNames from 'classnames'
-import ErrorIcon from '@material-ui/icons/Error';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 
-const styles = theme => ({
-	error: {
-		backgroundColor: theme.palette.error.dark,
-	},
-	icon: {
-		fontSize: 20,
-	},
-	iconVariant: {
-		opacity: 0.9,
-		marginRight: theme.spacing.unit * 3,
-	},
-	message: {
-		display: 'flex',
-		alignItems: 'center',
-	},
-});
+import React from 'react'
+import ErrorIcon from '@mui/icons-material/Error';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
+
 
 class ErrorNotification extends React.Component {
 
@@ -92,11 +74,11 @@ class ErrorNotification extends React.Component {
 			onClose={ this.handleClose }
 		>
 		 <SnackbarContent
-      		className={classes.error}
+
       		aria-describedby="client-snackbar"
       		message={
-        		<span id="client-snackbar" className={classes.message}>
-          			<ErrorIcon className={classNames(classes.icon, classes.iconVariant)} />
+        		<span id="client-snackbar" >
+          			<ErrorIcon  />
 					<span>
 						<strong>{ error.error }</strong>
 						<br />
@@ -109,10 +91,9 @@ class ErrorNotification extends React.Component {
 					key="close"
 					aria-label="Close"
 					color="inherit"
-					className={classes.close}
 					onClick={this.handleClose}
         		>
-          			<CloseIcon className={classes.icon} />
+          			<CloseIcon />
         		</IconButton>,
       		]}
     	/>
@@ -121,4 +102,4 @@ class ErrorNotification extends React.Component {
   }
 
 
-  export default withStyles(styles)(ErrorNotification);
+  export default ErrorNotification;

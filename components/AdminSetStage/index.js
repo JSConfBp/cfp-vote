@@ -1,27 +1,25 @@
 import React, { useState } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { useNotification } from 'notification-hook'
-import { makeStyles } from '@material-ui/core/styles';
-import Link from '../Link'
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import FormHelperText from '@material-ui/core/FormHelperText';
+
+import { useNotification } from '../NotificationHook'
+
+import Link from 'next/link'
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
-import { votingStages } from '../../cfp.config'
+import cfpConfig from '../../cfp.config'
 
 export default ({ stage, onUpdate, onError }) => {
-	const css = useStyles();
 
-	const stages = Object.entries(votingStages)
+
+	const stages = Object.entries(cfpConfig.votingStages)
 		.map(([key, stage]) => ({
 			key,
 			label: stage.label,
@@ -59,7 +57,7 @@ export default ({ stage, onUpdate, onError }) => {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
-				<Typography variant="h4" className={ css.heading }>
+				<Typography variant="h4">
 					Set Voting Stage
 				</Typography>
 			</Grid>
@@ -70,7 +68,7 @@ export default ({ stage, onUpdate, onError }) => {
 			</Grid>
 			<Grid item xs={12}>
 				<Typography variant="body1" component="div">
-					<FormControl className={css.formControl}>
+					<FormControl>
 						<InputLabel htmlFor="stage-helper">Update voting stage</InputLabel>
 						<NativeSelect
 							value={ votingStage }
@@ -87,7 +85,7 @@ export default ({ stage, onUpdate, onError }) => {
 			</Grid>
 			<Grid item xs={12}>
 				<Typography variant="body1" component="div">
-					<FormControl className={ css.formControl }>
+					<FormControl>
 						<InputLabel htmlFor="vote-limit">
 							Include top number of talks
 						</InputLabel>
@@ -100,14 +98,14 @@ export default ({ stage, onUpdate, onError }) => {
 						/>
 						<FormHelperText id="vote-limit-helper-text">
 							Include the top number of talks in the second round.<br />
-							See the vote/talk chart in <Link to="stats"><a>Statistics</a></Link> to determine this number
+							See the vote/talk chart in <Link href="/stats">Statistics</Link> to determine this number
 						</FormHelperText>
 					</FormControl>
 				</Typography>
 			</Grid>
 			<Grid item xs={12}>
 				<Typography variant="body1" component="div">
-					<FormControl className={css.formControl}>
+					<FormControl>
 						<Button
 							onClick={ () => updateStage() }
 							color="secondary"

@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import fetch from 'isomorphic-unfetch'
-import { makeStyles } from '@material-ui/core/styles'
-import getConfig from 'next/config'
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 
-import { useNotification } from 'notification-hook'
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import { useNotification } from '../../components/NotificationHook'
+import cfpConfig from '../../cfp.config'
 
-import Histogram from '../../components/Histogram'
+
+import VotePieChart from '../../components/VotePieChart'
 import StagedVotesChart from '../../components/StagedVotesChart'
 
-import Authenticated from '../../components/Auth'
-import MenuBar from '../../components/MenuBar';
 import Progress from '../../components/Progress'
-
-import styles from './styles'
-const useStyles = makeStyles(styles)
+import { useSession } from 'next-auth/react';
+import Page from '../../components/Page';
 
 
 const getCfp = async () => {
@@ -44,7 +40,7 @@ const getStats = async () => {
 }
 
 const getHistogram = async () => {
-	return fetch(`/api/histogram`,
+	return fetch(`/api/stats/histogram`,
 		{
 			method: 'GET',
 			headers: {
@@ -56,7 +52,9 @@ const getHistogram = async () => {
 }
 
 const Stats = () => {
-  const css = useStyles()
+
+  const { data: session } = useSession()
+
   const { showError } = useNotification()
   const [loading, setLoading] = useState(true)
   const [histogram, setHistogram] = useState(null)
@@ -76,11 +74,15 @@ const Stats = () => {
     }).catch(e => showError(e.message))
   }, [false])
 
-  return (<div className={css.root}>
+  if (!session || !session.user) {
+    return <></>
+  }
+
+  return (<Page>
   <Grid container spacing={24}>
     <Grid item xs={12}>
-      <Paper className={css.paper} elevation={0}>
-        <Typography className={css.title} variant="h2">
+      <Paper elevation={0}>
+        <Typography  variant="h3">
           Statistics
         </Typography>
 
@@ -95,27 +97,25 @@ const Stats = () => {
         ) }
 
         { !loading && cfp && !!cfp.count && (
-          <Typography variant="body1" component="div" className={ css.stats }>
+          <Typography variant="body1" component="div">
             {stats.map(stat => (
               <Progress key={`${stat.user}-votes`} name={stat.user} stats={stats} />
             ))}
           </Typography>
         )}
 
-        { !loading && histogram && Object.entries(histogram.votes).map(([stage, data]) => (
-          <Histogram stage={ stage } data={ data } key={`hist_${stage}`} />
-        )) }
+        { !loading && histogram && Object.keys(cfpConfig.votingStages).map(stage => histogram.talks[stage].length > 0 && (<>
+          <VotePieChart stage={ stage } data={ histogram.votes[stage] } key={`hist_${stage}`} />
+          <StagedVotesChart stage={ stage } data={ histogram.talks[stage] } key={`chart_${stage}`} />
+        </>))
+        }
 
-
-        { !loading && histogram && Object.entries(histogram.talks).filter((data) => (data[1].length > 0)).map(([stage, data]) => {
-          return (<StagedVotesChart stage={ stage } data={ data } key={`chart_${stage}`} />)
-        }) }
       </Paper>
     </Grid>
   </Grid>
-  <MenuBar />
-  </div>)
+
+  </Page>)
 }
 
 
-export default Authenticated(Stats)
+export default Stats

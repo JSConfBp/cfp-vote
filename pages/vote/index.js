@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import fetch from 'isomorphic-unfetch'
-import classnames from 'classnames'
-import { makeStyles } from '@material-ui/core/styles'
 
-import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Modal from '@material-ui/core/Modal'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import Paper from '@mui/material/Paper'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import Modal from '@mui/material/Modal'
+import CircularProgress from '@mui/material/CircularProgress'
+import Page from '../../components/Page'
+import Box from '@mui/material/Box'
+import { useNotification } from '../../components/NotificationHook'
 
-import { useNotification } from 'notification-hook'
-
-import Authenticated from '../../components/Auth'
-import MenuBar from '../../components/MenuBar'
 import VoteControls from '../../components/VoteControls'
+import { useSession } from 'next-auth/react'
+import { useTheme } from '@emotion/react'
 
-import styles from './styles'
-const useStyles = makeStyles(styles)
 
 const getCfp = async () => {
 	return fetch(
@@ -44,7 +40,8 @@ const getNextTalk = async (token) => {
 }
 
 const Vote = () => {
-	const css = useStyles()
+  const theme = useTheme()
+  const { data: session } = useSession()
 	const [loading, setLoading] = useState(true)
 	const [modalOpen, setModalOpen] = useState(false)
 	const { showError, showSuccess } = useNotification()
@@ -59,7 +56,10 @@ const Vote = () => {
 		]).then(([cfp, talk]) => {
 			setCfp(cfp)
 			setTalk(talk)
-      setFieldType(talk.id.split('_')[0])
+      if (!talk.completed) {
+        setFieldType(talk.id.split('_')[0])
+
+      }
 			setLoading(false)
 		})
 	}, [false])
@@ -86,9 +86,12 @@ const Vote = () => {
 		if (voted.success) {
 			setModalOpen(false)
 			const talk = await getNextTalk()
-
+      setTalk(talk)
+      if (talk.completed) {
+        setLoading(false)
+        return;
+      }
       setFieldType(talk.id.split('_')[0])
-			setTalk(talk)
 			setLoading(false)
 
 			window.scrollTo(0,0)
@@ -98,52 +101,73 @@ const Vote = () => {
 	const { completed } = talk || {}
 
 
+  if (!session || !session.user) {
+    return <></>
+  }
 
-	return (<div className={css.root}>
+
+	return (<Page>
 	{ !loading && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
 
-				<Paper className={ css.paper } elevation={ 0 }>
+				<Box>
 
 					{completed && (<Typography
 						variant="body1"
-						className={ css.p }
 					>
 						Nice job, you're completed voting in this stage.
 					</Typography>) }
 
-					{ talk && !completed && (cfp.fields[fieldType].map(({field}, i) => {
-							if (i === 0) {
-								return (<Typography
-									variant="h3"
-									className={ css.title }
+          { talk && !completed && (cfp.fields[fieldType]
+              .filter(({field}) => field.toLowerCase().includes('title'))
+              .map(({field}, i) => {
+                return (<Typography
+									variant="h4"
 									key={ `field-${i}` }
 								>
 									{ talk.fields[field] }
 								</Typography>)
-							} else {
+              })
+          )}
+
+          { talk && !completed && (cfp.fields[fieldType]
+            .filter(({field}) => !field.toLowerCase().includes('title'))
+            .map(({field}, i) => {
+
 								return (<Typography
                   variant="body1"
                   component="div"
-									className={ classnames(css.p, i === 2 && css.last_p) }
 									key={ `field-${i}` }
+                  sx={{
+                    ...(i > 0 && { fontStyle: 'italic' })
+                  }}
 								>
+                  <p><strong>{field}</strong></p>
                   { talk.fields[field].split(/\n\n/).map((p, key) => (<p key={`p-${key}`}>{ p }</p>)) }
 								</Typography>)
-							}
+
 						})
 					)}
-				</Paper>
+				</Box>
 
 				{ !completed && (
-				<Paper  elevation={0} className={ classnames(css.paper, css.desktop_vote) }>
+				<Box sx={{
+          paddingBlock: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          [theme.breakpoints.down('md')]: {
+            flexWrap: 'wrap',
+            flexDirection: 'row'
+          }
+        }}>
 					<VoteControls
 						loading={ loading }
 						onVote={ value => onVote(talk.id, value) }
 						stage={ cfp.stage }
 					/>
-				</Paper>
+				</Box>
 				) }
 			</Grid>
 		</Grid>
@@ -152,14 +176,14 @@ const Vote = () => {
 	{ (loading) && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
-				<Paper className={ css.paper } elevation={ 0 } className={ css.loading }>
-					<CircularProgress color="secondary" className={ css.spinner } />
+				<Paper elevation={ 0 } >
+					<CircularProgress color="secondary"  />
 				</Paper>
 			</Grid>
 		</Grid>
 	)}
 
-	<MenuBar voting={ !completed } showVoteUI={ () => setModalOpen(true) } />
+	{/* <MenuBar voting={ !completed } showVoteUI={ () => setModalOpen(true) } /> */}
 
 	{ cfp && talk && (
 		<Modal
@@ -167,7 +191,7 @@ const Vote = () => {
 			aria-describedby="simple-modal-description"
 			open={ modalOpen }
 			onClose={ e => setModalOpen(false) }
-		><div className={ css.modal }>
+		><div>
 			<VoteControls
 				loading={ loading }
 				onVote={ value => onVote(talk.id, value) }
@@ -176,7 +200,7 @@ const Vote = () => {
 			</div>
 		</Modal>
 	)}
-</div>)
+</Page>)
 }
 
-export default Authenticated(Vote)
+export default Vote

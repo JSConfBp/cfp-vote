@@ -1,85 +1,81 @@
-import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
+import React, { useEffect, useRef, useState } from 'react'
+import Box from '@mui/material/Box'
 import {
 	BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-import { votingStages } from '../../cfp.config'
+import cfpConfig from '../../cfp.config'
+import { useTheme } from '@emotion/react';
 
-const styles = theme => ({
-	chart: {
-		width: '100%',
-		height: 400,
-		display: 'flex',
-		justifyContent: 'space-around',
-		flexWrap: `wrap`,
-		paddingTop: 8 * theme.spacing.unit
-	}
-});
+const StagedVotesChart = ( { data, stage } ) => {
+  const theme = useTheme()
+  const wrapper = useRef(null)
+  const [ size, setSize ] = useState({
+    width: 600,
+    height: 400
+  })
 
-class StagedVotesChart extends React.Component {
+  const onResize = () => {
+    setSize({
+      width: wrapper.current.clientWidth,
+      height: wrapper.current.clientHeight,
+    })
+  }
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			width: 600,
-			height: 400
-		}
-
-		this.wrapper = React.createRef();
-
-		this.onResize = (function () {
-			this.setState({
-				width: this.wrapper.current.clientWidth,
-				height: this.wrapper.current.clientHeight,
-			})
-		}).bind(this)
-	}
-
-	componentDidMount() {
-		this.setState({
-			width: this.wrapper.current.clientWidth,
-			height: this.wrapper.current.clientHeight,
+  useEffect(() => {
+    setSize({
+			width: wrapper.current.clientWidth,
+			height: wrapper.current.clientHeight,
 		})
 
-		window.addEventListener('resize', this.onResize)
-	}
+    if (window) {
+      window.addEventListener('resize',onResize)
+    }
 
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.onResize)
-	}
+    return () => {
+      window.removeEventListener('resize',onResize)
+    }
+  }, [wrapper.current])
 
-	render () {
-		const { data, stage, classes } = this.props
-		const { width, height } = this.state
 
-		const displayedData = data.map(( { votes }, i ) => {
-			const item = Object.assign({}, {
-				votes,
-				index: `${i + 1}`,
-				name: `Vote No.#${i + 1}`
-			})
-			return item
-		})
+  const { width, height } = size
 
-		return (
-			<div className={ classes.chart } ref={ this.wrapper }  >
-				<BarChart
-					width={ width }
-					height={ height }
-					barCategoryGap={ '5%' }
-					data={ displayedData }
-				>
-					<CartesianGrid strokeDasharray="5 5" />
-					<XAxis dataKey="index" />
-					<YAxis />
-					<Tooltip />
-					<Legend content={() => votingStages[stage].label } />
-					<Bar dataKey="votes" fill="#8884d8" />
-				</BarChart>
-			</div>
-		);
-	}
+  const displayedData = data.map(( { votes }, i ) => {
+    const item = Object.assign({}, {
+      votes,
+      index: `${i + 1}`,
+      name: `Vote No.#${i + 1}`
+    })
+    return item
+  })
+
+
+  return (
+    <Box sx={{
+      width: '100%',
+      height: 400,
+      marginBottom: '2rem',
+      display: 'flex',
+      justifyContent: 'space-around',
+      flexWrap: `wrap`,
+      paddingTop: 8 * theme.spacing.unit
+    } } ref={ wrapper }  >
+      <BarChart
+        width={ width }
+        height={ height }
+        barCategoryGap={ '5%' }
+        data={ displayedData }
+      >
+        <CartesianGrid strokeDasharray="5 5" />
+        <XAxis dataKey="index" />
+        <YAxis />
+        <Tooltip />
+        {/* <Legend content={() => cfpConfig.votingStages[stage].label } /> */}
+        <Bar dataKey="votes" fill="#673ab7" label={ (d) => {
+          return 'asd'
+        }} />
+      </BarChart>
+    </Box>
+  );
 }
 
-export default withStyles(styles)(StagedVotesChart)
+export default StagedVotesChart
