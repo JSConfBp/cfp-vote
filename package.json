@@ -11,8 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production next build",
     "heroku-postbuild": "npm run build",
-    "start": "node build/standalone/server.js"
+    "start": "next start"
   },
+  "cacheDirectories": [".next/cache"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/necccc/piosk-site.git"
