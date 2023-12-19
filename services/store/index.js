@@ -1,9 +1,11 @@
 
 import { createClient } from 'redis';
 
-console.log(process.env.REDIS_URL, process.env.REDISCLOUD_URL)
+console.log(process.env.REDIS_URL)
 
-const store = await createClient(process.env.REDIS_URL)
+const store = await createClient({
+  url: process.env.REDIS_URL
+})
   .on('error', err => console.log('Redis Client Error', err))
   .connect();
 
