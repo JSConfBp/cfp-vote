@@ -1,7 +1,7 @@
 const nextConfig = {
   //reactStrictMode: true,
   distDir: 'build',
-  output: 'standalone',
+  //output: 'standalone',
 	publicRuntimeConfig: {
 		asset_url: '',
 		gh_scope: 'user:read',
