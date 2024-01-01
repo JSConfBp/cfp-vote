@@ -23,12 +23,18 @@ const updateStage = async (from, to, topCount) => {
   }
 
   if (to === 'stage_2') {
+    console.log(from, to, topCount)
     return updateToStage2(from, to, topCount)
   }
 }
 
 const updateToStage2 = async (previousStage, newStage, topCount = 0) => {
   const votedTalks = await getStagedVotedTalks(previousStage)
+
+  console.log(
+    votedTalks
+      .sort((a, b) => (b.votes - a.votes))
+  )
 
   const shortListIds = votedTalks
     .sort((a, b) => (b.votes - a.votes))
@@ -41,14 +47,12 @@ const updateToStage2 = async (previousStage, newStage, topCount = 0) => {
 
   const shuffledShortListIds = shortListIds.sort(() => (0.5 - Math.random()))
 
-  await rpush(getStagedTalksKey(newStage), ...shuffledShortListIds)
+  await rpush(getStagedTalksKey(newStage), shuffledShortListIds)
 
   return shuffledShortListIds.length
 }
 
 const updateToStage1 = async (previousStage, newStage) => {
-  // STAGE 1
-
   await del(getStagedTalksKey(previousStage))
 
   const users = (await getUsers()).map(user => user.login)

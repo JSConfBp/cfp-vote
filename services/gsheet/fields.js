@@ -1,30 +1,25 @@
 import { nanoid } from 'nanoid'
-const { google } = require('googleapis')
-const store = require('../../../store')
-const createGoogleOauthClient = require('../../../auth/google-oauth')
-const {
-  getFields,
-  indexToA1,
-  getColumnData,
-  insertIDs,
-} = require('../../../lib/gsheet')
+import { google } from 'googleapis'
+import cfpConfig from '../../cfp.config'
+import { get, set, hset, hget, rpush, getStagedTalksKey } from '../store'
+import createGoogleOauthClient from './oauth-client'
+import getFields from './lib/get-fields'
+import getColumnData from './lib/get-column-data'
+import insertIDs from './lib/insert-ids'
+import indexToA1 from './lib/index-to-a1'
 
-const cfpConfig = require('../../../../cfp.config')
-
-const { getStagedTalksKey } = store.keys
-
-module.exports = async function ({ body: fields }) {
+export default async function (fields) {
   const oAuth2Client = await createGoogleOauthClient()
 
-  const { spreadSheetId, sheetTitle, sheetId } = await store.hget('gsheet', 'spreadsheet')
+  const { spreadSheetId, sheetTitle, sheetId } = await hget('gsheet', 'spreadsheet')
 
-  await store.hset('gsheet', 'fields', fields)
-  // await setFields(fields, store, oAuth2Client)
-  await setStage(cfpConfig, store)
+  await hset('gsheet', 'fields', fields)
+  // await setFields(fields, hset, hget, oAuth2Client)
+  await setStage(cfpConfig, set)
 
-  const cfpData = await getCFPData(fields, store, oAuth2Client)
+  const cfpData = await getCFPData(fields, hget, oAuth2Client)
 
-  const stage = await store.get('stage')
+  const stage = await get('stage')
   const idColumnValues = []
 
   const stagedTalkKey = getStagedTalksKey(stage)
@@ -35,16 +30,16 @@ module.exports = async function ({ body: fields }) {
     idColumnValues.push(id)
 
     Object.entries(cfpData[i]).forEach(async ([key, value]) => {
-      await store.hset(id, key, value)
+      await hset(id, key, value)
     })
 
-    await store.rpush(stagedTalkKey, id)
+    await rpush(stagedTalkKey, id)
   }
 
   await insertIdColumn(spreadSheetId, sheetId, oAuth2Client)
   await insertIDs(idColumnValues, 2, spreadSheetId, sheetTitle, oAuth2Client)
 
-  await store.hset('gsheet', 'imported', true)
+  await hset('gsheet', 'imported', true)
 
   // put cfpData into redis
   // prepare a batch job during that for IDs
@@ -108,14 +103,14 @@ const insertIdColumn = async (spreadsheetId, sheetId, auth) => new Promise((reso
   })
 })
 
-const setStage = async (cfpConfig, store) => {
+const setStage = async (cfpConfig, set) => {
   const stage = Object.keys(cfpConfig.votingStages)[0]
-  return store.set('stage', stage)
+  return set('stage', stage)
 }
 
-const getCFPData = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
-  const selectedFields = await store.hget('gsheet', 'fields')
+const getCFPData = async (fields, hget, auth) => {
+  const { spreadSheetId, sheetTitle } = await hget('gsheet', 'spreadsheet')
+  const selectedFields = await hget('gsheet', 'fields')
 
   const ranges = fields
     .map(({ field, id: fieldIndex }) => {
@@ -137,13 +132,13 @@ const getCFPData = async (fields, store, auth) => {
   })
 }
 
-const setFields = async (fields, store, auth) => {
-  const { spreadSheetId, sheetTitle } = await store.hget('gsheet', 'spreadsheet')
+const setFields = async (fields, hget, hset, auth) => {
+  const { spreadSheetId, sheetTitle } = await hget('gsheet', 'spreadsheet')
 
   const sheetFields = await getFields(spreadSheetId, sheetTitle, auth)
   const selectedFields = sheetFields
     .filter(field => fields.some(el => el === field.id))
     .map(item => item.field)
 
-  return store.hset('gsheet', 'fields', selectedFields)
+  return hset('gsheet', 'fields', selectedFields)
 }

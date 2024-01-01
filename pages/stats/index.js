@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useNotification } from '../../components/NotificationHook'
 import cfpConfig from '../../cfp.config'
-
 
 import VotePieChart from '../../components/VotePieChart'
 import StagedVotesChart from '../../components/StagedVotesChart'
@@ -13,7 +12,6 @@ import StagedVotesChart from '../../components/StagedVotesChart'
 import Progress from '../../components/Progress'
 import { useSession } from 'next-auth/react';
 import Page from '../../components/Page';
-
 
 const getCfp = async () => {
 	return fetch(`/api/cfp`,
@@ -81,7 +79,7 @@ const Stats = () => {
   return (<Page>
   <Grid container spacing={24}>
     <Grid item xs={12}>
-      <Paper elevation={0}>
+      <Box>
         <Typography  variant="h3">
           Statistics
         </Typography>
@@ -110,12 +108,11 @@ const Stats = () => {
         </>))
         }
 
-      </Paper>
+      </Box>
     </Grid>
   </Grid>
 
   </Page>)
 }
-
 
 export default Stats

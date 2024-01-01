@@ -14,8 +14,6 @@ import StepChooseFields from './ChooseFields'
 import StepImportData from './ImportData'
 import { useTheme } from '@emotion/react';
 
-
-
 const steps = [
   'Enable Google Sheets API',
   'Authenticate',

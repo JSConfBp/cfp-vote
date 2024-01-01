@@ -55,49 +55,49 @@ export default ({ voting, subTitle = '', showVoteUI = () => {} }) => {
 		width: 250,
 	}}>
 					<List>
-						<Link href="/vote">
+						<Link href="/vote" style={{
+              textDecoration: 'none',
+              color: theme.palette.primary.main
+            }}>
 							<ListItem button key={'vote'}>
 								<ListItemIcon><AssessmentIcon /></ListItemIcon>
 								<ListItemText>
-									<a sx={{
-		color: 'inherit',
-		textDecoration: 'none'
-	}}>Vote!</a>
+									Vote!
 								</ListItemText>
 							</ListItem>
 						</Link>
-						<Link href="/stats">
+						<Link href="/stats" style={{
+              textDecoration: 'none',
+              color: theme.palette.primary.main
+            }}>
 							<ListItem button key={'home'}>
 								<ListItemIcon><TrendingUpIcon /></ListItemIcon>
 								<ListItemText>
-									<a sx={{
-		color: 'inherit',
-		textDecoration: 'none'
-	}}>Statistics</a>
+									Statistics
 								</ListItemText>
 							</ListItem>
 						</Link>
 						{ session.admin && (
-						<Link  href="/admin">
+						<Link  href="/admin" style={{
+              textDecoration: 'none',
+              color: theme.palette.primary.main
+            }}>
 							<ListItem button key={'home'}>
 								<ListItemIcon><BuildIcon /></ListItemIcon>
 								<ListItemText>
-									<a sx={{
-		color: 'inherit',
-		textDecoration: 'none'
-	}}>Admin</a>
+									Admin
 								</ListItemText>
 							</ListItem>
 						</Link>
 						)}
-						<Link  href="/user">
+						<Link  href="/user" style={{
+              textDecoration: 'none',
+              color: theme.palette.primary.main
+            }}>
 							<ListItem button key={'home'}>
 								<ListItemIcon><HomeIcon /></ListItemIcon>
 								<ListItemText>
-									<a sx={{
-		color: 'inherit',
-		textDecoration: 'none'
-	}}>Home</a>
+									Home
 								</ListItemText>
 							</ListItem>
 						</Link>
@@ -107,7 +107,10 @@ export default ({ voting, subTitle = '', showVoteUI = () => {} }) => {
 						<ListItem button key={'home'}>
 							<ListItemIcon><ExitToAppIcon /></ListItemIcon>
 							<ListItemText>
-								<Link onClick={() => void signOut()} href="/">Logout</Link>
+								<Link onClick={() => void signOut()} href="/" style={{
+                  textDecoration: 'none',
+                  color: theme.palette.primary.main
+                }}>Logout</Link>
 							</ListItemText>
 						</ListItem>
 					</List>
@@ -133,39 +136,20 @@ export default ({ voting, subTitle = '', showVoteUI = () => {} }) => {
 				<IconButton onClick={() => setMenuOpen(true)} color="inherit" aria-label="Open drawer">
 					<MenuIcon />
 				</IconButton>
-				{ voting ? (
-					<Fab
-						onClick={e => showVoteUI()}
-						color="secondary"
-						aria-label="Vote"
-						sx={{
-              position: 'absolute',
-              zIndex: 1,
-              top: -30,
-              left: 0,
-              right: 0,
-              margin: '0 auto',
-              display: 'none',
-              [theme.breakpoints.down('sm')]: {
-                display: 'block',
-              },
-            }}
-					>
-						<AssessmentIcon />
-					</Fab>
-				):''}
 
 				<Typography
 					variant="h6"
 					color="inherit"
 					sx={{
             flexGrow: 1,
-            paddingLeft: 30,
+            paddingRight: 5,
+            textAlign: 'center',
             [theme.breakpoints.down('sm')]: {
-              display: 'none'
+              display: voting ? 'inline-block' : 'none'
             }
           }}>
-					{VoteUIConfig.title} {subTitle && ` - ${subTitle}`}
+					{!voting && VoteUIConfig.title} {!voting && subTitle && ` - ${subTitle}`}
+          {voting && subTitle}
 				</Typography>
 			</Toolbar>
 		</AppBar>

@@ -1,15 +1,11 @@
-const { google } = require('googleapis')
-const store = require('../../../store')
-const createGoogleOauthClient = require('../../../auth/google-oauth')
-const {
-  getFields,
-  getSpreadsheet,
-} = require('../../../lib/gsheet')
+import { hset } from '../store'
+import createGoogleOauthClient from './oauth-client'
+
+import getFields from './lib/get-fields'
+import getSpreadsheet from './lib/get-spreadsheet'
 
 
-module.exports = async function ({ headers, body }) {
-  const { spreadSheetId, sheetId: selectedSheetId } = body
-
+export default async function (spreadSheetId, selectedSheetId) {
   const oAuth2Client = await createGoogleOauthClient()
   const spreadsheet = await getSpreadsheet(spreadSheetId, oAuth2Client)
   const spreadSheetTitle = spreadsheet.properties.title
@@ -36,7 +32,7 @@ module.exports = async function ({ headers, body }) {
 
   const sheetId = selectedSheetId || spreadsheet.sheets[0].properties.sheetId
 
-  await store.hset('gsheet', 'spreadsheet', { spreadSheetId, sheetTitle, sheetId })
+  await hset('gsheet', 'spreadsheet', { spreadSheetId, sheetTitle, sheetId })
 
   return {
     spreadSheetTitle,

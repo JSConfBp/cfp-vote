@@ -13,7 +13,6 @@ import VoteControls from '../../components/VoteControls'
 import { useSession } from 'next-auth/react'
 import { useTheme } from '@emotion/react'
 
-
 const getCfp = async () => {
 	return fetch(
 		`/api/cfp`,
@@ -39,6 +38,18 @@ const getNextTalk = async (token) => {
 	.then(response => response.json())
 }
 
+const getStats = async () => {
+	return fetch(`/api/stats`,
+		{
+			method: 'GET',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(response => response.json())
+}
+
 const Vote = () => {
   const theme = useTheme()
   const { data: session } = useSession()
@@ -47,18 +58,20 @@ const Vote = () => {
 	const { showError, showSuccess } = useNotification()
 	const [talk, setTalk] = useState(null)
 	const [cfp, setCfp] = useState(null)
+  const [stats, setStats] = useState(null)
   const [fieldType, setFieldType] = useState('')
 
 	useEffect(() => {
 		Promise.all([
 			getCfp(),
-			getNextTalk()
-		]).then(([cfp, talk]) => {
+			getNextTalk(),
+      getStats()
+		]).then(([cfp, talk, stats]) => {
 			setCfp(cfp)
 			setTalk(talk)
+      setStats(stats[0])
       if (!talk.completed) {
         setFieldType(talk.id.split('_')[0])
-
       }
 			setLoading(false)
 		})
@@ -86,7 +99,9 @@ const Vote = () => {
 		if (voted.success) {
 			setModalOpen(false)
 			const talk = await getNextTalk()
+      const stats = await getStats()
       setTalk(talk)
+      setStats(stats[0])
       if (talk.completed) {
         setLoading(false)
         return;
@@ -98,21 +113,19 @@ const Vote = () => {
 		}
 	}
 
-	const { completed } = talk || {}
-
+	const { completed } = talk || { completed: true }
 
   if (!session || !session.user) {
     return <></>
   }
 
+  const subTitle = completed ? '':  `Talk ${stats.count + 1} / ${stats.total}`
 
-	return (<Page>
+	return (<Page voting={!completed} subTitle={subTitle}>
 	{ !loading && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
-
 				<Box>
-
 					{completed && (<Typography
 						variant="body1"
 					>
@@ -182,8 +195,6 @@ const Vote = () => {
 			</Grid>
 		</Grid>
 	)}
-
-	{/* <MenuBar voting={ !completed } showVoteUI={ () => setModalOpen(true) } /> */}
 
 	{ cfp && talk && (
 		<Modal

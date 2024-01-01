@@ -198,7 +198,7 @@ export default ({ onComplete }) => {
 
   <Button
     variant="contained"
-    className={ css.nextButton }
+
     color="primary"
     target="_blank"
     rel="noopener"
@@ -212,7 +212,7 @@ export default ({ onComplete }) => {
 
   <Button
     variant="contained"
-    className={ css.nextButton }
+
     color="primary"
     target="_blank"
     rel="noopener"
