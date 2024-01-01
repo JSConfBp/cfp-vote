@@ -13,7 +13,7 @@ export default ({ next }) => {
   const { showError } = useNotification()
 
 	const upload = () => {
-		fetch(`/api/cfp/import/activate`, {
+		fetch(`/api/gsheet/activate`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

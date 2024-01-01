@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import MenuBar from '../MenuBar';
 import Box from '@mui/material/Box'
 
-export default ({ children }) => {
+export default ({ children, voting, subTitle = '' }) => {
   const theme = useTheme()
   return (<Box sx={{
     paddingBlock: '6rem 2rem',
@@ -18,7 +18,7 @@ export default ({ children }) => {
   }}>
     { children }
     </Box>
-    <MenuBar />
+    <MenuBar voting={voting} subTitle={subTitle} />
   </Box>)
 
 }

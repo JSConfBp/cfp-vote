@@ -1,16 +1,18 @@
-const store = require('../../../store')
-const { google } = require('googleapis')
+import { hset, hget } from '../store'
+import { google } from 'googleapis'
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-module.exports = async function ({ headers, body: credentials }) {
+export default async function (credentials) {
   const {
     client_secret: clientSecret,
     client_id: clientId,
     redirect_uris: redirectUris
-  } = credentials.installed
+  } = credentials.web
 
-  await store.hset('gsheet', 'credentials', credentials)
+  await hset('gsheet', 'credentials', credentials)
+
+  console.log(credentials)
 
   const oAuth2Client = new google.auth.OAuth2(
     clientId,
@@ -18,7 +20,7 @@ module.exports = async function ({ headers, body: credentials }) {
     redirectUris[0]
   )
 
-  const googleToken = await store.hget('gsheet', 'token')
+  const googleToken = await hget('gsheet', 'token')
 
   if (!googleToken) {
     const authUrl = oAuth2Client.generateAuthUrl({

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 
-import { useNotification } from '../NotificationHook'
-
 import Link from 'next/link'
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -12,12 +10,10 @@ import InputLabel from '@mui/material/InputLabel';
 import Input from '@mui/material/Input';
 import FormHelperText from '@mui/material/FormHelperText';
 
-
-
+import { useNotification } from '../NotificationHook'
 import cfpConfig from '../../cfp.config'
 
 export default ({ stage, onUpdate, onError }) => {
-
 
 	const stages = Object.entries(cfpConfig.votingStages)
 		.map(([key, stage]) => ({

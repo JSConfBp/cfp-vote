@@ -16,7 +16,7 @@ export default ({sheetData, selectedFields, next}) => {
 	const importData = () => {
     setLoading(true)
 
-		fetch(`/api/cfp/import/fields`, {
+		fetch(`/api/gsheet/fields`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

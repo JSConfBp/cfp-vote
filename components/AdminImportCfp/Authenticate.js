@@ -4,15 +4,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
 export default ({ authUrl, next }) => {
-
+  const theme = useTheme()
   const { showError } = useNotification()
   const [ showCodeField, setShowCodeField ] = useState(false)
   const [ code, setCode ] = useState('')
 
   const upload = () => {
-		fetch(`/api/cfp/import/code`, {
+		fetch(`/api/gsheet/code`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'text/plain',

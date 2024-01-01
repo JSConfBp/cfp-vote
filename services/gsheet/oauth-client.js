@@ -1,20 +1,20 @@
-const store = require('../store')
-const { google } = require('googleapis')
+import { hget } from '../store'
+import { google } from 'googleapis'
 
-module.exports = async () => {
-  const googleCredentials = await store.hget('gsheet', 'credentials')
+export default async function () {
+  const googleCredentials = await hget('gsheet', 'credentials')
   const {
     client_secret: clientSecret,
     client_id: clientId,
     redirect_uris: redirectUris
-  } = googleCredentials.installed
+  } = googleCredentials.web
 
   const oAuth2Client = new google.auth.OAuth2(
     clientId,
     clientSecret,
     redirectUris[0]
   )
-  const token = await store.hget('gsheet', 'token')
+  const token = await hget('gsheet', 'token')
   oAuth2Client.setCredentials(token)
 
   return oAuth2Client

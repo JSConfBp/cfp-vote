@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Input from '@mui/material/Input';
 
 import { useNotification } from '../NotificationHook'
+import { useTheme } from '@emotion/react';
 
 
 export default ({ next }) => {
@@ -18,7 +19,7 @@ export default ({ next }) => {
   const [ sheetId, setSheetId ] = useState()
 
 	const upload = () => {
-		fetch(`/api/cfp/import/sheet`, {
+		fetch(`/api/gsheet/sheet`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -62,9 +63,11 @@ export default ({ next }) => {
 
   return (<>
     <Typography variant="body1" component="div">
-      Enter the spreadsheet ID of the document you wish to import
-
-      https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=0
+      Enter the spreadsheet ID of the document you wish to import.
+    </Typography>
+    <Typography variant="body1" component="div">
+      It's in the URL of the spreadsheet, like
+      <pre>/ spreadsheets / d /[spreadsheetId] / edit</pre>
     </Typography>
 
     <TextField
