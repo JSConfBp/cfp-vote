@@ -69,12 +69,18 @@ const Vote = () => {
 		]).then(([cfp, talk, stats]) => {
 			setCfp(cfp)
 			setTalk(talk)
-      setStats(stats[0])
+
+      if (session) {
+        setStats(stats.find(s => s.user === session.login))
+      }
+
       if (!talk.completed) {
         setFieldType(talk.id.split('_')[0])
       }
 			setLoading(false)
-		})
+		}).catch(e => {
+      console.error(e);
+    })
 	}, [false])
 
 	const onVote = async (id, value) => {
@@ -101,7 +107,11 @@ const Vote = () => {
 			const talk = await getNextTalk()
       const stats = await getStats()
       setTalk(talk)
-      setStats(stats[0])
+
+      if (session) {
+        setStats(stats.find(s => s.user === session.login))
+      }
+
       if (talk.completed) {
         setLoading(false)
         return;
@@ -119,13 +129,21 @@ const Vote = () => {
     return <></>
   }
 
-  const subTitle = completed ? '':  `Talk ${stats.count + 1} / ${stats.total}`
+  let subTitle = '';
+
+  if (!completed && stats) {
+    subTitle = `Talk ${stats.count + 1} / ${stats.total}`
+  }
 
 	return (<Page voting={!completed} subTitle={subTitle}>
 	{ !loading && (
 		<Grid container spacing={ 24 }>
 			<Grid item xs={ 12 }>
-				<Box>
+				<Box sx={{
+          [theme.breakpoints.up('md')]: {
+            paddingBottom: '8rem',
+          },
+        }}>
 					{completed && (<Typography
 						variant="body1"
 					>
@@ -170,6 +188,16 @@ const Vote = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-around',
+          [theme.breakpoints.up('md')]: {
+            position: 'fixed',
+            paddingBlock: '3rem',
+            paddingInline: '2rem',
+            backgroundColor: theme.palette.background.default,
+            bottom: '0',
+            width: '100vw',
+            left: '0',
+            boxShadow: `0 -18px 24px ${theme.palette.background.default}`
+          },
           [theme.breakpoints.down('md')]: {
             flexWrap: 'wrap',
             flexDirection: 'row'
@@ -215,3 +243,7 @@ const Vote = () => {
 }
 
 export default Vote
+
+// export const getServerSideProps = async ({ req, res }) => {
+//   return { props: {} }
+// }
