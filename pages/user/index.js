@@ -115,9 +115,7 @@ export default function Index () {
                     color="secondary"
                     variant={'contained'}
                   >
-                    <a>
-                      Go Vote!
-                    </a>
+                    Go Vote!
                   </Button>
                 </Link>
               </Box>
