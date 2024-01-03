@@ -1,11 +1,11 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from './auth/[...nextauth]'
-
-import csv from 'csv'
+import { stringify } from 'csv'
 import XLSX from 'xlsx'
 
-const toXLS = async (data) => {
+import download from '../../services/cfp/download'
 
+const toXLS = async (data) => {
 	// make the worksheet
 	const ws = XLSX.utils.json_to_sheet(data);
 
@@ -24,7 +24,7 @@ const toXLS = async (data) => {
 }
 
 const toCSV = async (data) => (new Promise((resolve, reject) => {
-  csv.stringify(
+  stringify(
     data,
     {
       header: true
@@ -41,10 +41,8 @@ export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)
 
   if (req.method === 'GET') {
-    const data = {} // await addVote(session.login, req.body)
-
-    //const data = await download(request)
-    const { accept } = res.headers
+    const data = await download()
+    const { accept } = req.headers
 
     if (accept.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
       const xls = await toXLS(data)

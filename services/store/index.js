@@ -1,4 +1,5 @@
 
+import { prototype } from 'boom';
 import { createClient } from 'redis';
 
 console.log(process.env.REDIS_URL)
@@ -11,7 +12,14 @@ const store = await createClient({
 
 // migrate(store)
 
-export const hset = async (hash, key, value) => store.hSet(hash, key, JSON.stringify(value))
+export const hset = async (hash, key, value) => {
+  let data = value
+
+  if (typeof value === 'object' || value instanceof Array) {
+    data = JSON.stringify(value)
+  }
+  return store.hSet(hash, key, data)
+}
 export const hget = async (hash, key) => store.hGet(hash, key).then(value => JSON.parse(value))
 export const hgetall = async (hash) => store.hGetAll(hash)
 export const getkeys = async (str) => store.keys(str)
@@ -28,7 +36,14 @@ export const sadd = async (key, ...members) => store.sAdd(key, ...members)
 export const smembers = async (key) => store.sMembers(key)
 export const srem = async (key, ...members) => store.sRem(key, ...members)
 export const sismember = async (key, member) => store.sIsMember(key, member)
-export const set = async (key, value) => store.set(key, JSON.stringify(value))
+export const set = async (key, value) => {
+  let data = value
+
+  if (typeof value === 'object' || value instanceof Array) {
+    data = JSON.stringify(value)
+  }
+  return store.set(key, JSON.stringify(value))
+}
 export const get = async (key) => store.get(key).then(value => JSON.parse(value))
 
 export const del = async (key) => {
