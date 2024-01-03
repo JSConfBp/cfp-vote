@@ -13,7 +13,6 @@ const parseCsv = async function (data) {
 }
 
 export default async function (stage, fields, payload) {
-
   await hset('import', 'fields', fields)
 
   const cfps = await parseCsv(payload)

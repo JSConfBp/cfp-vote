@@ -1,16 +1,13 @@
-const store = require('../../store')
-const { votingStages } = require('../../../cfp.config')
-const { read: getUsers } = require('../users')
-
-const { getUserStagedVotesKey, getStagedTalksKey } = store.keys
-
+import { hgetall, lrange, getStagedTalksKey, getUserStagedVotesKey } from '../store'
+import cfpConfig from '../../cfp.config'
+import getUsers from '../users/read'
 
 const getVoteDataFromAllUsers = async (stage) => {
   const users = (await getUsers()).map(user => user.login)
 
   return Promise.all(users.map(async (user) => {
     const key = getUserStagedVotesKey(user, stage)
-    const votes = await store.lrange(key, 0, -1)
+    const votes = await lrange(key, 0, -1)
     const voteValuePairs = votes.reduce((obj, vote) => {
       if (vote) {
         const { id, value } = (JSON.parse(vote))
@@ -47,7 +44,7 @@ const getStageVotes = async (stage, talks) => {
 const getShortListDetailedCount = async (talks) => {
   const voteData = await getVoteDataFromAllUsers('stage_2')
 
-  const shortListFields = votingStages['stage_2'].voteUI.reduce((obj, stageVote) => {
+  const shortListFields = cfpConfig.votingStages['stage_2'].voteUI.reduce((obj, stageVote) => {
     obj[stageVote.label] = stageVote.value
     return obj
   }, {})
@@ -79,19 +76,19 @@ const getShortListDetailedCount = async (talks) => {
   })
 }
 
-module.exports = async function (request) {
-  const talks = await store.lrange(getStagedTalksKey('stage_1'), 0, -1)
+export default async function download () {
+  const talks = await lrange(getStagedTalksKey('stage_1'), 0, -1)
 
   const stage1Votes = await getStageVotes('stage_1', talks)
   const stage2Votes = await getStageVotes('stage_2', talks)
   const shortListDetailedCount = await getShortListDetailedCount(talks)
 
   const talkData = await Promise.all(talks.map((talkId) => {
-    return store.hgetall(talkId).then((result) => {
+    return hgetall(talkId).then((result) => {
       result.__id = talkId
 
-      result[votingStages['stage_1'].label] = stage1Votes.find((data) => (data.talk === talkId)).votes
-      result[votingStages['stage_2'].label] = stage2Votes.find((data) => (data.talk === talkId)).votes
+      result[cfpConfig.votingStages['stage_1'].label] = stage1Votes.find((data) => (data.talk === talkId)).votes
+      result[cfpConfig.votingStages['stage_2'].label] = stage2Votes.find((data) => (data.talk === talkId)).votes
 
       // include a count of how many meh/yay/must a talk got
       const shortListDetails = shortListDetailedCount.find((data) => (data.talk === talkId)).shortListDetails
