@@ -1,16 +1,10 @@
-
-import { prototype } from 'boom';
 import { createClient } from 'redis';
-
-console.log(process.env.REDIS_URL)
 
 const store = await createClient({
   url: process.env.REDIS_URL
 })
   .on('error', err => console.log('Redis Client Error', err))
   .connect();
-
-// migrate(store)
 
 export const hset = async (hash, key, value) => {
   let data = value

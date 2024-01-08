@@ -95,7 +95,7 @@ export default function Index () {
         && (
           <>
             <Grid item xs={12}>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ textAlign: 'left'}}>
                 Voting Progress for {stageLabel}
               </Typography>
             </Grid>
