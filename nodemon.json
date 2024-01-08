@@ -1,9 +1,0 @@
-{
-    "ignore": [
-      "spec/*",
-      "components/*",
-      "context/*",
-      "pages/*"
-    ],
-    "delay": "1500"
-  }

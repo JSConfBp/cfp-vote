@@ -95,7 +95,7 @@ const Stats = () => {
         ) }
 
         { !loading && cfp && !!cfp.count && (
-          <Typography variant="body1" component="div">
+          <Typography variant="body1" component="div" sx={{ textAlign: 'center', margin: '3rem 0' }}>
             {stats.map(stat => (
               <Progress key={`${stat.user}-votes`} name={stat.user} stats={stats} />
             ))}

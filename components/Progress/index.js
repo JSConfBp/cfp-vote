@@ -13,10 +13,11 @@ export default ({ name, stats }) => {
 		return (<div sx={{
       width: 128,
       height: 160,
-      margin: '0 auto',
+      margin: '0 2rem',
       marginBottom: 32,
       marginTop: 16,
-      position: 'relative'
+      position: 'relative',
+      display: 'inline-block'
     }}></div>)
 	}
 

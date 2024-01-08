@@ -2,18 +2,6 @@
 version: '2'
 
 services:
-  # app:
-  #   image: node:10.15-alpine
-  #   volumes:
-  #       - .:/usr/src/app
-  #   ports:
-  #       - "4000:4000"
-  #   working_dir: /usr/src/app
-  #   command: ["npx", "nodemon", "index.js"]
-  #   environment:
-  #     - NODE_ENV=development
-  #     - PORT=4000
-  #     - REDIS_URL=redis
 
   redis:
     image: "redis:latest"
