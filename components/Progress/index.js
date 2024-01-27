@@ -28,10 +28,11 @@ export default ({ name, stats }) => {
 	return (<Box sx={{
 		width: 128,
 		height: 160,
-		margin: '0 auto',
+		marginInline: 2,
 		marginBottom: 2,
 		marginTop: 1,
-		position: 'relative'
+		position: 'relative',
+    display: 'inline-block'
 	}}>
 		<CircularProgress
 			size="128"
