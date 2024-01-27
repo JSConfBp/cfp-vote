@@ -12,7 +12,7 @@ export default async function (credentials) {
 
   await hset('gsheet', 'credentials', credentials)
 
-  console.log(credentials)
+  //console.log(credentials)
 
   const oAuth2Client = new google.auth.OAuth2(
     clientId,

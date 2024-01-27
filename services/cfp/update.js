@@ -23,18 +23,12 @@ const updateStage = async (from, to, topCount) => {
   }
 
   if (to === 'stage_2') {
-    console.log(from, to, topCount)
     return updateToStage2(from, to, topCount)
   }
 }
 
 const updateToStage2 = async (previousStage, newStage, topCount = 0) => {
   const votedTalks = await getStagedVotedTalks(previousStage)
-
-  console.log(
-    votedTalks
-      .sort((a, b) => (b.votes - a.votes))
-  )
 
   const shortListIds = votedTalks
     .sort((a, b) => (b.votes - a.votes))

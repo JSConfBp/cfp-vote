@@ -1,4 +1,4 @@
-import { lrange, del, getStagedTalksKey, getUserStagedVotesKey } from '../store'
+import { lrange, del, getStagedTalksKey, getUserStagedVotesKey, getkeys } from '../store'
 import getUsers from '../users/read'
 import cfpConfig from '../../cfp.config'
 
@@ -20,26 +20,25 @@ export default async function () {
     })
   )
 
-  await del(
-    Object
-      .keys(cfpConfig.votingStages)
-      .map(stage => getStagedTalksKey(stage))
-  )
-
   await del('stage')
   await del('sessionize')
   await del('gsheet')
-  await del('imported')
+  await del('import')
 
-  const users = await getUsers()
+  const talks = await getkeys('imported_*')
+  for (let key of talks) {
+    await del(key)
+  }
 
-  await del(
-    Object
-      .keys(cfpConfig.votingStages)
-      .reduce((arr, stage) => {
-        return arr.concat(users.map(({login}) => getUserStagedVotesKey(login, stage)))
-      }, [])
-  )
+  const talks_stage = await getkeys('talks-stage*')
+  for (let key of talks_stage) {
+    await del(key)
+  }
+
+  const votes_stage = await getkeys('votes-stage*')
+  for (let key of votes_stage) {
+    await del(key)
+  }
 
   return { success: true }
 }
