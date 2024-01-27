@@ -1,10 +1,11 @@
 import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import getAdmins from '../../../services/admins/get'
+import getUsers from '../../../services/users/read_full'
 
 export const authOptions = {
   // Configure one or more authentication providers
-  debug: true,
+  debug: false,
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -13,7 +14,21 @@ export const authOptions = {
     // ...add more providers here
   ],
   callbacks: {
-     async jwt({ token, account, profile }) {
+    async signIn({ user, account, profile, email, credentials }) {
+      const admins = getAdmins()
+      const users = await getUsers()
+
+      const isAllowedToSignIn = [ ...admins, ...users.map(u => u.login)].includes(profile.login)
+
+      if (isAllowedToSignIn) {
+        return true
+      } else {
+        return false
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
+    async jwt({ token, account, profile }) {
       if (profile && profile.login) {
         token.login = profile.login
       }

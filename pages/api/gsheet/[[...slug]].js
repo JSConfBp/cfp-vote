@@ -12,8 +12,6 @@ export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)
   const { slug } = req.query
 
-  console.log(slug)
-
   if (req.method === 'POST' && slug[0] === 'activate') {
     writeAuditLog(session.login, `activate gsheet import api`)
     const data = await activateGSheetApi(req.body)
@@ -22,7 +20,6 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET' && slug[0] === 'code') {
-    console.log(req.query)
     const data = await requestGSheetToken(req.query.code)
     res.status(200).send(JSON.stringify(data));
     return;
