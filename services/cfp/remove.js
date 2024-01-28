@@ -30,6 +30,11 @@ export default async function () {
     await del(key)
   }
 
+  const gtalks = await getkeys('gsheet_talk*')
+  for (let key of gtalks) {
+    await del(key)
+  }
+
   const talks_stage = await getkeys('talks-stage*')
   for (let key of talks_stage) {
     await del(key)
